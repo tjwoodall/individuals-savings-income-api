@@ -58,7 +58,7 @@ lazy val microservice = Project(appName, file("."))
   .settings(
     resolvers += Resolver.jcenterRepo
   )
-  .settings(PlayKeys.playDefaultPort := 7761)
+  .settings(PlayKeys.playDefaultPort := 9770)
 
 
 dependencyUpdatesFilter -= moduleFilter(organization = "com.typesafe.play")
