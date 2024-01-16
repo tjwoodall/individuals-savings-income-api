@@ -20,6 +20,8 @@ import uk.gov.hmrc.SbtAutoBuildPlugin
 
 lazy val ItTest = config("it") extend Test
 
+val appName = "individuals-savings-income-api"
+
 lazy val microservice = Project(appName, file("."))
   .enablePlugins(play.sbt.PlayScala, SbtAutoBuildPlugin, SbtDistributablesPlugin)
   .disablePlugins(JUnitXmlReportPlugin) // Required to prevent https://github.com/scalatest/scalatest/issues/1427
@@ -39,7 +41,7 @@ lazy val microservice = Project(appName, file("."))
   .settings(
     Compile / unmanagedResourceDirectories += baseDirectory.value / "resources"
   )
-  .settings(majorVersion := 0) // TODO change to 1 once a build tag is available on github (gets around "Invalid majorVersion: 1" sbt error)
+  .settings(majorVersion := 0)
   .settings(CodeCoverageSettings.settings: _*)
   .settings(defaultSettings(): _*)
   .configs(ItTest)
@@ -58,7 +60,6 @@ lazy val microservice = Project(appName, file("."))
   )
   .settings(PlayKeys.playDefaultPort := 7761)
 
-val appName = "individuals-savings-income-api"
 
 dependencyUpdatesFilter -= moduleFilter(organization = "com.typesafe.play")
 dependencyUpdatesFilter -= moduleFilter(name = "simple-reactivemongo")
