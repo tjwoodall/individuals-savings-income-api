@@ -14,17 +14,23 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.individualssavingsincomeapi.controllers
+package config
 
-import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
-import play.api.mvc.{Action, AnyContent, ControllerComponents}
-import javax.inject.{Inject, Singleton}
-import scala.concurrent.Future
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
+import play.api.Configuration
 
-@Singleton()
-class MicroserviceHelloWorldController @Inject() (cc: ControllerComponents) extends BackendController(cc) {
+/** Temporary test to get code coverage up; will be replaced with the real API code & tests.
+ */
+class AppConfigTest extends AnyWordSpec with Matchers {
 
-  def hello(): Action[AnyContent] = Action.async {
-    Future.successful(Ok("Hello world"))
+  "appName" should {
+    "return the configured app name" in {
+      val config    = Configuration.from(Map("appName" -> "Savings Income API"))
+      val appConfig = new AppConfig(config)
+      val result    = appConfig.appName
+      result shouldBe "Savings Income API"
+    }
   }
+
 }
