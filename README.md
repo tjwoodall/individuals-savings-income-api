@@ -1,6 +1,9 @@
 
 # individuals-savings-income-api
 
+[![Apache-2.0 license](http://img.shields.io/badge/license-Apache-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
+
+
 The Individuals Savings Income API allows a developer to create, amend, retrieve and delete data relating to Savings Income.
 
 ## Requirements
@@ -14,7 +17,7 @@ The Individuals Savings Income API allows a developer to create, amend, retrieve
 
 Run from the console using: `sbt run` (starts on port 9770 by default)
 
-Start the service manager profile: `sm2 --start MTDFB_SA_DETAILS`
+Start the service manager profile: `sm2 --start MTDFB_INDIVIDUALS_SAVINGS_INCOME`
 
 ## Run Tests
 
