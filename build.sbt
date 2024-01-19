@@ -1,53 +1,25 @@
-/*
- * Copyright 2024 HM Revenue & Customs
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+import uk.gov.hmrc.DefaultBuildSettings
+import uk.gov.hmrc.DefaultBuildSettings.addTestReportOption
 
-import sbt._
-import uk.gov.hmrc.DefaultBuildSettings.{addTestReportOption, defaultSettings}
-import uk.gov.hmrc.SbtAutoBuildPlugin
+ThisBuild / majorVersion := 0
+ThisBuild / scalaVersion := "2.13.12"
 
 lazy val ItTest = config("it") extend Test
 
-val appName = "individuals-savings-income-api"
-
-lazy val microservice = Project(appName, file("."))
-  .enablePlugins(play.sbt.PlayScala, SbtAutoBuildPlugin, SbtDistributablesPlugin)
-  .disablePlugins(JUnitXmlReportPlugin) // Required to prevent https://github.com/scalatest/scalatest/issues/1427
+lazy val microservice = Project("individuals-savings-income-api", file("."))
+  .enablePlugins(play.sbt.PlayScala, SbtDistributablesPlugin)
   .settings(
     libraryDependencies ++= AppDependencies.compile ++ AppDependencies.test(),
-    retrieveManaged                 := true,
-    update / evictionWarningOptions := EvictionWarningOptions.default.withWarnScalaVersionEviction(warnScalaVersionEviction = false),
-    scalaVersion                    := "2.13.8",
-    scalacOptions ++= List(
-      "-language:higherKinds",
-      "-Xlint:-byname-implicit",
-      "-Xfatal-warnings",
-      "-Wconf:src=routes/.*:silent",
-      "-feature"
-    )
+    // https://www.scala-lang.org/2021/01/12/configuring-and-suppressing-warnings.html
+    // suppress warnings in generated routes files
+    scalacOptions += "-Wconf:src=routes/.*:s",
   )
-  .settings(
-    Compile / unmanagedResourceDirectories += baseDirectory.value / "resources"
-  )
-  .settings(majorVersion := 0)
+  .settings(resolvers += Resolver.jcenterRepo)
   .settings(CodeCoverageSettings.settings: _*)
-  .settings(defaultSettings(): _*)
   .configs(ItTest)
   .settings(inConfig(ItTest)(Defaults.itSettings): _*)
   .settings(
-    ItTest / fork                       := true,
+    ItTest / fork := true,
     ItTest / unmanagedSourceDirectories := List((ItTest / baseDirectory).value / "it"),
     ItTest / unmanagedClasspath += baseDirectory.value / "resources",
     Runtime / unmanagedClasspath += baseDirectory.value / "resources",
