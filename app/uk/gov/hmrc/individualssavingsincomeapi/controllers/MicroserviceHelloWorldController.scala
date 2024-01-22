@@ -25,6 +25,6 @@ import scala.concurrent.Future
 class MicroserviceHelloWorldController @Inject() (cc: ControllerComponents) extends BackendController(cc) {
 
   def hello(): Action[AnyContent] = Action.async {
-    Future.successful(Ok("Hello world"))
+    Future.successful(Ok("""{"value": "Hello world"}"""))
   }
 }
