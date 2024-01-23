@@ -20,7 +20,7 @@ object CodeCoverageSettings {
 
   val settings: Seq[Setting[_]] = List(
     ScoverageKeys.coverageExcludedPackages := excludedPackages.mkString(";"),
-    ScoverageKeys.coverageExcludedFiles := ".*PensionsIncomePlayModule;.*DocumentationController", // TODO update this when the "real" codebase is added to the project.
+    ScoverageKeys.coverageExcludedFiles := ".*SavingsIncomePlayModule;.*DocumentationController", // TODO update this when the "real" codebase is added to the project.
     ScoverageKeys.coverageMinimumStmtTotal := 95,
     ScoverageKeys.coverageFailOnMinimum := true,
     ScoverageKeys.coverageHighlighting := true
