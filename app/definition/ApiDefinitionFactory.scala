@@ -18,7 +18,7 @@ package definition
 
 import config.AppConfig
 import play.api.Logger
-import routing.{Version, Version1, Version2}
+import routing.{Version, Version1}
 import uk.gov.hmrc.auth.core.ConfidenceLevel
 
 import javax.inject.{Inject, Singleton}
@@ -53,8 +53,8 @@ class ApiDefinitionFactory @Inject() (appConfig: AppConfig) {
         )
       ),
       api = APIDefinition(
-        name = "Individuals Income Received (MTD)",
-        description = "An API for providing individual income received data",
+        name = "Individuals Savings Income (MTD)",
+        description = "An API for providing individuals savings income data",
         context = appConfig.apiGatewayContext,
         categories = Seq("INCOME_TAX_MTD"),
         versions = Seq(
@@ -62,11 +62,6 @@ class ApiDefinitionFactory @Inject() (appConfig: AppConfig) {
             version = Version1,
             status = buildAPIStatus(Version1),
             endpointsEnabled = appConfig.endpointsEnabled(Version1)
-          ),
-          APIVersion(
-            version = Version2,
-            status = buildAPIStatus(Version2),
-            endpointsEnabled = appConfig.endpointsEnabled(Version2)
           )
         ),
         requiresTrust = None

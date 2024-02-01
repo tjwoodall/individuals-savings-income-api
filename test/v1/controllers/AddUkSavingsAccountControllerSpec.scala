@@ -17,13 +17,10 @@
 package v1.controllers
 
 import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
-import api.hateoas.HateoasLinks
-import api.mocks.hateoas.MockHateoasFactory
 import api.models.audit._
 import api.models.auth.UserDetails
 import api.models.domain.Nino
 import api.models.errors._
-import api.models.hateoas.Link
 import api.models.outcomes.ResponseWrapper
 import mocks.MockAppConfig
 import play.api.libs.json.{JsValue, Json}
@@ -41,9 +38,7 @@ class AddUkSavingsAccountControllerSpec
     with ControllerTestRunner
     with MockAppConfig
     with MockAddUkSavingsAccountService
-    with MockAddUkSavingsAccountRequestParser
-    with MockHateoasFactory
-    with HateoasLinks {
+    with MockAddUkSavingsAccountRequestParser {
 
   val savingsAccountId: String = "SAVKB2UVwUTBQGJ"
   val mtdId: String            = "test-mtd-id"
@@ -115,11 +110,7 @@ class AddUkSavingsAccountControllerSpec
         )
       )
 
-    MockedAppConfig.apiGatewayContext.returns("individuals/income-received").anyNumberOfTimes()
-
-    val links: List[Link] = List(
-      listUkSavings(mockAppConfig, nino)
-    )
+    MockedAppConfig.apiGatewayContext.returns("individuals/savings-income").anyNumberOfTimes()
 
     val requestBodyJson: JsValue = Json.parse("""
       |{

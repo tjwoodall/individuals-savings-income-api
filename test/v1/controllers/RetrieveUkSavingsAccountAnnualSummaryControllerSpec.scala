@@ -17,8 +17,6 @@
 package v1.controllers
 
 import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
-import api.hateoas.HateoasLinks
-import api.mocks.hateoas.MockHateoasFactory
 import api.models.domain.{Nino, TaxYear}
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
@@ -36,9 +34,7 @@ class RetrieveUkSavingsAccountAnnualSummaryControllerSpec
     extends ControllerBaseSpec
     with ControllerTestRunner
     with MockRetrieveUkSavingsAnnualSummaryService
-    with MockHateoasFactory
-    with MockRetrieveUkSavingsAnnualRequestParser
-    with HateoasLinks {
+    with MockRetrieveUkSavingsAnnualRequestParser {
 
   val taxYear: String                     = "2019-20"
   val savingsAccountId: String            = "ABCDE0123456789"

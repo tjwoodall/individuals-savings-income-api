@@ -21,7 +21,7 @@ import config.ConfidenceLevelConfig
 import definition.APIStatus.{ALPHA, BETA}
 import mocks.MockAppConfig
 import play.api.Configuration
-import routing.{Version1, Version2}
+import routing.Version1
 import support.UnitSpec
 import uk.gov.hmrc.auth.core.ConfidenceLevel
 
@@ -29,7 +29,7 @@ class ApiDefinitionFactorySpec extends UnitSpec {
 
   class Test extends MockHttpClient with MockAppConfig {
     val apiDefinitionFactory = new ApiDefinitionFactory(mockAppConfig)
-    MockedAppConfig.apiGatewayContext returns "individuals/income-received"
+    MockedAppConfig.apiGatewayContext returns "individuals/savings-income"
   }
 
   private val confidenceLevel: ConfidenceLevel = ConfidenceLevel.L200
@@ -39,9 +39,7 @@ class ApiDefinitionFactorySpec extends UnitSpec {
       "return a valid Definition case class" in new Test {
         MockedAppConfig.featureSwitches returns Configuration.empty
         MockedAppConfig.apiStatus(Version1) returns "BETA"
-        MockedAppConfig.apiStatus(Version2) returns "BETA"
         MockedAppConfig.endpointsEnabled(Version1) returns true
-        MockedAppConfig.endpointsEnabled(Version2) returns true
         MockedAppConfig.confidenceLevelCheckEnabled
           .returns(ConfidenceLevelConfig(confidenceLevel = confidenceLevel, definitionEnabled = true, authValidationEnabled = true))
           .anyNumberOfTimes()
@@ -66,18 +64,13 @@ class ApiDefinitionFactorySpec extends UnitSpec {
               )
             ),
             api = APIDefinition(
-              name = "Individuals Income Received (MTD)",
-              description = "An API for providing individual income received data",
-              context = "individuals/income-received",
+              name = "Individuals Savings Income (MTD)",
+              description = "An API for providing individuals savings income data",
+              context = "individuals/savings-income",
               categories = Seq("INCOME_TAX_MTD"),
               versions = Seq(
                 APIVersion(
                   version = Version1,
-                  status = BETA,
-                  endpointsEnabled = true
-                ),
-                APIVersion(
-                  version = Version2,
                   status = BETA,
                   endpointsEnabled = true
                 )

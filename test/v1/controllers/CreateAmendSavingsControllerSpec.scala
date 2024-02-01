@@ -17,7 +17,6 @@
 package v1.controllers
 
 import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
-import api.mocks.hateoas.MockHateoasFactory
 import api.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
 import api.models.domain.{Nino, TaxYear}
 import api.models.errors._
@@ -35,8 +34,7 @@ class CreateAmendSavingsControllerSpec
     extends ControllerBaseSpec
     with ControllerTestRunner
     with MockCreateAmendSavingsService
-    with MockCreateCreateAmendSavingsRequestParser
-    with MockHateoasFactory {
+    with MockCreateCreateAmendSavingsRequestParser {
 
   private val taxYear = "2019-20"
 

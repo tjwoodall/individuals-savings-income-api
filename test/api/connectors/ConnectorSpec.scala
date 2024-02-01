@@ -42,21 +42,21 @@ trait ConnectorSpec extends UnitSpec with Status with MimeTypes with HeaderNames
     HeaderCarrier.Config(
       Seq("^not-test-BaseUrl?$".r),
       Seq.empty[String],
-      Some("individuals-income-received-api")
+      Some("individuals-savings-income-api")
     )
 
   val dummyIfsHeaderCarrierConfig: HeaderCarrier.Config =
     HeaderCarrier.Config(
       Seq("^not-test-BaseUrl?$".r),
       Seq.empty[String],
-      Some("individuals-income-received-api")
+      Some("individuals-savings-income-api")
     )
 
   val dummyHeaderCarrierConfig: HeaderCarrier.Config =
     HeaderCarrier.Config(
       Seq("^not-test-BaseUrl?$".r),
       Seq.empty[String],
-      Some("individuals-income-received-api")
+      Some("individuals-savings-income-api")
     )
 
   val allowedDesHeaders: Seq[String] = List(

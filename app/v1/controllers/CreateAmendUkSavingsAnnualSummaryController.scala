@@ -17,7 +17,6 @@
 package v1.controllers
 
 import api.controllers._
-import api.models.hateoas.RelType.CREATE_AND_AMEND_UK_SAVINGS
 import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
 import play.api.libs.json.JsValue
 import play.api.mvc.{Action, AnyContentAsJson, ControllerComponents}
@@ -63,7 +62,7 @@ class CreateAmendUkSavingsAnnualSummaryController @Inject() (val authService: En
         .withAuditing(AuditHandler.flattenedAuditing(
           auditService = auditService,
           auditType = "createAmendUkSavingsAnnualSummary",
-          transactionName = CREATE_AND_AMEND_UK_SAVINGS,
+          transactionName = "create-and-amend-uk-savings-account-annual-summary",
           params = Map("versionNumber" -> "2.0", "nino" -> nino, "taxYear" -> taxYear, "savingsAccountId" -> savingsAccountId),
           requestBody = Some(request.body),
           includeResponse = true

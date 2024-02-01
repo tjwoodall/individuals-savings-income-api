@@ -17,7 +17,6 @@
 package v1.controllers
 
 import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
-import api.mocks.hateoas.MockHateoasFactory
 import api.models.domain.{Nino, TaxYear, Timestamp}
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
@@ -35,7 +34,6 @@ class RetrieveSavingsControllerSpec
     extends ControllerBaseSpec
     with ControllerTestRunner
     with MockRetrieveSavingsService
-    with MockHateoasFactory
     with MockRetrieveSavingsRequestParser {
 
   private val taxYear = "2019-20"

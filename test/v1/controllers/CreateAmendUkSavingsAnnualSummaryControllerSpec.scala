@@ -17,13 +17,11 @@
 package v1.controllers
 
 import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
-import api.mocks.hateoas.MockHateoasFactory
 import api.mocks.services.MockAuditService
 import api.models.audit.{AuditEvent, AuditResponse, FlattenedGenericAuditDetail}
 import api.models.auth.UserDetails
 import api.models.domain.{Nino, TaxYear}
 import api.models.errors._
-import api.models.hateoas.RelType.CREATE_AND_AMEND_UK_SAVINGS
 import api.models.outcomes.ResponseWrapper
 import play.api.libs.json.{JsObject, JsValue}
 import play.api.mvc.{AnyContentAsJson, Result}
@@ -39,8 +37,7 @@ class CreateAmendUkSavingsAnnualSummaryControllerSpec
     with ControllerTestRunner
     with MockCreateAmendUkSavingsAnnualSummaryService
     with MockCreateAmendUkSavingsAnnualSummaryRequestParser
-    with MockAuditService
-    with MockHateoasFactory {
+    with MockAuditService {
 
   val taxYear: String          = "2019-20"
   val savingsAccountId: String = "acctId"
@@ -118,7 +115,7 @@ class CreateAmendUkSavingsAnnualSummaryControllerSpec
     def event(auditResponse: AuditResponse, requestBody: Option[JsValue]): AuditEvent[FlattenedGenericAuditDetail] = {
       AuditEvent(
         auditType = "createAmendUkSavingsAnnualSummary",
-        transactionName = CREATE_AND_AMEND_UK_SAVINGS,
+        transactionName = "create-and-amend-uk-savings-account-annual-summary",
         detail = FlattenedGenericAuditDetail(
           versionNumber = Some("2.0"),
           userDetails = UserDetails(mtdId, "Individual", None),

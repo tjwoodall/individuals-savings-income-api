@@ -14,16 +14,14 @@
  * limitations under the License.
  */
 
-package api.models.domain
+package config
 
-import play.api.libs.json.Format
-import utils.enums.Enums
+import com.google.inject.AbstractModule
 
-sealed trait SharesAwardedOrReceivedSchemeType
+class SavingsIncomeModule extends AbstractModule {
 
-object SharesAwardedOrReceivedSchemeType {
-  case object SIP   extends SharesAwardedOrReceivedSchemeType
-  case object Other extends SharesAwardedOrReceivedSchemeType
+  override def configure(): Unit = {
+    bind(classOf[AppConfig]).to(classOf[AppConfigImpl]).asEagerSingleton()
+  }
 
-  implicit val format: Format[SharesAwardedOrReceivedSchemeType] = Enums.format[SharesAwardedOrReceivedSchemeType]
 }

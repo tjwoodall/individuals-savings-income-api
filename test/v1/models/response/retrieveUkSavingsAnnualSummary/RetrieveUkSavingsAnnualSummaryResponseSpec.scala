@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,3 +16,21 @@
 
 package v1.models.response.retrieveUkSavingsAnnualSummary
 
+import mocks.MockAppConfig
+import play.api.libs.json.Json
+import support.UnitSpec
+
+class RetrieveUkSavingsAnnualSummaryResponseSpec extends UnitSpec with MockAppConfig {
+
+  "writes" must {
+    "write as MTD JSON" in {
+      Json.toJson(RetrieveUkSavingsAnnualSummaryResponse(taxedUkInterest = Some(1.12), untaxedUkInterest = Some(2.12))) shouldBe
+        Json.parse("""{
+          |  "taxedUkInterest": 1.12,
+          |  "untaxedUkInterest": 2.12
+          |}""".stripMargin)
+    }
+  }
+
+
+}

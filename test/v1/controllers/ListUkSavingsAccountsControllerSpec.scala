@@ -17,13 +17,8 @@
 package v1.controllers
 
 import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
-import api.hateoas.HateoasLinks
-import api.mocks.hateoas.MockHateoasFactory
 import api.models.domain.Nino
 import api.models.errors._
-import api.models.hateoas.Link
-import api.models.hateoas.Method.{GET, POST}
-import api.models.hateoas.RelType.{ADD_UK_SAVINGS_INCOME, SELF}
 import api.models.outcomes.ResponseWrapper
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
@@ -39,9 +34,7 @@ class ListUkSavingsAccountsControllerSpec
     extends ControllerBaseSpec
     with ControllerTestRunner
     with MockListUkSavingsAccountsService
-    with MockHateoasFactory
-    with MockListUkSavingsAccountsRequestParser
-    with HateoasLinks {
+    with MockListUkSavingsAccountsRequestParser {
 
   val savingsAccountId: String = "SAVKB2UVwUTBQGJ"
 
@@ -54,20 +47,6 @@ class ListUkSavingsAccountsControllerSpec
     nino = Nino(nino),
     savingsAccountId = Some(savingsAccountId)
   )
-
-  val addUkSavingsAccountsLink: Link =
-    Link(
-      href = s"/individuals/income-received/savings/uk-accounts/$nino",
-      method = POST,
-      rel = ADD_UK_SAVINGS_INCOME
-    )
-
-  val listUkSavingsAccountsLink: Link =
-    Link(
-      href = s"/individuals/income-received/savings/uk-accounts/$nino",
-      method = GET,
-      rel = SELF
-    )
 
   val validListUkSavingsAccountResponse: ListUkSavingsAccountsResponse[UkSavingsAccount] = ListUkSavingsAccountsResponse(
     Some(

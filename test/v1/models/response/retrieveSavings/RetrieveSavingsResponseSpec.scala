@@ -19,7 +19,6 @@ package v1.models.response.retrieveSavings
 import api.models.domain.Timestamp
 import play.api.libs.json.{JsError, JsValue, Json}
 import support.UnitSpec
-import v1.models.response.retrieveSavings.{ForeignInterestItem, RetrieveSavingsResponse, Securities}
 
 class RetrieveSavingsResponseSpec extends UnitSpec {
 

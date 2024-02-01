@@ -16,30 +16,11 @@
 
 package v1.models.response.retrieveUkSavingsAnnualSummary
 
-import api.hateoas.HateoasLinksFactory
-import api.models.hateoas.{HateoasData, Link}
-import config.AppConfig
 import play.api.libs.json.{Json, OWrites}
-import v1.models.response.listUkSavingsAccounts.UkSavingsAccount.{createAmendUkSavings, retrieveUkSavings}
 
 case class RetrieveUkSavingsAnnualSummaryResponse(taxedUkInterest: Option[BigDecimal], untaxedUkInterest: Option[BigDecimal])
 
 object RetrieveUkSavingsAnnualSummaryResponse {
   implicit val writes: OWrites[RetrieveUkSavingsAnnualSummaryResponse] = Json.writes[RetrieveUkSavingsAnnualSummaryResponse]
 
-  implicit object LinksFactory
-      extends HateoasLinksFactory[RetrieveUkSavingsAnnualSummaryResponse, RetrieveUkSavingsAnnualSummaryResponseHateoasData] {
-
-    override def links(appConfig: AppConfig, data: RetrieveUkSavingsAnnualSummaryResponseHateoasData): Seq[Link] = {
-      import data._
-      Seq(
-        createAmendUkSavings(appConfig, nino, taxYear, savingsAccountId),
-        retrieveUkSavings(appConfig, nino, taxYear, savingsAccountId)
-      )
-    }
-
-  }
-
 }
-
-case class RetrieveUkSavingsAnnualSummaryResponseHateoasData(nino: String, taxYear: String, savingsAccountId: String) extends HateoasData
