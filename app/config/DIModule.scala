@@ -18,7 +18,7 @@ package config
 
 import com.google.inject.AbstractModule
 
-class SavingsIncomeModule extends AbstractModule {
+class DIModule extends AbstractModule {
 
   override def configure(): Unit = {
     bind(classOf[AppConfig]).to(classOf[AppConfigImpl]).asEagerSingleton()

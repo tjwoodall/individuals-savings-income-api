@@ -35,12 +35,6 @@ trait AppConfig {
   lazy val taxYearSpecificIfsDownstreamConfig: DownstreamConfig =
     DownstreamConfig(baseUrl = tysIfsBaseUrl, env = tysIfsEnv, token = tysIfsToken, environmentHeaders = tysIfsEnvironmentHeaders)
 
-  lazy val release6DownstreamConfig: DownstreamConfig =
-    DownstreamConfig(baseUrl = release6BaseUrl, env = release6Env, token = release6Token, environmentHeaders = release6EnvironmentHeaders)
-
-  lazy val api1661DownstreamConfig: DownstreamConfig =
-    DownstreamConfig(baseUrl = api1661BaseUrl, env = api1661Env, token = api1661Token, environmentHeaders = api1661EnvironmentHeaders)
-
   def mtdIdBaseUrl: String
 
   // DES Config
@@ -69,24 +63,6 @@ trait AppConfig {
   def tysIfsToken: String
 
   def tysIfsEnvironmentHeaders: Option[Seq[String]]
-
-  // release6 Config
-  def release6BaseUrl: String
-
-  def release6Env: String
-
-  def release6Token: String
-
-  def release6EnvironmentHeaders: Option[Seq[String]]
-
-  // Api1661 Config
-  def api1661BaseUrl: String
-
-  def api1661Env: String
-
-  def api1661Token: String
-
-  def api1661EnvironmentHeaders: Option[Seq[String]]
 
   def apiGatewayContext: String
   def minimumPermittedTaxYear: Int
@@ -125,18 +101,6 @@ class AppConfigImpl @Inject() (config: ServicesConfig, configuration: Configurat
   val tysIfsEnv: String                             = config.getString("microservice.services.tys-ifs.env")
   val tysIfsToken: String                           = config.getString("microservice.services.tys-ifs.token")
   val tysIfsEnvironmentHeaders: Option[Seq[String]] = configuration.getOptional[Seq[String]]("microservice.services.tys-ifs.environmentHeaders")
-
-  // Release6 Config
-  val release6BaseUrl: String                         = config.baseUrl("release6")
-  val release6Env: String                             = config.getString("microservice.services.release6.env")
-  val release6Token: String                           = config.getString("microservice.services.release6.token")
-  val release6EnvironmentHeaders: Option[Seq[String]] = configuration.getOptional[Seq[String]]("microservice.services.release6.environmentHeaders")
-
-  // API1661 Config
-  val api1661BaseUrl: String                         = config.baseUrl("api1661")
-  val api1661Env: String                             = config.getString("microservice.services.api1661.env")
-  val api1661Token: String                           = config.getString("microservice.services.api1661.token")
-  val api1661EnvironmentHeaders: Option[Seq[String]] = configuration.getOptional[Seq[String]]("microservice.services.api1661.environmentHeaders")
 
   val apiGatewayContext: String                    = config.getString("api.gateway.context")
   val minimumPermittedTaxYear: Int                 = config.getInt("minimumPermittedTaxYear")

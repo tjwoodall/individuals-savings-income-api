@@ -58,7 +58,7 @@ class AddUkSavingsAccountController @Inject() (val authService: EnrolmentsAuthSe
             auditService = auditService,
             auditType = "AddUkSavingsAccount",
             transactionName = "add-uk-savings-account",
-            params = Map("versionNumber" -> "2.0", "nino" -> nino),
+            params = Map("versionNumber" -> "1.0", "nino" -> nino),
             requestBody = Some(request.body),
             includeResponse = true
           ))

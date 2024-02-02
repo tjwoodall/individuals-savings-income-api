@@ -185,26 +185,6 @@ trait ConnectorSpec extends UnitSpec with Status with MimeTypes with HeaderNames
     MockedAppConfig.ifsEnvironmentHeaders returns Some(allowedIfsHeaders)
   }
 
-  protected trait Release6Test extends ConnectorTest {
-
-    protected lazy val requiredHeaders: Seq[(String, String)] = requiredRelease6Headers
-
-    MockedAppConfig.release6BaseUrl returns baseUrl
-    MockedAppConfig.release6Token returns "release6-token"
-    MockedAppConfig.release6Environment returns "release6-environment"
-    MockedAppConfig.release6EnvironmentHeaders returns Some(allowedIfsHeaders)
-  }
-
-  protected trait Api1661Test extends ConnectorTest {
-
-    protected lazy val requiredHeaders: Seq[(String, String)] = requiredApi1661Headers
-
-    MockedAppConfig.api1661BaseUrl returns baseUrl
-    MockedAppConfig.api1661Token returns "api1661-token"
-    MockedAppConfig.api1661Environment returns "api1661-environment"
-    MockedAppConfig.api1661EnvironmentHeaders returns Some(allowedIfsHeaders)
-  }
-
   protected trait TysIfsTest extends ConnectorTest {
 
     protected lazy val requiredHeaders: Seq[(String, String)] = requiredTysIfsHeaders
