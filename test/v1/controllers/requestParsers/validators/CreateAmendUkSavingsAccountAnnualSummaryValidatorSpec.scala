@@ -90,7 +90,7 @@ class CreateAmendUkSavingsAccountAnnualSummaryValidatorSpec extends UnitSpec wit
 
     val validator = new CreateAmendUkSavingsAccountAnnualSummaryValidator(appConfig: AppConfig)
 
-    MockedAppConfig.ukDividendsMinimumTaxYear
+    MockedAppConfig.ukSavingsAccountAnnualSummaryMinimumTaxYear
       .returns(2018)
       .anyNumberOfTimes()
 

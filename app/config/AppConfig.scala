@@ -66,7 +66,7 @@ trait AppConfig {
 
   def apiGatewayContext: String
   def minimumPermittedTaxYear: Int
-  def ukDividendsMinimumTaxYear: Int
+  def ukSavingsAccountAnnualSummaryMinimumTaxYear: Int
 
   // API Config
   def apiStatus(version: Version): String
@@ -104,7 +104,7 @@ class AppConfigImpl @Inject() (config: ServicesConfig, configuration: Configurat
 
   val apiGatewayContext: String                    = config.getString("api.gateway.context")
   val minimumPermittedTaxYear: Int                 = config.getInt("minimumPermittedTaxYear")
-  val ukDividendsMinimumTaxYear: Int               = config.getInt("ukDividendsMinimumTaxYear")
+  val ukSavingsAccountAnnualSummaryMinimumTaxYear: Int               = config.getInt("ukSavingsAccountAnnualSummaryMinimumTaxYear")
   val confidenceLevelConfig: ConfidenceLevelConfig = configuration.get[ConfidenceLevelConfig](s"api.confidence-level-check")
   // NRS Config
   val mtdNrsProxyBaseUrl: String = config.baseUrl("mtd-api-nrs-proxy")

@@ -457,7 +457,7 @@ class CreateAmendSavingsControllerISpec extends IntegrationBaseSpec {
     """.stripMargin
     )
 
-    def mtdUri: String = s"/savings/$nino/$taxYear"
+    def mtdUri: String = s"/$nino/$taxYear"
     def downstreamUri: String
     def setupStubs(): StubMapping
 

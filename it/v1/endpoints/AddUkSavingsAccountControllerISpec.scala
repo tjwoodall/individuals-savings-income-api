@@ -51,7 +51,7 @@ class AddUkSavingsAccountControllerISpec extends IntegrationBaseSpec {
          |}
          |""".stripMargin)
 
-    def uri: String = s"/savings/uk-accounts/$nino"
+    def uri: String = s"/uk-accounts/$nino"
 
     def ifsUri: String = s"/income-tax/income-sources/nino/$nino"
 

@@ -63,7 +63,7 @@ class CreateAmendUkSavingsAnnualSummaryController @Inject() (val authService: En
           auditService = auditService,
           auditType = "createAmendUkSavingsAnnualSummary",
           transactionName = "create-and-amend-uk-savings-account-annual-summary",
-          params = Map("versionNumber" -> "2.0", "nino" -> nino, "taxYear" -> taxYear, "savingsAccountId" -> savingsAccountId),
+          params = Map("versionNumber" -> "1.0", "nino" -> nino, "taxYear" -> taxYear, "savingsAccountId" -> savingsAccountId),
           requestBody = Some(request.body),
           includeResponse = true
         ))

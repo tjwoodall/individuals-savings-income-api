@@ -76,7 +76,7 @@ class ListUkSavingsAccountsControllerISpec extends IntegrationBaseSpec {
           | ]
           |}""".stripMargin)
 
-    def uri: String = s"/savings/uk-accounts/$nino"
+    def uri: String = s"/uk-accounts/$nino"
 
     def desUri: String = s"/income-tax/income-sources/nino/$nino"
 

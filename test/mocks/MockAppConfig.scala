@@ -52,7 +52,7 @@ trait MockAppConfig extends MockFactory {
     def apiStatus(version: Version): CallHandler[String]         = (mockAppConfig.apiStatus(_: Version)).expects(version)
     def endpointsEnabled(version: Version): CallHandler[Boolean] = (mockAppConfig.endpointsEnabled(_: Version)).expects(version)
     def minimumPermittedTaxYear: CallHandler[Int]                = (() => mockAppConfig.minimumPermittedTaxYear).expects()
-    def ukDividendsMinimumTaxYear: CallHandler[Int]              = (() => mockAppConfig.ukDividendsMinimumTaxYear).expects()
+    def ukSavingsAccountAnnualSummaryMinimumTaxYear: CallHandler[Int]              = (() => mockAppConfig.ukSavingsAccountAnnualSummaryMinimumTaxYear).expects()
 
     def confidenceLevelCheckEnabled: CallHandler[ConfidenceLevelConfig] =
       (() => mockAppConfig.confidenceLevelConfig).expects()
