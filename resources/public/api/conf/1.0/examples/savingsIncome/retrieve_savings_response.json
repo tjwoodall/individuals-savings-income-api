@@ -7,29 +7,12 @@
   },
   "foreignInterest": [
     {
-      "amountBeforeTax": 1232.67,
       "countryCode": "DEU",
+      "amountBeforeTax": 1232.67,
       "taxTakenOff": 12.45,
       "specialWithholdingTax": 14.78,
-      "taxableAmount": 1032.67,
-      "foreignTaxCreditRelief": true
-    }
-  ],
-  "links":[
-    {
-      "href":"/individuals/income-received/savings/TC663795B/2021-22",
-      "rel":"create-and-amend-savings-income",
-      "method":"PUT"
-    },
-    {
-      "href":"/individuals/income-received/savings/TC663795B/2021-22",
-      "rel":"self",
-      "method":"GET"
-    },
-    {
-      "href":"/individuals/income-received/savings/TC663795B/2021-22",
-      "rel":"delete-savings-income",
-      "method":"DELETE"
+      "foreignTaxCreditRelief": true,
+      "taxableAmount": 1032.67
     }
   ]
 }

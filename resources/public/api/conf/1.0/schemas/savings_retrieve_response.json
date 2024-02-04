@@ -6,8 +6,7 @@
   "properties": {
     "submittedOn": {"$ref": "savings_definitions.json#/definitions/submittedOn"},
     "securities": {"$ref": "savings_definitions.json#/definitions/securities"},
-    "foreignInterest": {"$ref": "savings_definitions.json#/definitions/foreignInterest"},
-    "links": {"$ref": "savings_definitions.json#/definitions/links"}
+    "foreignInterest": {"$ref": "savings_definitions.json#/definitions/foreignInterest"}
   },
   "required": ["submittedOn"]
 }
