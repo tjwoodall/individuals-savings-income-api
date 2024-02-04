@@ -21,7 +21,7 @@ import play.api.http.Status
 import play.api.http.Status.OK
 import play.api.libs.json.Json
 import play.api.libs.ws.WSResponse
-import routing.{Version1}
+import routing.Version1
 import support.IntegrationBaseSpec
 
 import scala.util.Try
@@ -87,7 +87,7 @@ class DocumentationControllerISpec extends IntegrationBaseSpec {
 
         openAPI.getOpenapi shouldBe "3.0.3"
         withClue(s"If v${version.name} endpoints are enabled in application.conf, remove the [test only] from this test: ") {
-          openAPI.getInfo.getTitle shouldBe "Individuals Income Received (MTD)"
+          openAPI.getInfo.getTitle shouldBe "Individuals Savings Income (MTD)"
         }
 
         openAPI.getInfo.getVersion shouldBe version.toString

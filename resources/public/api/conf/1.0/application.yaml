@@ -53,9 +53,9 @@ tags:
     description: Resources relating to an individual's savings income
 
 paths:
-  /individuals/income-received/savings/uk-accounts/{nino}:
+  /individuals/savings-income/uk-accounts/{nino}:
     $ref: "./savings_uk_accounts.yaml"
-  /individuals/income-received/savings/uk-accounts/{nino}/{taxYear}/{savingsAccountId}:
+  /individuals/savings-income/uk-accounts/{nino}/{taxYear}/{savingsAccountId}:
     $ref: "./savings_uk_accounts_id.yaml"
-  /individuals/income-received/savings/{nino}/{taxYear}:
+  /individuals/savings-income/{nino}/{taxYear}:
     $ref: "./savings.yaml"
