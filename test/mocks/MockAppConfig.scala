@@ -19,7 +19,6 @@ package mocks
 import config.{AppConfig, ConfidenceLevelConfig}
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
-import play.api.Configuration
 import routing.Version
 
 trait MockAppConfig extends MockFactory {
@@ -46,13 +45,12 @@ trait MockAppConfig extends MockFactory {
     def tysIfsEnvironmentHeaders: CallHandler[Option[Seq[String]]] = (() => mockAppConfig.tysIfsEnvironmentHeaders).expects()
 
     // MTD IF Lookup Config
-    def mtdIdBaseUrl: CallHandler[String]                        = (() => mockAppConfig.mtdIdBaseUrl).expects()
-    def featureSwitches: CallHandler[Configuration]              = (() => mockAppConfig.featureSwitches).expects()
-    def apiGatewayContext: CallHandler[String]                   = (() => mockAppConfig.apiGatewayContext).expects()
-    def apiStatus(version: Version): CallHandler[String]         = (mockAppConfig.apiStatus(_: Version)).expects(version)
-    def endpointsEnabled(version: Version): CallHandler[Boolean] = (mockAppConfig.endpointsEnabled(_: Version)).expects(version)
-    def minimumPermittedTaxYear: CallHandler[Int]                = (() => mockAppConfig.minimumPermittedTaxYear).expects()
-    def ukSavingsAccountAnnualSummaryMinimumTaxYear: CallHandler[Int]              = (() => mockAppConfig.ukSavingsAccountAnnualSummaryMinimumTaxYear).expects()
+    def mtdIdBaseUrl: CallHandler[String]                             = (() => mockAppConfig.mtdIdBaseUrl).expects()
+    def apiGatewayContext: CallHandler[String]                        = (() => mockAppConfig.apiGatewayContext).expects()
+    def apiStatus(version: Version): CallHandler[String]              = (mockAppConfig.apiStatus(_: Version)).expects(version)
+    def endpointsEnabled(version: Version): CallHandler[Boolean]      = (mockAppConfig.endpointsEnabled(_: Version)).expects(version)
+    def minimumPermittedTaxYear: CallHandler[Int]                     = (() => mockAppConfig.minimumPermittedTaxYear).expects()
+    def ukSavingsAccountAnnualSummaryMinimumTaxYear: CallHandler[Int] = (() => mockAppConfig.ukSavingsAccountAnnualSummaryMinimumTaxYear).expects()
 
     def confidenceLevelCheckEnabled: CallHandler[ConfidenceLevelConfig] =
       (() => mockAppConfig.confidenceLevelConfig).expects()

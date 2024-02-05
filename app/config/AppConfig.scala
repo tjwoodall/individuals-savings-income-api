@@ -70,7 +70,6 @@ trait AppConfig {
 
   // API Config
   def apiStatus(version: Version): String
-  def featureSwitches: Configuration
   def endpointsEnabled(version: Version): Boolean
 
   def confidenceLevelConfig: ConfidenceLevelConfig
@@ -102,17 +101,15 @@ class AppConfigImpl @Inject() (config: ServicesConfig, configuration: Configurat
   val tysIfsToken: String                           = config.getString("microservice.services.tys-ifs.token")
   val tysIfsEnvironmentHeaders: Option[Seq[String]] = configuration.getOptional[Seq[String]]("microservice.services.tys-ifs.environmentHeaders")
 
-  val apiGatewayContext: String                    = config.getString("api.gateway.context")
-  val minimumPermittedTaxYear: Int                 = config.getInt("minimumPermittedTaxYear")
-  val ukSavingsAccountAnnualSummaryMinimumTaxYear: Int               = config.getInt("ukSavingsAccountAnnualSummaryMinimumTaxYear")
-  val confidenceLevelConfig: ConfidenceLevelConfig = configuration.get[ConfidenceLevelConfig](s"api.confidence-level-check")
+  val apiGatewayContext: String                        = config.getString("api.gateway.context")
+  val minimumPermittedTaxYear: Int                     = config.getInt("minimumPermittedTaxYear")
+  val ukSavingsAccountAnnualSummaryMinimumTaxYear: Int = config.getInt("ukSavingsAccountAnnualSummaryMinimumTaxYear")
+  val confidenceLevelConfig: ConfidenceLevelConfig     = configuration.get[ConfidenceLevelConfig](s"api.confidence-level-check")
   // NRS Config
   val mtdNrsProxyBaseUrl: String = config.baseUrl("mtd-api-nrs-proxy")
 
   // API Config
   def apiStatus(version: Version): String = config.getString(s"api.${version.name}.status")
-
-  def featureSwitches: Configuration = configuration.getOptional[Configuration](s"feature-switch").getOrElse(Configuration.empty)
 
   def endpointsEnabled(version: Version): Boolean = config.getBoolean(s"api.${version.name}.endpoints.enabled")
 }
