@@ -57,5 +57,5 @@ paths:
     $ref: "./savings_uk_accounts.yaml"
   /individuals/savings-income/uk-accounts/{nino}/{taxYear}/{savingsAccountId}:
     $ref: "./savings_uk_accounts_id.yaml"
-  /individuals/savings-income/{nino}/{taxYear}:
+  /individuals/savings-income/other/{nino}/{taxYear}:
     $ref: "./savings.yaml"
