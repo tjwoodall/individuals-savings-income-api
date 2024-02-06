@@ -33,7 +33,7 @@ class DeleteSavingsControllerISpec extends IntegrationBaseSpec {
     def taxYear: String
     def downstreamUri: String
 
-    def mtdUri: String = s"/$nino/$taxYear"
+    def mtdUri: String = s"/other/$nino/$taxYear"
 
     def setupStubs(): Unit = {}
 

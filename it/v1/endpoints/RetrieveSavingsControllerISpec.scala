@@ -155,7 +155,7 @@ class RetrieveSavingsControllerISpec extends IntegrationBaseSpec {
 
     val mtdResponse: JsValue = RetrieveSavingsControllerFixture.mtdRetrieveSavingsResponse
 
-    def uri: String = s"/$nino/$taxYear"
+    def uri: String = s"/other/$nino/$taxYear"
 
     def setupStubs(): Unit
 
