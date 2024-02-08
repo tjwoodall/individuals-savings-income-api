@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,34 +14,37 @@
  * limitations under the License.
  */
 
-import uk.gov.hmrc.DefaultBuildSettings
-import uk.gov.hmrc.DefaultBuildSettings.addTestReportOption
-
-ThisBuild / majorVersion := 0
-ThisBuild / scalaVersion := "2.13.12"
-
-lazy val ItTest = config("it") extend Test
+import sbt._
+import uk.gov.hmrc.DefaultBuildSettings.{addTestReportOption, defaultSettings}
+import uk.gov.hmrc.SbtAutoBuildPlugin
+import uk.gov.hmrc.versioning.SbtGitVersioning
+import uk.gov.hmrc.versioning.SbtGitVersioning.autoImport.majorVersion
 
 val appName = "individuals-savings-income-api"
 
+lazy val ItTest = config("it") extend Test
+
 lazy val microservice = Project(appName, file("."))
-  .enablePlugins(play.sbt.PlayScala, SbtDistributablesPlugin)
+  .enablePlugins(play.sbt.PlayScala, SbtAutoBuildPlugin, SbtGitVersioning, SbtDistributablesPlugin)
+  .disablePlugins(JUnitXmlReportPlugin) // Required to prevent https://github.com/scalatest/scalatest/issues/1427
   .settings(
-    libraryDependencies ++= AppDependencies.compile ++ AppDependencies.test,
-    // https://www.scala-lang.org/2021/01/12/configuring-and-suppressing-warnings.html
-    // suppress warnings in generated routes files
-    scalacOptions += "-Wconf:src=routes/.*:s"
+    libraryDependencies ++= AppDependencies.compile ++ AppDependencies.test(),
+    retrieveManaged                 := true,
+    update / evictionWarningOptions := EvictionWarningOptions.default.withWarnScalaVersionEviction(warnScalaVersionEviction = false),
+    scalaVersion                    := "2.13.8",
+    scalacOptions ++= Seq("-Xfatal-warnings", "-Wconf:src=routes/.*:silent", "-feature", "-language:higherKinds")
   )
   .settings(
     Compile / unmanagedResourceDirectories += baseDirectory.value / "resources"
   )
-  .settings(resolvers += Resolver.jcenterRepo)
+  .settings(majorVersion := 0)
   .settings(CodeCoverageSettings.settings: _*)
+  .settings(defaultSettings(): _*)
   .configs(ItTest)
-  .settings(inConfig(ItTest)(Defaults.itSettings): _*)
   .settings(
+    inConfig(ItTest)(Defaults.itSettings ++ headerSettings(ItTest) ++ automateHeaderSettings(ItTest) ++ ScalafmtPlugin.scalafmtConfigSettings),
     ItTest / fork                       := true,
-    ItTest / unmanagedSourceDirectories := List((ItTest / baseDirectory).value / "it"),
+    ItTest / unmanagedSourceDirectories := Seq((ItTest / baseDirectory).value / "it"),
     ItTest / unmanagedClasspath += baseDirectory.value / "resources",
     Runtime / unmanagedClasspath += baseDirectory.value / "resources",
     ItTest / javaOptions += "-Dlogger.resource=logback-test.xml",
@@ -53,8 +56,12 @@ lazy val microservice = Project(appName, file("."))
   )
   .settings(PlayKeys.playDefaultPort := 9770)
 
-lazy val it = project
-  .enablePlugins(PlayScala)
-  .dependsOn(microservice % "test->test")
-  .settings(DefaultBuildSettings.itSettings())
-  .settings(libraryDependencies ++= AppDependencies.it)
+dependencyUpdatesFilter -= moduleFilter(organization = "com.typesafe.play")
+dependencyUpdatesFilter -= moduleFilter(name = "simple-reactivemongo")
+dependencyUpdatesFilter -= moduleFilter(name = "reactivemongo-test")
+dependencyUpdatesFilter -= moduleFilter(name = "scala-library")
+dependencyUpdatesFilter -= moduleFilter(name = "flexmark-all")
+dependencyUpdatesFilter -= moduleFilter(name = "scalatestplus-play")
+dependencyUpdatesFilter -= moduleFilter(name = "scalatestplus-scalacheck")
+
+dependencyUpdatesFailBuild := true
