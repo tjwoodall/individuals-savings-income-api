@@ -74,6 +74,8 @@ trait AppConfig {
 
   def confidenceLevelConfig: ConfidenceLevelConfig
 
+  def allowRequestCannotBeFulfilledHeader(version: Version): Boolean
+
   // NRS Config
   def mtdNrsProxyBaseUrl: String
 }
@@ -107,6 +109,9 @@ class AppConfigImpl @Inject() (config: ServicesConfig, configuration: Configurat
   val confidenceLevelConfig: ConfidenceLevelConfig     = configuration.get[ConfidenceLevelConfig](s"api.confidence-level-check")
   // NRS Config
   val mtdNrsProxyBaseUrl: String = config.baseUrl("mtd-api-nrs-proxy")
+
+  def allowRequestCannotBeFulfilledHeader(version: Version): Boolean =
+    config.getBoolean(s"api.$version.endpoints.allow-request-cannot-be-fulfilled-header")
 
   // API Config
   def apiStatus(version: Version): String = config.getString(s"api.${version.name}.status")

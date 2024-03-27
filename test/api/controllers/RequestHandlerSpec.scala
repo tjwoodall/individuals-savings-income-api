@@ -30,6 +30,8 @@ import play.api.http.{HeaderNames, Status}
 import play.api.libs.json.{JsString, Json, OWrites}
 import play.api.mvc.AnyContent
 import play.api.test.{FakeRequest, ResultExtractors}
+import routing.Version3
+import mocks.MockAppConfig
 import support.UnitSpec
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
@@ -43,7 +45,8 @@ class RequestHandlerSpec
     with MockIdGenerator
     with Status
     with HeaderNames
-    with ResultExtractors {
+    with ResultExtractors
+    with MockAppConfig {
 
   private val successResponseJson = Json.obj("result" -> "SUCCESS!")
   private val successCode         = Status.ACCEPTED
@@ -60,6 +63,7 @@ class RequestHandlerSpec
   implicit val endpointLogContext: EndpointLogContext =
     EndpointLogContext(controllerName = "SomeController", endpointName = "someEndpoint")
 
+  private val versionHeader = HeaderNames.ACCEPT -> "application/vnd.hmrc.3.0+json"
   implicit val hc: HeaderCarrier                    = HeaderCarrier()
   implicit val ctx: RequestContext                  = RequestContext.from(mockIdGenerator, endpointLogContext)
   private val userDetails                           = UserDetails("mtdId", "Individual", Some("agentReferenceNumber"))
@@ -113,7 +117,40 @@ class RequestHandlerSpec
         status(result) shouldBe NO_CONTENT
       }
 
-    }
+      "given a request with a RequestCannotBeFulfilled gov-test-scenario header" when {
+        val gtsHeaders = List(
+          "gov-test-scenario" -> "REQUEST_CANNOT_BE_FULFILLED",
+          "Gov-Test-Scenario" -> "REQUEST_CANNOT_BE_FULFILLED",
+          "GOV-TEST-SCENARIO" -> "REQUEST_CANNOT_BE_FULFILLED"
+        )
+
+        "allowed in config" should {
+          "return RuleRequestCannotBeFulfilled error" in {
+            val requestHandler = RequestHandler
+              .withParser(mockParser)
+              .withService(mockService.service)
+              .withNoContentResult()
+            MockedAppConfig.allowRequestCannotBeFulfilledHeader(Version3).returns(true).anyNumberOfTimes()
+          val expectedContent = Json.parse(
+            """
+              |{
+              |  "code":"RULE_REQUEST_CANNOT_BE_FULFILLED",
+              |  "message":"Custom (will vary in production depending on the actual error)"
+              |}
+              |""".stripMargin
+          )
+
+          for (gtsHeader <- gtsHeaders) {
+
+            val userRequest2 = UserRequest[AnyContent](userDetails, FakeRequest().withHeaders(versionHeader, gtsHeader))
+            val result       = requestHandler.handleRequest(InputRaw)(ctx, userRequest2, mockAppConfig, implicitly[ExecutionContext])
+
+            status(result) shouldBe 422
+            header("X-CorrelationId", result) shouldBe Some(generatedCorrelationId)
+            contentAsJson(result) shouldBe expectedContent
+          }
+        }
+      }
 
     "a request fails with validation errors" must {
       "return the errors" in {
