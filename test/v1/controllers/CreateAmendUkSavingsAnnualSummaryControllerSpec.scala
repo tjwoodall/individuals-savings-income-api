@@ -23,6 +23,7 @@ import api.models.auth.UserDetails
 import api.models.domain.{Nino, TaxYear}
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
+import mocks.MockAppConfig
 import play.api.libs.json.{JsObject, JsValue}
 import play.api.mvc.{AnyContentAsJson, Result}
 import v1.mocks.requestParsers.MockCreateAmendUkSavingsAnnualSummaryRequestParser
@@ -37,7 +38,8 @@ class CreateAmendUkSavingsAnnualSummaryControllerSpec
     with ControllerTestRunner
     with MockCreateAmendUkSavingsAnnualSummaryService
     with MockCreateAmendUkSavingsAnnualSummaryRequestParser
-    with MockAuditService {
+    with MockAuditService
+    with MockAppConfig{
 
   val taxYear: String          = "2019-20"
   val savingsAccountId: String = "acctId"

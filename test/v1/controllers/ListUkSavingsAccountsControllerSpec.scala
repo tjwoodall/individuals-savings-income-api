@@ -20,6 +20,7 @@ import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import api.models.domain.Nino
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
+import mocks.MockAppConfig
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
 import v1.mocks.requestParsers.MockListUkSavingsAccountsRequestParser
@@ -34,7 +35,8 @@ class ListUkSavingsAccountsControllerSpec
     extends ControllerBaseSpec
     with ControllerTestRunner
     with MockListUkSavingsAccountsService
-    with MockListUkSavingsAccountsRequestParser {
+    with MockListUkSavingsAccountsRequestParser
+    with MockAppConfig {
 
   val savingsAccountId: String = "SAVKB2UVwUTBQGJ"
 

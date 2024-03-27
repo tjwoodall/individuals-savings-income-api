@@ -20,6 +20,7 @@ import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import api.models.domain.{Nino, TaxYear}
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
+import mocks.MockAppConfig
 import play.api.mvc.Result
 import v1.fixtures.RetrieveUkSavingsAccountAnnualSummaryControllerFixture
 import v1.mocks.requestParsers.MockRetrieveUkSavingsAnnualRequestParser
@@ -34,7 +35,8 @@ class RetrieveUkSavingsAccountAnnualSummaryControllerSpec
     extends ControllerBaseSpec
     with ControllerTestRunner
     with MockRetrieveUkSavingsAnnualSummaryService
-    with MockRetrieveUkSavingsAnnualRequestParser {
+    with MockRetrieveUkSavingsAnnualRequestParser
+    with MockAppConfig {
 
   val taxYear: String                     = "2019-20"
   val savingsAccountId: String            = "ABCDE0123456789"
