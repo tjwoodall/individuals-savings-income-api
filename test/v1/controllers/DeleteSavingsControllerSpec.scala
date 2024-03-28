@@ -21,6 +21,7 @@ import api.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
 import api.models.domain.{Nino, TaxYear}
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
+import mocks.MockAppConfig
 import play.api.libs.json.JsValue
 import play.api.mvc.Result
 import v1.mocks.requestParsers.MockDeleteSavingsRequestParser
@@ -34,7 +35,8 @@ class DeleteSavingsControllerSpec
     extends ControllerBaseSpec
     with ControllerTestRunner
     with MockDeleteSavingsService
-    with MockDeleteSavingsRequestParser {
+    with MockDeleteSavingsRequestParser
+    with MockAppConfig {
 
   private val taxYear = "2021-22"
 

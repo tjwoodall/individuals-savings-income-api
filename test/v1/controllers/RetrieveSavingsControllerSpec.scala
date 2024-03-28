@@ -20,6 +20,7 @@ import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import api.models.domain.{Nino, TaxYear, Timestamp}
 import api.models.errors._
 import api.models.outcomes.ResponseWrapper
+import mocks.MockAppConfig
 import play.api.mvc.Result
 import v1.fixtures.RetrieveSavingsControllerFixture
 import v1.mocks.requestParsers.MockRetrieveSavingsRequestParser
@@ -34,7 +35,8 @@ class RetrieveSavingsControllerSpec
     extends ControllerBaseSpec
     with ControllerTestRunner
     with MockRetrieveSavingsService
-    with MockRetrieveSavingsRequestParser {
+    with MockRetrieveSavingsRequestParser
+    with MockAppConfig {
 
   private val taxYear = "2019-20"
 
