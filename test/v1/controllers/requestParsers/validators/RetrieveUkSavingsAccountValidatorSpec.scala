@@ -20,11 +20,12 @@ import api.mocks.MockCurrentDateTime
 import api.models.errors._
 import config.AppConfig
 import mocks.MockAppConfig
-import org.joda.time.DateTime
-import org.joda.time.format.{DateTimeFormat, DateTimeFormatter}
 import support.UnitSpec
 import utils.CurrentDateTime
 import v1.models.request.retrieveUkSavingsAnnualSummary.RetrieveUkSavingsAnnualSummaryRawData
+
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 class RetrieveUkSavingsAccountValidatorSpec extends UnitSpec {
 
@@ -35,14 +36,14 @@ class RetrieveUkSavingsAccountValidatorSpec extends UnitSpec {
   class Test extends MockCurrentDateTime with MockAppConfig {
 
     implicit val dateTimeProvider: CurrentDateTime = mockCurrentDateTime
-    val dateTimeFormatter: DateTimeFormatter       = DateTimeFormat.forPattern("yyyy-MM-dd")
+    val dateTimeFormatter: DateTimeFormatter       = DateTimeFormatter.ISO_LOCAL_DATE
 
     implicit val appConfig: AppConfig = mockAppConfig
 
     val validator = new RetrieveUkSavingsAccountValidator()
 
-    MockCurrentDateTime.getDateTime
-      .returns(DateTime.parse("2022-07-11", dateTimeFormatter))
+    MockCurrentDateTime.getLocalDate
+      .returns(LocalDate.parse("2022-07-11", dateTimeFormatter))
       .anyNumberOfTimes()
 
     MockedAppConfig.minimumPermittedTaxYear

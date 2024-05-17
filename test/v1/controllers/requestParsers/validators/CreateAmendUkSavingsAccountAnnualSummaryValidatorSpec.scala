@@ -21,13 +21,14 @@ import api.mocks.MockCurrentDateTime
 import api.models.errors._
 import config.AppConfig
 import mocks.MockAppConfig
-import org.joda.time.DateTime
-import org.joda.time.format.{DateTimeFormat, DateTimeFormatter}
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.AnyContentAsJson
 import support.UnitSpec
 import utils.CurrentDateTime
 import v1.models.request.createAmendUkSavingsAnnualSummary.CreateAmendUkSavingsAnnualSummaryRawData
+
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 class CreateAmendUkSavingsAccountAnnualSummaryValidatorSpec extends UnitSpec with MockAppConfig {
 
@@ -86,7 +87,7 @@ class CreateAmendUkSavingsAccountAnnualSummaryValidatorSpec extends UnitSpec wit
 
     implicit val appConfig: AppConfig              = mockAppConfig
     implicit val dateTimeProvider: CurrentDateTime = mockCurrentDateTime
-    val dateTimeFormatter: DateTimeFormatter       = DateTimeFormat.forPattern("yyyy-MM-dd")
+    val dateTimeFormatter: DateTimeFormatter       = DateTimeFormatter.ISO_LOCAL_DATE
 
     val validator = new CreateAmendUkSavingsAccountAnnualSummaryValidator(appConfig: AppConfig)
 
@@ -94,8 +95,8 @@ class CreateAmendUkSavingsAccountAnnualSummaryValidatorSpec extends UnitSpec wit
       .returns(2018)
       .anyNumberOfTimes()
 
-    MockCurrentDateTime.getDateTime
-      .returns(DateTime.parse("2021-07-29", dateTimeFormatter))
+    MockCurrentDateTime.getLocalDate
+      .returns(LocalDate.parse("2021-07-29", dateTimeFormatter))
       .anyNumberOfTimes()
 
   }
