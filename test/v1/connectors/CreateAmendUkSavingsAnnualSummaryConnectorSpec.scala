@@ -19,6 +19,7 @@ package v1.connectors
 import api.connectors.{ConnectorSpec, DownstreamOutcome}
 import api.models.domain.{Nino, TaxYear}
 import api.models.outcomes.ResponseWrapper
+import play.api.Configuration
 import play.api.libs.json.{JsObject, Json}
 import v1.models.request.createAmendUkSavingsAnnualSummary.DownstreamCreateAmendUkSavingsAnnualSummaryBody
 
@@ -43,8 +44,21 @@ class CreateAmendUkSavingsAnnualSummaryConnectorSpec extends ConnectorSpec {
   "CreateAmendUkSavingsAccountAnnualSummaryConnector" when {
     "createAmendUkSavingsAccountAnnualSummary called for a non Tax Year Specific tax year" must {
       "return a 200 status for a success scenario" in new DesTest with Test {
+
+        MockedAppConfig.featureSwitches returns Configuration("desIf_Migration.enabled" -> false)
         def taxYear: TaxYear = TaxYear.fromMtd("2019-20")
         val url: String      = s"$baseUrl/income-tax/nino/$nino/income-source/savings/annual/${taxYear.asDownstream}"
+        willPost(url, body) returns Future.successful(outcome)
+
+        val result: DownstreamOutcome[Unit] = await(connector.createOrAmendUKSavingsAccountSummary(Nino(nino), taxYear, request))
+        result shouldBe outcome
+      }
+
+      "return a 200 status for a success scenario when desIf_Migration is enabled" in new IfsTest with Test {
+
+        MockedAppConfig.featureSwitches returns Configuration("desIf_Migration.enabled" -> true)
+        def taxYear: TaxYear = TaxYear.fromMtd("2019-20")
+        val url: String = s"$baseUrl/income-tax/nino/$nino/income-source/savings/annual/${taxYear.asDownstream}"
         willPost(url, body) returns Future.successful(outcome)
 
         val result: DownstreamOutcome[Unit] = await(connector.createOrAmendUKSavingsAccountSummary(Nino(nino), taxYear, request))

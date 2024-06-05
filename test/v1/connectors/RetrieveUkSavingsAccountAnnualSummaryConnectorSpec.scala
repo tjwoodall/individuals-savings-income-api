@@ -19,6 +19,7 @@ package v1.connectors
 import api.connectors.ConnectorSpec
 import api.models.domain.{Nino, TaxYear}
 import api.models.outcomes.ResponseWrapper
+import play.api.Configuration
 import v1.models.request.retrieveUkSavingsAnnualSummary.RetrieveUkSavingsAnnualSummaryRequest
 import v1.models.response.retrieveUkSavingsAnnualSummary.{DownstreamUkSavingsAnnualIncomeItem, DownstreamUkSavingsAnnualIncomeResponse}
 
@@ -60,10 +61,22 @@ class RetrieveUkSavingsAccountAnnualSummaryConnectorSpec extends ConnectorSpec {
   "RetrieveUkSavingsAccountAnnualSummaryConnector" when {
     "retrieveUkSavingsAccountAnnualSummary called" must {
       "return a 200 status for a success scenario" in new DesTest with Test {
+
+        MockedAppConfig.featureSwitches returns Configuration("desIf_Migration.enabled" -> false)
         def taxYear: TaxYear = TaxYear.fromMtd("2019-20")
-
         private val outcome = Right(ResponseWrapper(correlationId, response))
+        willGet(
+          s"$baseUrl/income-tax/nino/$nino/income-source/savings/annual/2020?incomeSourceId=$incomeSourceId"
+        ) returns Future.successful(outcome)
 
+        await(connector.retrieveUkSavingsAccountAnnualSummary(request)) shouldBe outcome
+      }
+
+      "return a 200 status for a success scenario when desIf_Migration is enabled" in new IfsTest with Test {
+
+        MockedAppConfig.featureSwitches returns Configuration("desIf_Migration.enabled" -> true)
+        def taxYear: TaxYear = TaxYear.fromMtd("2019-20")
+        private val outcome = Right(ResponseWrapper(correlationId, response))
         willGet(
           s"$baseUrl/income-tax/nino/$nino/income-source/savings/annual/2020?incomeSourceId=$incomeSourceId"
         ) returns Future.successful(outcome)

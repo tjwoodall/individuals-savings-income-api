@@ -190,7 +190,7 @@ class RetrieveUkSavingsAccountAnnualSummaryControllerISpec extends IntegrationBa
 
         val errors = Seq(
           (BAD_REQUEST, "INVALID_NINO", BAD_REQUEST, NinoFormatError),
-          (BAD_REQUEST, "INVALID_TAXYEAR", BAD_REQUEST, TaxYearFormatError),
+          (BAD_REQUEST, "INVALID_TAXYEAR", BAD_REQUEST, TaxYearFormatError), //remove once DES to IFS migration complete
           (BAD_REQUEST, "INVALID_TYPE", INTERNAL_SERVER_ERROR, InternalError),
           (BAD_REQUEST, "INVALID_INCOME_SOURCE", BAD_REQUEST, SavingsAccountIdFormatError),
           (NOT_FOUND, "NOT_FOUND_PERIOD", NOT_FOUND, NotFoundError),

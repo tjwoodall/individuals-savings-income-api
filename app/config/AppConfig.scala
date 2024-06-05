@@ -71,6 +71,7 @@ trait AppConfig {
   // API Config
   def apiStatus(version: Version): String
   def endpointsEnabled(version: Version): Boolean
+  def featureSwitches: Configuration
 
   def confidenceLevelConfig: ConfidenceLevelConfig
 
@@ -117,6 +118,9 @@ class AppConfigImpl @Inject() (config: ServicesConfig, configuration: Configurat
   def apiStatus(version: Version): String = config.getString(s"api.${version.name}.status")
 
   def endpointsEnabled(version: Version): Boolean = config.getBoolean(s"api.${version.name}.endpoints.enabled")
+
+  def featureSwitches: Configuration = configuration.getOptional[Configuration](s"feature-switch").getOrElse(Configuration.empty)
+
 }
 
 case class ConfidenceLevelConfig(confidenceLevel: ConfidenceLevel, definitionEnabled: Boolean, authValidationEnabled: Boolean)

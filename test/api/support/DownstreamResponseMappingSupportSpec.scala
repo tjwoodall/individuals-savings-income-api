@@ -75,6 +75,21 @@ class DownstreamResponseMappingSupportSpec extends UnitSpec {
             ErrorWrapper(correlationId, RuleIncorrectGovTestScenarioError)
         }
       }
+
+      "downstream returns INVALID_CORRELATIONID" must {
+        "return an InternalError error" in {
+          mapping.mapDownstreamErrors(errorCodeMap)(
+            ResponseWrapper(correlationId, DownstreamErrors.single(DownstreamErrorCode("INVALID_CORRELATIONID")))) shouldBe
+            ErrorWrapper(correlationId, InternalError)
+        }
+      }
+      "downstream returns INVALID_CORRELATION_ID" must {
+        "return an InternalError error" in {
+          mapping.mapDownstreamErrors(errorCodeMap)(
+            ResponseWrapper(correlationId, DownstreamErrors.single(DownstreamErrorCode("INVALID_CORRELATION_ID")))) shouldBe
+            ErrorWrapper(correlationId, InternalError)
+        }
+      }
     }
 
     "multiple errors" when {

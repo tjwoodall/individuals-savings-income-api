@@ -17,7 +17,7 @@
 package api.connectors
 
 import api.connectors.DownstreamUri._
-import config.AppConfig
+import config.{AppConfig, FeatureSwitches}
 import play.api.Logger
 import play.api.http.{HeaderNames, MimeTypes}
 import play.api.libs.json.Writes
@@ -32,6 +32,8 @@ trait BaseDownstreamConnector {
   protected val logger: Logger = Logger(this.getClass)
 
   private val jsonContentTypeHeader = HeaderNames.CONTENT_TYPE -> MimeTypes.JSON
+
+  protected lazy val featureSwitches: FeatureSwitches = FeatureSwitches(appConfig.featureSwitches)
 
   def post[Body: Writes, Resp](body: Body, uri: DownstreamUri[Resp])(implicit
                                                                      ec: ExecutionContext,
