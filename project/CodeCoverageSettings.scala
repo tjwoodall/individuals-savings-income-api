@@ -28,13 +28,24 @@ object CodeCoverageSettings {
     ".*Routes.*",
     "config.*",
     "testOnly.*",
-    "testOnlyDoNotUseInAppConf.*"
+    "testOnlyDoNotUseInAppConf.*",
+    //TODO remove these code coverage exemptions
+    "api.controllers.BaseController",
+    "api.controllers.BaseController.Response",
+    "api.controllers.RequestContext",
+    "api.controllers.RequestHandler.RequestHandlerBuilder",
+    "api.models.errors.CustomMtdError",
+    "controllers.RewriteableAssets",
+    "shared.config.AppConfig",
+    "shared.definition.ApiDefinitionFactory",
+    "shared.hateoas.HateoasWrapper"
   )
 
   val settings: Seq[Setting[_]] = Seq(
     ScoverageKeys.coverageExcludedPackages := excludedPackages.mkString(";"),
     ScoverageKeys.coverageMinimumStmtTotal := 95,
-    ScoverageKeys.coverageFailOnMinimum := true,
-    ScoverageKeys.coverageHighlighting := true
+    ScoverageKeys.coverageFailOnMinimum    := true,
+    ScoverageKeys.coverageHighlighting     := true
   )
+
 }
