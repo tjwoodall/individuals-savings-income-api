@@ -1,4 +1,4 @@
-summary: Create and Amend Savings Income [Test only]
+summary: Create and Amend Savings Income [test only]
 description: |
   This endpoint allows a developer to provide or amend savings income for securities and foreign interest.
   A National Insurance number and tax year must be provided.
