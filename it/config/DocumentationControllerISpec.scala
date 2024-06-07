@@ -87,7 +87,7 @@ class DocumentationControllerISpec extends IntegrationBaseSpec {
 
         openAPI.getOpenapi shouldBe "3.0.3"
         withClue(s"If v${version.name} endpoints are enabled in application.conf, remove the [test only] from this test: ") {
-          openAPI.getInfo.getTitle shouldBe "Individuals Savings Income (MTD) [Test only]"
+          openAPI.getInfo.getTitle shouldBe "Individuals Savings Income (MTD)"
         }
 
         openAPI.getInfo.getVersion shouldBe version.toString

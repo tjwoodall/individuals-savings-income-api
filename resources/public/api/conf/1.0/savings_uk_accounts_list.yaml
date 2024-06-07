@@ -1,4 +1,4 @@
-summary: List All UK Savings Accounts [Test only]
+summary: List All UK Savings Accounts [test only]
 description: |
   This endpoint allows a developer to retrieve a list of all UK savings accounts that were previously added for an individual.
   A National Insurance number must be provided.
