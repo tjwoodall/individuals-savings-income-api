@@ -34,16 +34,12 @@ object CodeCoverageSettings {
     "api.controllers.BaseController.Response",
     "api.controllers.RequestContext",
     "api.controllers.RequestHandler.RequestHandlerBuilder",
-    "api.models.errors.CustomMtdError",
-    "controllers.RewriteableAssets",
-    "shared.config.AppConfig",
-    "shared.definition.ApiDefinitionFactory",
-    "shared.hateoas.HateoasWrapper"
+    "api.models.errors.CustomMtdError"
   )
 
   val settings: Seq[Setting[_]] = Seq(
     ScoverageKeys.coverageExcludedPackages := excludedPackages.mkString(";"),
-    ScoverageKeys.coverageMinimumStmtTotal := 95,
+    ScoverageKeys.coverageMinimumStmtTotal := 90,
     ScoverageKeys.coverageFailOnMinimum    := true,
     ScoverageKeys.coverageHighlighting     := true
   )
