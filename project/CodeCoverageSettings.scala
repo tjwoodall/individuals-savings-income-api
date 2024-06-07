@@ -29,7 +29,7 @@ object CodeCoverageSettings {
     "config.*",
     "testOnly.*",
     "testOnlyDoNotUseInAppConf.*",
-    //TODO remove these code coverage exemptions
+    //TODO remove these code coverage exemptions and increase coverage minimum to 95
     "api.controllers.BaseController",
     "api.controllers.BaseController.Response",
     "api.controllers.RequestContext",
