@@ -96,9 +96,9 @@ object CreateAmendSavingsRulesValidator extends RulesValidator[CreateAmendSaving
     }
 
     combine(
+      validatedCountryCode,
       validatedMandatoryDecimalNumbers,
-      validatedOptionalDecimalNumbers,
-      validatedCountryCode
+      validatedOptionalDecimalNumbers
     )
   }
 
