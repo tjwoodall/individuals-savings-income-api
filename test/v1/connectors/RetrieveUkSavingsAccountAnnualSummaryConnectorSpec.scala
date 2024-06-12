@@ -16,16 +16,17 @@
 
 package v1.connectors
 
-import api.connectors.ConnectorSpec
-import api.models.domain.{Nino, TaxYear}
-import api.models.outcomes.ResponseWrapper
-import play.api.Configuration
-import v1.models.request.retrieveUkSavingsAnnualSummary.RetrieveUkSavingsAnnualSummaryRequest
+
+import mocks.MockFeatureSwitches
+import shared.connectors.ConnectorSpec
+import shared.models.domain.{Nino, TaxYear}
+import shared.models.outcomes.ResponseWrapper
+import v1.models.request.retrieveUkSavingsAnnualSummary.RetrieveUkSavingsAnnualSummaryRequestData
 import v1.models.response.retrieveUkSavingsAnnualSummary.{DownstreamUkSavingsAnnualIncomeItem, DownstreamUkSavingsAnnualIncomeResponse}
 
 import scala.concurrent.Future
 
-class RetrieveUkSavingsAccountAnnualSummaryConnectorSpec extends ConnectorSpec {
+class RetrieveUkSavingsAccountAnnualSummaryConnectorSpec extends ConnectorSpec with MockFeatureSwitches {
 
   val nino: String           = "AA111111A"
   val incomeSourceId: String = "SAVKB2UVwUTBQGJ"
@@ -35,8 +36,8 @@ class RetrieveUkSavingsAccountAnnualSummaryConnectorSpec extends ConnectorSpec {
 
     def taxYear: TaxYear
 
-    val request: RetrieveUkSavingsAnnualSummaryRequest =
-      RetrieveUkSavingsAnnualSummaryRequest(
+    val request: RetrieveUkSavingsAnnualSummaryRequestData =
+      RetrieveUkSavingsAnnualSummaryRequestData(
         Nino(nino),
         taxYear,
         incomeSourceId
@@ -54,7 +55,7 @@ class RetrieveUkSavingsAccountAnnualSummaryConnectorSpec extends ConnectorSpec {
     val connector: RetrieveUkSavingsAccountAnnualSummaryConnector = new RetrieveUkSavingsAccountAnnualSummaryConnector(
       http = mockHttpClient,
       appConfig = mockAppConfig
-    )
+    )(mockFeatureSwitches)
 
   }
 
@@ -62,7 +63,7 @@ class RetrieveUkSavingsAccountAnnualSummaryConnectorSpec extends ConnectorSpec {
     "retrieveUkSavingsAccountAnnualSummary called" must {
       "return a 200 status for a success scenario" in new DesTest with Test {
 
-        MockedAppConfig.featureSwitches returns Configuration("desIf_Migration.enabled" -> false)
+        MockFeatureSwitches.isDesIf_MigrationEnabled.returns(false)
         def taxYear: TaxYear = TaxYear.fromMtd("2019-20")
         private val outcome = Right(ResponseWrapper(correlationId, response))
         willGet(
@@ -74,7 +75,7 @@ class RetrieveUkSavingsAccountAnnualSummaryConnectorSpec extends ConnectorSpec {
 
       "return a 200 status for a success scenario when desIf_Migration is enabled" in new IfsTest with Test {
 
-        MockedAppConfig.featureSwitches returns Configuration("desIf_Migration.enabled" -> true)
+        MockFeatureSwitches.isDesIf_MigrationEnabled.returns(true)
         def taxYear: TaxYear = TaxYear.fromMtd("2019-20")
         private val outcome = Right(ResponseWrapper(correlationId, response))
         willGet(

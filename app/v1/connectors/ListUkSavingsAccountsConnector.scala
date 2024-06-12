@@ -16,11 +16,13 @@
 
 package v1.connectors
 
-import api.connectors.DownstreamUri.DesUri
-import api.connectors.{BaseDownstreamConnector, DownstreamOutcome}
-import config.AppConfig
+
+import shared.config.AppConfig
+import shared.connectors.DownstreamUri.DesUri
+import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome}
+import shared.connectors.httpparsers.StandardDownstreamHttpParser.reads
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
-import v1.models.request.listUkSavingsAccounts.ListUkSavingsAccountsRequest
+import v1.models.request.listUkSavingsAccounts.ListUkSavingsAccountsRequestData
 import v1.models.response.listUkSavingsAccounts.{ListUkSavingsAccountsResponse, UkSavingsAccount}
 
 import javax.inject.{Inject, Singleton}
@@ -29,12 +31,10 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class ListUkSavingsAccountsConnector @Inject() (val http: HttpClient, val appConfig: AppConfig) extends BaseDownstreamConnector {
 
-  def listUkSavingsAccounts(request: ListUkSavingsAccountsRequest)(implicit
+  def listUkSavingsAccounts(request: ListUkSavingsAccountsRequestData)(implicit
       hc: HeaderCarrier,
       ec: ExecutionContext,
       correlationId: String): Future[DownstreamOutcome[ListUkSavingsAccountsResponse[UkSavingsAccount]]] = {
-
-    import api.connectors.httpparsers.StandardDownstreamHttpParser._
 
     val nino = request.nino.nino
 

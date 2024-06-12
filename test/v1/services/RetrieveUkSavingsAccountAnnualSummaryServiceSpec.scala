@@ -16,13 +16,14 @@
 
 package v1.services
 
-import api.controllers.EndpointLogContext
-import api.models.domain.{Nino, TaxYear}
-import api.models.errors._
-import api.models.outcomes.ResponseWrapper
-import api.services.ServiceSpec
+
+import shared.controllers.EndpointLogContext
+import shared.models.domain.{Nino, TaxYear}
+import shared.models.errors._
+import shared.models.outcomes.ResponseWrapper
+import shared.services.ServiceSpec
 import v1.mocks.connectors.MockRetrieveUkSavingsAccountAnnualSummaryConnector
-import v1.models.request.retrieveUkSavingsAnnualSummary.RetrieveUkSavingsAnnualSummaryRequest
+import v1.models.request.retrieveUkSavingsAnnualSummary.RetrieveUkSavingsAnnualSummaryRequestData
 import v1.models.response.retrieveUkSavingsAnnualSummary.{DownstreamUkSavingsAnnualIncomeItem, DownstreamUkSavingsAnnualIncomeResponse, RetrieveUkSavingsAnnualSummaryResponse}
 
 import scala.concurrent.Future
@@ -33,7 +34,7 @@ class RetrieveUkSavingsAccountAnnualSummaryServiceSpec extends ServiceSpec {
   private val taxYear        = "2019-20"
   private val incomeSourceId = "SAVKB2UVwUTBQGJ"
 
-  private val request = RetrieveUkSavingsAnnualSummaryRequest(Nino(nino), TaxYear.fromMtd(taxYear), incomeSourceId)
+  private val request = RetrieveUkSavingsAnnualSummaryRequestData(Nino(nino), TaxYear.fromMtd(taxYear), incomeSourceId)
 
   trait Test extends MockRetrieveUkSavingsAccountAnnualSummaryConnector {
     implicit val logContext: EndpointLogContext = EndpointLogContext("c", "ep")

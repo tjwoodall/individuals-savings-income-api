@@ -16,16 +16,17 @@
 
 package v1.controllers
 
-import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
-import api.models.domain.{Nino, TaxYear, Timestamp}
-import api.models.errors._
-import api.models.outcomes.ResponseWrapper
-import mocks.MockAppConfig
+
 import play.api.mvc.Result
+import shared.config.MockAppConfig
+import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
+import shared.models.domain.{Nino, TaxYear, Timestamp}
+import shared.models.errors._
+import shared.models.outcomes.ResponseWrapper
 import v1.fixtures.RetrieveSavingsControllerFixture
-import v1.mocks.requestParsers.MockRetrieveSavingsRequestParser
 import v1.mocks.services.MockRetrieveSavingsService
-import v1.models.request.retrieveSavings.{RetrieveSavingsRawData, RetrieveSavingsRequest}
+import v1.mocks.validators.MockRetrieveSavingsValidatorFactory
+import v1.models.request.retrieveSavings.RetrieveSavingsRequestData
 import v1.models.response.retrieveSavings.{ForeignInterestItem, RetrieveSavingsResponse, Securities}
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -35,17 +36,15 @@ class RetrieveSavingsControllerSpec
     extends ControllerBaseSpec
     with ControllerTestRunner
     with MockRetrieveSavingsService
-    with MockRetrieveSavingsRequestParser
+    with MockRetrieveSavingsValidatorFactory
     with MockAppConfig {
 
+
+  val nino: String = "AA123456A"
   private val taxYear = "2019-20"
 
-  private val rawData: RetrieveSavingsRawData = RetrieveSavingsRawData(
-    nino = nino,
-    taxYear = taxYear
-  )
 
-  private val requestData: RetrieveSavingsRequest = RetrieveSavingsRequest(
+  private val requestData: RetrieveSavingsRequestData = RetrieveSavingsRequestData(
     nino = Nino(nino),
     taxYear = TaxYear.fromMtd(taxYear)
   )
@@ -76,9 +75,7 @@ class RetrieveSavingsControllerSpec
   "RetrieveSavingsController" should {
     "return a successful response with status 200 (OK)" when {
       "given a valid request" in new Test {
-        MockRetrieveSavingsRequestParser
-          .parse(rawData)
-          .returns(Right(requestData))
+        willUseValidator(returningSuccess(requestData))
 
         MockRetrieveSavingsService
           .retrieve(requestData)
@@ -93,18 +90,15 @@ class RetrieveSavingsControllerSpec
 
     "return the error as per spec" when {
       "the parser validation fails" in new Test {
-        MockRetrieveSavingsRequestParser
-          .parse(rawData)
-          .returns(Left(ErrorWrapper(correlationId, NinoFormatError)))
+        willUseValidator(returningErrors(Seq(ErrorWrapper(correlationId, NinoFormatError).error)))
+
 
         runErrorTest(NinoFormatError)
 
       }
 
       "the service returns an error" in new Test {
-        MockRetrieveSavingsRequestParser
-          .parse(rawData)
-          .returns(Right(requestData))
+        willUseValidator(returningSuccess(requestData))
 
         MockRetrieveSavingsService
           .retrieve(requestData)
@@ -121,7 +115,7 @@ class RetrieveSavingsControllerSpec
     val controller = new RetrieveSavingsController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
-      parser = mockRetrieveSavingsRequestParser,
+      validatorFactory = mockRetrieveSavingsValidator,
       service = mockRetrieveSavingsService,
       cc = cc,
       idGenerator = mockIdGenerator

@@ -16,16 +16,16 @@
 
 package v1.controllers
 
-import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
-import api.models.domain.Nino
-import api.models.errors._
-import api.models.outcomes.ResponseWrapper
-import mocks.MockAppConfig
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
-import v1.mocks.requestParsers.MockListUkSavingsAccountsRequestParser
+import shared.config.MockAppConfig
+import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
+import shared.models.domain.Nino
+import shared.models.errors.{ErrorWrapper, NinoFormatError, NotFoundError}
+import shared.models.outcomes.ResponseWrapper
 import v1.mocks.services.MockListUkSavingsAccountsService
-import v1.models.request.listUkSavingsAccounts.{ListUkSavingsAccountsRawData, ListUkSavingsAccountsRequest}
+import v1.mocks.validators.MockListUkSavingsAccountsValidatorFactory
+import v1.models.request.listUkSavingsAccounts.ListUkSavingsAccountsRequestData
 import v1.models.response.listUkSavingsAccounts.{ListUkSavingsAccountsResponse, UkSavingsAccount}
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -35,17 +35,13 @@ class ListUkSavingsAccountsControllerSpec
     extends ControllerBaseSpec
     with ControllerTestRunner
     with MockListUkSavingsAccountsService
-    with MockListUkSavingsAccountsRequestParser
+    with MockListUkSavingsAccountsValidatorFactory
     with MockAppConfig {
 
+  val nino: String = "AA123456A"
   val savingsAccountId: String = "SAVKB2UVwUTBQGJ"
 
-  val rawData: ListUkSavingsAccountsRawData = ListUkSavingsAccountsRawData(
-    nino = nino,
-    savingsAccountId = Some(savingsAccountId)
-  )
-
-  val requestData: ListUkSavingsAccountsRequest = ListUkSavingsAccountsRequest(
+  val requestData: ListUkSavingsAccountsRequestData = ListUkSavingsAccountsRequestData(
     nino = Nino(nino),
     savingsAccountId = Some(savingsAccountId)
   )
@@ -81,9 +77,7 @@ class ListUkSavingsAccountsControllerSpec
   "listUkSavingsAccounts" should {
     "return OK" when {
       "happy path" in new Test {
-        MockListUkSavingsAccountsRequestParser
-          .parse(rawData)
-          .returns(Right(requestData))
+        willUseValidator(returningSuccess(requestData))
 
         MockListUkSavingsAccountsService
           .listUkSavingsAccounts(requestData)
@@ -98,17 +92,13 @@ class ListUkSavingsAccountsControllerSpec
 
     "return the error as per spec" when {
       "the parser validation fails" in new Test {
-        MockListUkSavingsAccountsRequestParser
-          .parse(rawData)
-          .returns(Left(ErrorWrapper(correlationId, NinoFormatError)))
+        willUseValidator(returningErrors(Seq(ErrorWrapper(correlationId, NinoFormatError).error)))
 
         runErrorTest(NinoFormatError)
       }
 
       "the service returns an error" in new Test {
-        MockListUkSavingsAccountsRequestParser
-          .parse(rawData)
-          .returns(Right(requestData))
+        willUseValidator(returningSuccess(requestData))
 
         MockListUkSavingsAccountsService
           .listUkSavingsAccounts(requestData)
@@ -124,7 +114,7 @@ class ListUkSavingsAccountsControllerSpec
     val controller = new ListUkSavingsAccountsController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
-      parser = mockListUkSavingsAccountsRequestParser,
+      validatorFactory = mockListUkSavingsAccountValidator,
       service = mockListUkSavingsAccountsService,
       cc = cc,
       idGenerator = mockIdGenerator

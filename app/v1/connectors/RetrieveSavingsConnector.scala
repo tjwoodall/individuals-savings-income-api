@@ -16,12 +16,13 @@
 
 package v1.connectors
 
-import api.connectors.DownstreamUri.{IfsUri, TaxYearSpecificIfsUri}
-import api.connectors.httpparsers.StandardDownstreamHttpParser._
-import api.connectors.{BaseDownstreamConnector, DownstreamOutcome}
-import config.AppConfig
+
+import shared.config.AppConfig
+import shared.connectors.DownstreamUri.{IfsUri, TaxYearSpecificIfsUri}
+import shared.connectors.httpparsers.StandardDownstreamHttpParser.reads
+import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
-import v1.models.request.retrieveSavings.RetrieveSavingsRequest
+import v1.models.request.retrieveSavings.RetrieveSavingsRequestData
 import v1.models.response.retrieveSavings.RetrieveSavingsResponse
 
 import javax.inject.{Inject, Singleton}
@@ -30,10 +31,10 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class RetrieveSavingsConnector @Inject() (val http: HttpClient, val appConfig: AppConfig) extends BaseDownstreamConnector {
 
-  def retrieveSavings(request: RetrieveSavingsRequest)(implicit
-      hc: HeaderCarrier,
-      ec: ExecutionContext,
-      correlationId: String): Future[DownstreamOutcome[RetrieveSavingsResponse]] = {
+  def retrieveSavings(request: RetrieveSavingsRequestData)(implicit
+                                                           hc: HeaderCarrier,
+                                                           ec: ExecutionContext,
+                                                           correlationId: String): Future[DownstreamOutcome[RetrieveSavingsResponse]] = {
 
     import request._
 

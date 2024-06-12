@@ -16,25 +16,23 @@
 
 package v1.connectors
 
-import api.connectors.ConnectorSpec
-import api.mocks.MockHttpClient
-import api.models.domain.Nino
-import api.models.outcomes.ResponseWrapper
-import mocks.MockAppConfig
-import uk.gov.hmrc.http.HeaderCarrier
-import v1.models.request.listUkSavingsAccounts.ListUkSavingsAccountsRequest
+import shared.config.MockAppConfig
+import shared.connectors.{ConnectorSpec, DownstreamOutcome}
+import shared.models.domain.{Nino, TaxYear}
+import shared.models.outcomes.ResponseWrapper
+import v1.models.request.listUkSavingsAccounts.ListUkSavingsAccountsRequestData
 import v1.models.response.listUkSavingsAccounts.{ListUkSavingsAccountsResponse, UkSavingsAccount}
 
 import scala.concurrent.Future
 
-class ListUkSavingsAccountsConnectorSpec extends ConnectorSpec {
+class ListUkSavingsAccountsConnectorSpec extends ConnectorSpec with MockAppConfig {
 
   val nino: String     = "AA111111A"
   val taxYear: String  = "2019"
   val savingsAccountId = "SAVKB2UVwUTBQGJ"
 
-  val request: ListUkSavingsAccountsRequest                     = ListUkSavingsAccountsRequest(Nino(nino), None)
-  val requestWithSavingsAccountId: ListUkSavingsAccountsRequest = ListUkSavingsAccountsRequest(Nino(nino), Some(savingsAccountId))
+  val request: ListUkSavingsAccountsRequestData                     = ListUkSavingsAccountsRequestData(Nino(nino), None)
+  val requestWithSavingsAccountId: ListUkSavingsAccountsRequestData = ListUkSavingsAccountsRequestData(Nino(nino), Some(savingsAccountId))
 
   private val validResponse = ListUkSavingsAccountsResponse(
     savingsAccounts = Some(
@@ -46,56 +44,52 @@ class ListUkSavingsAccountsConnectorSpec extends ConnectorSpec {
     )
   )
 
-  class Test extends MockHttpClient with MockAppConfig {
+  trait Test {
+    _: ConnectorTest =>
 
-    val connector: ListUkSavingsAccountsConnector = new ListUkSavingsAccountsConnector(
-      http = mockHttpClient,
-      appConfig = mockAppConfig
-    )
+    protected val nino: String = "AA111111A"
 
-    MockedAppConfig.desBaseUrl returns baseUrl
-    MockedAppConfig.desToken returns "des-token"
-    MockedAppConfig.desEnvironment returns "des-environment"
-    MockedAppConfig.desEnvironmentHeaders returns Some(allowedDesHeaders)
+    def taxYear: TaxYear
+
+    val connector: ListUkSavingsAccountsConnector =
+      new ListUkSavingsAccountsConnector(http = mockHttpClient, appConfig = mockAppConfig)
+
   }
 
   "ListUkSavingsAccountsConnector" when {
     "listUkSavingsAccounts" must {
       "return a valid response, list of uk savings accounts " +
-        "upon receiving SUCCESS response from the backend service" in new Test {
-          val outcome                    = Right(ResponseWrapper(correlationId, validResponse))
-          implicit val hc: HeaderCarrier = HeaderCarrier(otherHeaders = otherHeaders)
+        "upon receiving SUCCESS response from the backend service" in new DesTest with Test {
 
-          MockedHttpClient
-            .get(
-              url = s"$baseUrl/income-tax/income-sources/nino/$nino",
-              parameters = Seq("incomeSourceType" -> "interest-from-uk-banks"),
-              config = dummyIfsHeaderCarrierConfig,
-              requiredHeaders = requiredDesHeaders,
-              excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
-            )
-            .returns(Future.successful(outcome))
+        val outcome: Right[Nothing, ResponseWrapper[ListUkSavingsAccountsResponse[UkSavingsAccount]]] = Right(ResponseWrapper(correlationId, validResponse))
+        override def taxYear: TaxYear = TaxYear("2021")
 
-          await(connector.listUkSavingsAccounts(request)) shouldBe outcome
-        }
+
+        willGet(
+          url = s"$baseUrl/income-tax/income-sources/nino/${this.nino}",
+          parameters = Seq("incomeSourceType" -> "interest-from-uk-banks")
+        ).returns(Future.successful(outcome))
+
+        val result: DownstreamOutcome[ListUkSavingsAccountsResponse[UkSavingsAccount]] = await(connector.listUkSavingsAccounts(request))
+        result shouldBe outcome
+
+
+      }
 
       "return a valid response, list of a single uk savings account " +
         "when incomeSourceId was sent as part of the request and " +
-        "upon receiving SUCCESS response from the backend service " in new Test {
-          val outcome                    = Right(ResponseWrapper(correlationId, validResponse))
-          implicit val hc: HeaderCarrier = HeaderCarrier(otherHeaders = otherHeaders)
+        "upon receiving SUCCESS response from the backend service " in new DesTest with Test {
 
-          MockedHttpClient
-            .get(
-              url = s"$baseUrl/income-tax/income-sources/nino/$nino",
-              parameters = Seq("incomeSourceType" -> "interest-from-uk-banks", "incomeSourceId" -> savingsAccountId),
-              config = dummyIfsHeaderCarrierConfig,
-              requiredHeaders = requiredDesHeaders,
-              excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
-            )
-            .returns(Future.successful(outcome))
+        val outcome: Right[Nothing, ResponseWrapper[ListUkSavingsAccountsResponse[UkSavingsAccount]]] = Right(ResponseWrapper(correlationId, validResponse))
+        override def taxYear: TaxYear = TaxYear("2021")
 
-          await(connector.listUkSavingsAccounts(requestWithSavingsAccountId)) shouldBe outcome
+        willGet(
+          url = s"$baseUrl/income-tax/income-sources/nino/${this.nino}",
+          parameters = Seq("incomeSourceType" -> "interest-from-uk-banks", "incomeSourceId" -> savingsAccountId)
+        ).returns(Future.successful(outcome))
+
+        val result: DownstreamOutcome[ListUkSavingsAccountsResponse[UkSavingsAccount]] = await(connector.listUkSavingsAccounts(requestWithSavingsAccountId))
+        result shouldBe outcome
         }
     }
   }

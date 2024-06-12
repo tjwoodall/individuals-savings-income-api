@@ -16,6 +16,6 @@
 
 package v1.models.request.listUkSavingsAccounts
 
-import api.models.request.RawData
+import shared.models.domain.Nino
 
-case class ListUkSavingsAccountsRawData(nino: String, savingsAccountId: Option[String]) extends RawData
+case class ListUkSavingsAccountsRequestData(nino: Nino, savingsAccountId: Option[String])

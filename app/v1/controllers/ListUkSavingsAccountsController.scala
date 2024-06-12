@@ -16,13 +16,14 @@
 
 package v1.controllers
 
-import api.controllers.{AuthorisedController, EndpointLogContext, RequestContext, RequestHandler}
-import api.services.{EnrolmentsAuthService, MtdIdLookupService}
-import config.AppConfig
+
+
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
-import utils.IdGenerator
-import v1.controllers.requestParsers.ListUkSavingsAccountsRequestParser
-import v1.models.request.listUkSavingsAccounts.ListUkSavingsAccountsRawData
+import shared.config.AppConfig
+import shared.controllers.{AuthorisedController, EndpointLogContext, RequestContext, RequestHandler}
+import shared.services.{EnrolmentsAuthService, MtdIdLookupService}
+import shared.utils.IdGenerator
+import v1.controllers.requestParsers.validators.ListUkSavingsAccountsValidatorFactory
 import v1.services.ListUkSavingsAccountsService
 
 import javax.inject.{Inject, Singleton}
@@ -31,8 +32,8 @@ import scala.concurrent.ExecutionContext
 @Singleton
 class ListUkSavingsAccountsController @Inject() (val authService: EnrolmentsAuthService,
                                                  val lookupService: MtdIdLookupService,
-                                                 parser: ListUkSavingsAccountsRequestParser,
                                                  service: ListUkSavingsAccountsService,
+                                                 validatorFactory: ListUkSavingsAccountsValidatorFactory,
                                                  cc: ControllerComponents,
                                                  val idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends AuthorisedController(cc) {
@@ -47,18 +48,15 @@ class ListUkSavingsAccountsController @Inject() (val authService: EnrolmentsAuth
     authorisedAction(nino).async { implicit request =>
       implicit val ctx: RequestContext = RequestContext.from(idGenerator, endpointLogContext)
 
-      val rawData: ListUkSavingsAccountsRawData = ListUkSavingsAccountsRawData(
-        nino = nino,
-        savingsAccountId = savingsAccountId
-      )
+      val validator = validatorFactory.validator(nino, savingsAccountId)
 
       val requestHandler =
         RequestHandler
-          .withParser(parser)
+          .withValidator(validator)
           .withService(service.listUkSavingsAccounts)
           .withPlainJsonResult()
 
-      requestHandler.handleRequest(rawData)
+      requestHandler.handleRequest()
     }
 
 }

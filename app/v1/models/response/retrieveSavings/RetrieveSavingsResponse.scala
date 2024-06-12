@@ -16,9 +16,10 @@
 
 package v1.models.response.retrieveSavings
 
-import api.models.domain.Timestamp
+
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, Json, OWrites, Reads}
+import shared.models.domain.Timestamp
 import utils.JsonUtils
 
 case class RetrieveSavingsResponse(submittedOn: Timestamp, securities: Option[Securities], foreignInterest: Option[Seq[ForeignInterestItem]])

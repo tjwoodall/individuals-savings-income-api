@@ -16,8 +16,8 @@
 
 package v1.endpoints
 
-import api.models.errors._
-import api.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
+import shared.models.errors._
+import shared.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status._
@@ -155,7 +155,7 @@ class RetrieveUkSavingsAccountAnnualSummaryControllerISpec extends IntegrationBa
         val input = Seq(
           ("AA1123A", "2019-20", "AB1DE0123456789", BAD_REQUEST, NinoFormatError),
           ("AA123456A", "20177", "AB1DE0123456789", BAD_REQUEST, TaxYearFormatError),
-          ("AA123456A", "2017-18", "AB1DE", BAD_REQUEST, SavingsAccountIdFormatError),
+          ("AA123456A", "2019-20", "AB1DE", BAD_REQUEST, SavingsAccountIdFormatError),
           ("AA123456A", "2015-17", "AB1DE0123456789", BAD_REQUEST, RuleTaxYearRangeInvalidError),
           ("AA123456A", "2010-11", "AB1DE0123456789", BAD_REQUEST, RuleTaxYearNotSupportedError)
         )

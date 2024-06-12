@@ -16,13 +16,14 @@
 
 package v1.services
 
-import api.controllers.EndpointLogContext
-import api.models.domain.Nino
-import api.models.errors._
-import api.models.outcomes.ResponseWrapper
-import api.services.ServiceSpec
+
+import shared.controllers.EndpointLogContext
+import shared.models.domain.Nino
+import shared.models.errors._
+import shared.models.outcomes.ResponseWrapper
+import shared.services.ServiceSpec
 import v1.mocks.connectors.MockListUkSavingsAccountsConnector
-import v1.models.request.listUkSavingsAccounts.ListUkSavingsAccountsRequest
+import v1.models.request.listUkSavingsAccounts.ListUkSavingsAccountsRequestData
 import v1.models.response.listUkSavingsAccounts.{ListUkSavingsAccountsResponse, UkSavingsAccount}
 
 import scala.concurrent.Future
@@ -32,7 +33,7 @@ class ListUkSavingsAccountsServiceSpec extends ServiceSpec {
   private val nino             = "AA112233A"
   private val savingsAccountId = "SAVKB2UVwUTBQGJ"
 
-  private val requestData = ListUkSavingsAccountsRequest(Nino(nino), Some(savingsAccountId))
+  private val requestData = ListUkSavingsAccountsRequestData(Nino(nino), Some(savingsAccountId))
 
   private val validResponse = ListUkSavingsAccountsResponse(
     savingsAccounts = Some(

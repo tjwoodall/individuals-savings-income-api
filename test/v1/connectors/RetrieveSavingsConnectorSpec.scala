@@ -16,10 +16,10 @@
 
 package v1.connectors
 
-import api.connectors.{ConnectorSpec, DownstreamOutcome}
-import api.models.domain.{Nino, TaxYear, Timestamp}
-import api.models.outcomes.ResponseWrapper
-import v1.models.request.retrieveSavings.RetrieveSavingsRequest
+import shared.connectors.{ConnectorSpec, DownstreamOutcome}
+import shared.models.domain.{Nino, TaxYear, Timestamp}
+import shared.models.outcomes.ResponseWrapper
+import v1.models.request.retrieveSavings.RetrieveSavingsRequestData
 import v1.models.response.retrieveSavings.RetrieveSavingsResponse
 
 import scala.concurrent.Future
@@ -64,8 +64,8 @@ class RetrieveSavingsConnectorSpec extends ConnectorSpec {
     protected val nino: String = "AA111111A"
     def taxYear: TaxYear
 
-    val request: RetrieveSavingsRequest =
-      RetrieveSavingsRequest(Nino(nino), taxYear)
+    val request: RetrieveSavingsRequestData =
+      RetrieveSavingsRequestData(Nino(nino), taxYear)
 
     val response: RetrieveSavingsResponse = RetrieveSavingsResponse(
       submittedOn = Timestamp("2019-04-04T01:01:01.000Z"),

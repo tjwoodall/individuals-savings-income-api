@@ -16,26 +16,26 @@
 
 package v1.controllers
 
-import api.controllers.{AuthorisedController, EndpointLogContext, RequestContext, RequestHandler}
-import api.services.{EnrolmentsAuthService, MtdIdLookupService}
-import config.AppConfig
+
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
-import utils.IdGenerator
-import v1.controllers.requestParsers.RetrieveSavingsRequestParser
-import v1.models.request.retrieveSavings.RetrieveSavingsRawData
+import shared.config.AppConfig
+import shared.controllers.{AuthorisedController, EndpointLogContext, RequestContext, RequestHandler}
+import shared.services.{EnrolmentsAuthService, MtdIdLookupService}
+import shared.utils.IdGenerator
+import v1.controllers.requestParsers.validators.RetrieveSavingsValidatorFactory
 import v1.services.RetrieveSavingsService
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class RetrieveSavingsController @Inject() (val authService: EnrolmentsAuthService,
-                                           val lookupService: MtdIdLookupService,
-                                           parser: RetrieveSavingsRequestParser,
-                                           service: RetrieveSavingsService,
-                                           cc: ControllerComponents,
-                                           val idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: AppConfig)
-    extends AuthorisedController(cc) {
+class RetrieveSavingsController @Inject()(val authService: EnrolmentsAuthService,
+                                          val lookupService: MtdIdLookupService,
+                                          validatorFactory: RetrieveSavingsValidatorFactory,
+                                          service: RetrieveSavingsService,
+                                          cc: ControllerComponents,
+                                          val idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: AppConfig)
+  extends AuthorisedController(cc) {
 
   implicit val endpointLogContext: EndpointLogContext =
     EndpointLogContext(
@@ -47,17 +47,14 @@ class RetrieveSavingsController @Inject() (val authService: EnrolmentsAuthServic
     authorisedAction(nino).async { implicit request =>
       implicit val ctx: RequestContext = RequestContext.from(idGenerator, endpointLogContext)
 
-      val rawData: RetrieveSavingsRawData = RetrieveSavingsRawData(
-        nino = nino,
-        taxYear = taxYear
-      )
+      val validator = validatorFactory.validator(nino, taxYear)
 
       val requestHandler = RequestHandler
-        .withParser(parser)
+        .withValidator(validator)
         .withService(service.retrieveSavings)
         .withPlainJsonResult()
 
-      requestHandler.handleRequest(rawData)
+      requestHandler.handleRequest()
 
     }
 

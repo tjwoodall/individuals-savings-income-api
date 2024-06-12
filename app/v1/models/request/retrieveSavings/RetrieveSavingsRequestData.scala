@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-package v1.models.request.retrieveUkSavingsAnnualSummary
+package v1.models.request.retrieveSavings
 
-import api.models.domain.{Nino, TaxYear}
+import shared.models.domain.{Nino, TaxYear}
 
-case class RetrieveUkSavingsAnnualSummaryRequest(nino: Nino, taxYear: TaxYear, savingsAccountId: String)
+case class RetrieveSavingsRequestData(nino: Nino, taxYear: TaxYear)

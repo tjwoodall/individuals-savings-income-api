@@ -16,12 +16,13 @@
 
 package v1.mocks.connectors
 
-import api.connectors.DownstreamOutcome
+
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
+import shared.connectors.DownstreamOutcome
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.connectors.RetrieveSavingsConnector
-import v1.models.request.retrieveSavings.RetrieveSavingsRequest
+import v1.models.request.retrieveSavings.RetrieveSavingsRequestData
 import v1.models.response.retrieveSavings.RetrieveSavingsResponse
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -32,9 +33,9 @@ trait MockRetrieveSavingsConnector extends MockFactory {
 
   object MockRetrieveSavingsConnector {
 
-    def retrieve(requestData: RetrieveSavingsRequest): CallHandler[Future[DownstreamOutcome[RetrieveSavingsResponse]]] = {
+    def retrieve(requestData: RetrieveSavingsRequestData): CallHandler[Future[DownstreamOutcome[RetrieveSavingsResponse]]] = {
       (mockRetrieveSavingsConnector
-        .retrieveSavings(_: RetrieveSavingsRequest)(_: HeaderCarrier, _: ExecutionContext, _: String))
+        .retrieveSavings(_: RetrieveSavingsRequestData)(_: HeaderCarrier, _: ExecutionContext, _: String))
         .expects(requestData, *, *, *)
     }
 
