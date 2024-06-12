@@ -16,10 +16,10 @@
 
 package v1.connectors
 
-import api.connectors.ConnectorSpec
-import api.models.domain.{Nino, TaxYear}
-import api.models.outcomes.ResponseWrapper
-import v1.models.request.amendSavings.{CreateAmendSavingsRequest, CreateAmendSavingsRequestBody}
+import shared.connectors.ConnectorSpec
+import shared.models.domain.{Nino, TaxYear}
+import shared.models.outcomes.ResponseWrapper
+import v1.models.request.amendSavings.{CreateAmendSavingsRequestData, CreateAmendSavingsRequestBody}
 
 import scala.concurrent.Future
 
@@ -51,7 +51,7 @@ class CreateAmendSavingsConnectorSpec extends ConnectorSpec {
 
     val requestBody: CreateAmendSavingsRequestBody = CreateAmendSavingsRequestBody(securities = None, foreignInterest = None)
 
-    val request: CreateAmendSavingsRequest = CreateAmendSavingsRequest(
+    val request: CreateAmendSavingsRequestData = CreateAmendSavingsRequestData(
       nino = Nino(nino),
       taxYear = taxYear,
       body = requestBody

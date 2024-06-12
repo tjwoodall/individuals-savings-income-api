@@ -25,9 +25,9 @@ case class DownstreamCreateAmendUkSavingsAnnualSummaryBody(incomeSourceId: Strin
 object DownstreamCreateAmendUkSavingsAnnualSummaryBody {
   implicit val writes: Writes[DownstreamCreateAmendUkSavingsAnnualSummaryBody] = Json.writes
 
-  def apply(mtdRequest: CreateAmendUkSavingsAnnualSummaryRequest): DownstreamCreateAmendUkSavingsAnnualSummaryBody =
+  def apply(mtdRequest: CreateAmendUkSavingsAnnualSummaryRequestData): DownstreamCreateAmendUkSavingsAnnualSummaryBody =
     DownstreamCreateAmendUkSavingsAnnualSummaryBody(
-      incomeSourceId = mtdRequest.savingsAccountId,
+      incomeSourceId = mtdRequest.savingsAccountId.toString,
       taxedUkInterest = mtdRequest.body.taxedUkInterest,
       untaxedUkInterest = mtdRequest.body.untaxedUkInterest)
 

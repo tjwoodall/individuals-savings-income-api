@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-package v1.models.request.amendSavings
+package api.models.domain
 
-import api.models.request.RawData
-import play.api.mvc.AnyContentAsJson
-
-case class CreateAmendSavingsRawData(nino: String, taxYear: String, body: AnyContentAsJson) extends RawData
+case class AccountName(accountName: String) {
+  override def toString: String = accountName
+}

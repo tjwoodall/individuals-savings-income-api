@@ -16,7 +16,8 @@
 
 package v1.models.request.createAmendUkSavingsAnnualSummary
 
-import api.models.domain.{Nino, TaxYear}
+import api.models.domain.SavingsAccountId
+import shared.models.domain.{Nino, TaxYear}
 import play.api.libs.json.Json
 import support.UnitSpec
 
@@ -41,10 +42,10 @@ class DownstreamCreateAmendUkSavingsAnnualSummaryBodySpec extends UnitSpec {
     "created from an MTD request" must {
       "work" in {
         DownstreamCreateAmendUkSavingsAnnualSummaryBody(
-          CreateAmendUkSavingsAnnualSummaryRequest(
+          CreateAmendUkSavingsAnnualSummaryRequestData(
             Nino("AA121212A"),
             TaxYear.fromMtd("2020-21"),
-            savingsAccountId = "someSavingsAccountId",
+            SavingsAccountId(savingsAccountId = "someSavingsAccountId"),
             body = CreateAmendUkSavingsAnnualSummaryBody(taxedUkInterest = Some(10.12), untaxedUkInterest = Some(11.12))
           )) shouldBe
           DownstreamCreateAmendUkSavingsAnnualSummaryBody(

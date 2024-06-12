@@ -16,9 +16,9 @@
 
 package v1.endpoints
 
-import api.controllers.requestParsers.validators.validations.DecimalValueValidation.ZERO_MINIMUM_INCLUSIVE
-import api.models.errors._
-import api.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
+import api.models.errors.SavingsAccountIdFormatErrorNew
+import shared.models.errors._
+import shared.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status._
@@ -95,12 +95,12 @@ class CreateAmendUkSavingsAnnualSummaryControllerISpec extends IntegrationBaseSp
           }
         }
 
-        val input = Seq(
+        val input: Seq[(String, String, String, JsValue, Int, MtdError)] = Seq(
           ("BAD_NINO", "2020-21", "ABCDE1234567890", requestJson, BAD_REQUEST, NinoFormatError),
           ("AA123456A", "BAD_TAX_YEAR", "ABCDE1234567890", requestJson, BAD_REQUEST, TaxYearFormatError),
           ("AA123456A", "2020-22", "ABCDE1234567890", requestJson, BAD_REQUEST, RuleTaxYearRangeInvalidError),
           ("AA123456A", "2016-17", "ABCDE1234567890", requestJson, BAD_REQUEST, RuleTaxYearNotSupportedError),
-          ("AA123456A", "2016-17", "BAD_ACCT_ID", requestJson, BAD_REQUEST, SavingsAccountIdFormatError),
+          ("AA123456A", "2020-21", "BAD_ACCT_ID", requestJson, BAD_REQUEST, SavingsAccountIdFormatErrorNew),
           ("AA123456A", "2020-21", "ABCDE1234567890", JsObject.empty, BAD_REQUEST, RuleIncorrectOrEmptyBodyError),
           (
             "AA123456A",
@@ -108,8 +108,8 @@ class CreateAmendUkSavingsAnnualSummaryControllerISpec extends IntegrationBaseSp
             "ABCDE1234567890",
             Json.parse("""{ "taxedUkInterest": -10.99 }""".stripMargin),
             BAD_REQUEST,
-            ValueFormatError.copy(message = ZERO_MINIMUM_INCLUSIVE, paths = Some(Seq("/taxedUkInterest"))))
-        )
+            ValueFormatError.withPath("/taxedUkInterest")
+        ))
 
         input.foreach(args => (validationErrorTest _).tupled(args))
       }
@@ -207,7 +207,7 @@ class CreateAmendUkSavingsAnnualSummaryControllerISpec extends IntegrationBaseSp
   private trait TysIfsTest extends Test {
     def taxYear: String           = "2023-24"
     def downstreamTaxYear: String = "23-24"
-    def downstreamUri: String     = s"/income-tax/${downstreamTaxYear}/$nino/income-source/savings/annual"
+    def downstreamUri: String     = s"/income-tax/$downstreamTaxYear/$nino/income-source/savings/annual"
   }
 
   private trait NonTysTest extends Test {

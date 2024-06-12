@@ -16,15 +16,18 @@
 
 package v1.controllers
 
-import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
-import api.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
-import api.models.domain.{Nino, TaxYear}
-import api.models.errors._
-import api.models.outcomes.ResponseWrapper
-import mocks.MockAppConfig
+import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
+import shared.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
+import shared.models.domain.{Nino, TaxYear}
+import shared.models.errors._
+import shared.models.outcomes.ResponseWrapper
+import shared.config.MockAppConfig
 import play.api.libs.json.{JsValue, Json}
-import play.api.mvc.{AnyContentAsJson, Result}
-import v1.mocks.requestParsers.MockCreateCreateAmendSavingsRequestParser
+import play.api.mvc.Result
+import shared.models.audit.GenericAuditDetailFixture.nino
+import shared.models.auth.UserDetails
+import shared.services.MockMtdIdLookupService
+import v1.controllers.validators.mocks.MockCreateAmendSavingsValidatorFactory
 import v1.mocks.services.MockCreateAmendSavingsService
 import v1.models.request.amendSavings._
 
@@ -35,10 +38,12 @@ class CreateAmendSavingsControllerSpec
     extends ControllerBaseSpec
     with ControllerTestRunner
     with MockCreateAmendSavingsService
-    with MockCreateCreateAmendSavingsRequestParser
+    with MockMtdIdLookupService
+    with MockCreateAmendSavingsValidatorFactory
     with MockAppConfig {
 
-  private val taxYear = "2019-20"
+  private val taxYear       = "2019-20"
+  private val mtdId: String = "test-mtd-id"
 
   private val requestBodyJson: JsValue = Json.parse(
     """
@@ -71,12 +76,6 @@ class CreateAmendSavingsControllerSpec
     """.stripMargin
   )
 
-  private val rawData: CreateAmendSavingsRawData = CreateAmendSavingsRawData(
-    nino = nino,
-    taxYear = taxYear,
-    body = AnyContentAsJson(requestBodyJson)
-  )
-
   private val security: AmendSecurities = AmendSecurities(
     taxTakenOff = Some(100.11),
     grossAmount = 200.22,
@@ -94,7 +93,7 @@ class CreateAmendSavingsControllerSpec
     ),
     AmendForeignInterestItem(
       amountBeforeTax = Some(201.11),
-      countryCode = "GER",
+      countryCode = "DEU",
       taxTakenOff = Some(202.22),
       specialWithholdingTax = Some(203.33),
       taxableAmount = 204.44,
@@ -107,7 +106,7 @@ class CreateAmendSavingsControllerSpec
     foreignInterest = Some(foreignInterests)
   )
 
-  private val requestData: CreateAmendSavingsRequest = CreateAmendSavingsRequest(
+  private val requestData: CreateAmendSavingsRequestData = CreateAmendSavingsRequestData(
     nino = Nino(nino),
     taxYear = TaxYear.fromMtd(taxYear),
     body = amendSavingsRequestBody
@@ -116,71 +115,59 @@ class CreateAmendSavingsControllerSpec
   "CreateAmendSavingsController" should {
     "return OK" when {
       "the request received is valid" in new Test {
-        MockCreateAmendSavingsRequestParser
-          .parse(rawData)
-          .returns(Right(requestData))
+        willUseValidator(returningSuccess(requestData))
 
         MockCreateAmendSavingsService
           .createAmendSaving(requestData)
           .returns(Future.successful(Right(ResponseWrapper(correlationId, ()))))
 
-        runOkTestWithAudit(
-          expectedStatus = OK,
-          maybeAuditRequestBody = Some(requestBodyJson),
-          maybeExpectedResponseBody = None,
-          maybeAuditResponseBody = None
-        )
+        runOkTest(expectedStatus = OK)
       }
     }
 
     "return the error as per spec" when {
       "the parser validation fails" in new Test {
-        MockCreateAmendSavingsRequestParser
-          .parse(rawData)
-          .returns(Left(ErrorWrapper(correlationId, NinoFormatError)))
-
-        runErrorTestWithAudit(NinoFormatError, Some(requestBodyJson))
+        willUseValidator(returning(NinoFormatError))
+        runErrorTest(NinoFormatError)
       }
 
       "the service returns an error" in new Test {
-        MockCreateAmendSavingsRequestParser
-          .parse(rawData)
-          .returns(Right(requestData))
+        willUseValidator(returningSuccess(requestData))
 
         MockCreateAmendSavingsService
           .createAmendSaving(requestData)
           .returns(Future.successful(Left(ErrorWrapper(correlationId, RuleTaxYearNotSupportedError))))
 
-        runErrorTestWithAudit(RuleTaxYearNotSupportedError, maybeAuditRequestBody = Some(requestBodyJson))
+        runErrorTest(RuleTaxYearNotSupportedError)
       }
     }
   }
 
-  trait Test extends ControllerTest with AuditEventChecking[GenericAuditDetail] {
+  trait Test extends ControllerTest with AuditEventChecking {
 
     val controller = new CreateAmendSavingsController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
-      parser = mockCreateAmendSavingsRequestParser,
+      validatorFactory = mockCreateAmendSavingsValidatorFactory,
       service = mockCreateAmendSavingsService,
       auditService = mockAuditService,
       cc = cc,
       idGenerator = mockIdGenerator
-    )
+    )(appConfig = mockAppConfig, ec = global)
 
-    protected def callController(): Future[Result] = controller.createAmendSaving(nino, taxYear)(fakePutRequest(requestBodyJson))
+    protected def callController(): Future[Result] = controller.createAmendSavings(nino, taxYear)(fakePostRequest(requestBodyJson))
 
     def event(auditResponse: AuditResponse, requestBody: Option[JsValue]): AuditEvent[GenericAuditDetail] =
       AuditEvent(
         auditType = "CreateAmendSavingsIncome",
         transactionName = "create-amend-savings-income",
         detail = GenericAuditDetail(
-          userType = "Individual",
-          agentReferenceNumber = None,
-          params = Map("nino" -> nino, "taxYear" -> taxYear),
-          request = requestBody,
-          `X-CorrelationId` = correlationId,
-          response = auditResponse
+          UserDetails(mtdId, "Individual", None),
+          "1.0",
+          Map("nino" -> nino, "taxYear" -> taxYear),
+          requestBody,
+          correlationId,
+          auditResponse
         )
       )
 

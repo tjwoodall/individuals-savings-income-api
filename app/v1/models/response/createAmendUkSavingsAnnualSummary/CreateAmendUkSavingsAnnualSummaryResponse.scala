@@ -14,8 +14,12 @@
  * limitations under the License.
  */
 
-package v1.models.request.amendSavings
+package v1.models.response.createAmendUkSavingsAnnualSummary
 
-import api.models.domain.{Nino, TaxYear}
+import play.api.libs.json.{Json, Writes}
 
-case class CreateAmendSavingsRequest(nino: Nino, taxYear: TaxYear, body: CreateAmendSavingsRequestBody)
+case class CreateAmendUkSavingsAnnualSummaryResponse(nino: String, taxYear: String)
+
+object CreateAmendUkSavingsAnnualSummaryResponse {
+  implicit val writes: Writes[CreateAmendUkSavingsAnnualSummaryResponse] = Json.writes[CreateAmendUkSavingsAnnualSummaryResponse]
+}

@@ -16,12 +16,12 @@
 
 package v1.services
 
-import api.controllers.RequestContext
-import api.models.errors._
-import api.services.{BaseService, ServiceOutcome}
+import shared.controllers.RequestContext
+import shared.models.errors._
+import shared.services.{BaseService, ServiceOutcome}
 import cats.implicits._
 import v1.connectors.CreateAmendSavingsConnector
-import v1.models.request.amendSavings.CreateAmendSavingsRequest
+import v1.models.request.amendSavings.CreateAmendSavingsRequestData
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -29,7 +29,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class CreateAmendSavingsService @Inject() (connector: CreateAmendSavingsConnector) extends BaseService {
 
-  def createAmendSaving(request: CreateAmendSavingsRequest)(implicit ctx: RequestContext, ec: ExecutionContext): Future[ServiceOutcome[Unit]] = {
+  def createAmendSaving(request: CreateAmendSavingsRequestData)(implicit ctx: RequestContext, ec: ExecutionContext): Future[ServiceOutcome[Unit]] = {
 
     connector.createAmendSavings(request).map(_.leftMap(mapDownstreamErrors(downstreamErrorMap)))
 

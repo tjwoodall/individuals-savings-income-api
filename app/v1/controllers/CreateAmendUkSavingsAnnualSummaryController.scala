@@ -16,14 +16,14 @@
 
 package v1.controllers
 
-import api.controllers._
-import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
-import config.AppConfig
+import shared.controllers._
+import shared.config.AppConfig
 import play.api.libs.json.JsValue
-import play.api.mvc.{Action, AnyContentAsJson, ControllerComponents}
-import utils.IdGenerator
-import v1.controllers.requestParsers.CreateAmendUkSavingsAccountAnnualSummaryRequestParser
-import v1.models.request.createAmendUkSavingsAnnualSummary.CreateAmendUkSavingsAnnualSummaryRawData
+import play.api.mvc.{Action, ControllerComponents}
+import shared.routing.Version
+import shared.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
+import shared.utils.IdGenerator
+import v1.controllers.validators.CreateAmendUkSavingsAnnualSummaryValidatorFactory
 import v1.services.CreateAmendUkSavingsAnnualSummaryService
 
 import javax.inject.{Inject, Singleton}
@@ -32,12 +32,12 @@ import scala.concurrent.ExecutionContext
 @Singleton
 class CreateAmendUkSavingsAnnualSummaryController @Inject() (val authService: EnrolmentsAuthService,
                                                              val lookupService: MtdIdLookupService,
-                                                             parser: CreateAmendUkSavingsAccountAnnualSummaryRequestParser,
+                                                             validatorFactory: CreateAmendUkSavingsAnnualSummaryValidatorFactory,
                                                              service: CreateAmendUkSavingsAnnualSummaryService,
                                                              auditService: AuditService,
                                                              cc: ControllerComponents,
                                                              val idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: AppConfig)
-    extends AuthorisedController(cc) {
+  extends AuthorisedController(cc) {
 
   implicit val endpointLogContext: EndpointLogContext =
     EndpointLogContext(
@@ -49,27 +49,22 @@ class CreateAmendUkSavingsAnnualSummaryController @Inject() (val authService: En
     authorisedAction(nino).async(parse.json) { implicit request =>
       implicit val ctx: RequestContext = RequestContext.from(idGenerator, endpointLogContext)
 
-      val rawData = CreateAmendUkSavingsAnnualSummaryRawData(
-        nino = nino,
-        taxYear = taxYear,
-        savingsAccountId = savingsAccountId,
-        body = AnyContentAsJson(request.body)
-      )
+      val validator = validatorFactory.validator(nino, taxYear, savingsAccountId, request.body)
 
       val requestHandler = RequestHandler
-        .withParser(parser)
-        .withService(service.createAmend)
-        .withNoContentResult(OK)
-        .withAuditing(AuditHandler.flattenedAuditing(
+        .withValidator(validator)
+        .withService(req => service.createAmend(req))
+        .withAuditing(AuditHandler(
           auditService = auditService,
-          auditType = "createAmendUkSavingsAnnualSummary",
-          transactionName = "create-and-amend-uk-savings-account-annual-summary",
-          params = Map("versionNumber" -> "1.0", "nino" -> nino, "taxYear" -> taxYear, "savingsAccountId" -> savingsAccountId),
+          auditType = "CreateAmendUkSavingsAnnualSummary",
+          transactionName = "create-amend-uk-savings-annual-summary",
+          params = Map("nino" -> nino, "taxYear" -> taxYear),
           requestBody = Some(request.body),
-          includeResponse = true
+          includeResponse = true,
+          apiVersion = Version(request)
         ))
+        .withNoContentResult(OK)
 
-      requestHandler.handleRequest(rawData)
+      requestHandler.handleRequest()
     }
-
 }

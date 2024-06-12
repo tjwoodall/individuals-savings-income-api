@@ -3,7 +3,7 @@ GET         /uk-accounts/:nino                                       v1.controll
 POST        /uk-accounts/:nino                                       v1.controllers.AddUkSavingsAccountController.addUkSavingsAccount(nino: String)
 
 # Additional Income endpoints
-PUT        /other/:nino/:taxYear                                          v1.controllers.CreateAmendSavingsController.createAmendSaving(nino: String, taxYear: String)
+PUT        /other/:nino/:taxYear                                          v1.controllers.CreateAmendSavingsController.createAmendSavings(nino: String, taxYear: String)
 DELETE     /other/:nino/:taxYear                                          v1.controllers.DeleteSavingsController.deleteSaving(nino: String, taxYear: String)
 GET        /other/:nino/:taxYear                                          v1.controllers.RetrieveSavingsController.retrieveSaving(nino: String, taxYear: String)
 

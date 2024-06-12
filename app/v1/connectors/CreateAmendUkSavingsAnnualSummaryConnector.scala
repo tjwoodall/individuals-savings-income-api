@@ -16,10 +16,11 @@
 
 package v1.connectors
 
-import api.connectors.DownstreamUri.{DesUri, IfsUri, TaxYearSpecificIfsUri}
-import api.connectors.{BaseDownstreamConnector, DownstreamOutcome}
-import api.models.domain.{Nino, TaxYear}
-import config.AppConfig
+import config.FeatureSwitches
+import shared.connectors.DownstreamUri.{DesUri, IfsUri, TaxYearSpecificIfsUri}
+import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome}
+import shared.models.domain.{Nino, TaxYear}
+import shared.config.AppConfig
 import play.api.http.Status
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import v1.models.request.createAmendUkSavingsAnnualSummary.DownstreamCreateAmendUkSavingsAnnualSummaryBody
@@ -28,25 +29,29 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class CreateAmendUkSavingsAnnualSummaryConnector @Inject() (val http: HttpClient, val appConfig: AppConfig) extends BaseDownstreamConnector {
+class CreateAmendUkSavingsAnnualSummaryConnector @Inject() (val http: HttpClient, val appConfig: AppConfig)
+  (implicit featureSwitches: FeatureSwitches)
+  extends BaseDownstreamConnector {
 
   def createOrAmendUKSavingsAccountSummary(nino: Nino, taxYear: TaxYear, body: DownstreamCreateAmendUkSavingsAnnualSummaryBody)(implicit
-      hc: HeaderCarrier,
-      cc: ExecutionContext,
-      correlationId: String): Future[DownstreamOutcome[Unit]] = {
+                                                                                                                                hc: HeaderCarrier,
+                                                                                                                                cc: ExecutionContext,
+                                                                                                                                correlationId: String): Future[DownstreamOutcome[Unit]] = {
 
-    import api.connectors.httpparsers.StandardDownstreamHttpParser._
+    import shared.connectors.httpparsers.StandardDownstreamHttpParser._
 
     implicit val successCode: SuccessCode = SuccessCode(Status.OK)
+
+    val path = s"income-tax/nino/${nino.nino}/income-source/savings/annual/${taxYear.asDownstream}"
 
     val downstreamUri =
       if (taxYear.useTaxYearSpecificApi) {
         TaxYearSpecificIfsUri[Unit](s"income-tax/${taxYear.asTysDownstream}/$nino/income-source/savings/annual")
-      } else{
-        val path = s"income-tax/nino/${nino.nino}/income-source/savings/annual/${taxYear.asDownstream}"
-        if (featureSwitches.isDesIf_MigrationEnabled) IfsUri[Unit](path) else DesUri[Unit](path)
+      } else if (featureSwitches.isDesIf_MigrationEnabled) {
+        IfsUri[Unit](path)
+      } else {
+        DesUri[Unit](path)
       }
-
     post(
       uri = downstreamUri,
       body = body

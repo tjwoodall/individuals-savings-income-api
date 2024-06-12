@@ -16,8 +16,8 @@
 
 package v1.endpoints
 
-import api.models.errors
-import api.models.errors._
+import shared.models.errors
+import shared.models.errors._
 import api.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
@@ -111,24 +111,24 @@ class CreateAmendSavingsControllerISpec extends IntegrationBaseSpec {
             message = "The value must be between 0 and 99999999999.99",
             paths = Some(
               List(
-                "/securities/taxTakenOff",
                 "/securities/grossAmount",
+                "/securities/taxTakenOff",
                 "/securities/netAmount",
+                "/foreignInterest/0/taxableAmount",
                 "/foreignInterest/0/amountBeforeTax",
                 "/foreignInterest/0/taxTakenOff",
                 "/foreignInterest/0/specialWithholdingTax",
-                "/foreignInterest/0/taxableAmount",
+                "/foreignInterest/1/taxableAmount",
                 "/foreignInterest/1/amountBeforeTax",
                 "/foreignInterest/1/taxTakenOff",
                 "/foreignInterest/1/specialWithholdingTax",
-                "/foreignInterest/1/taxableAmount",
+                "/foreignInterest/2/taxableAmount",
                 "/foreignInterest/2/amountBeforeTax",
                 "/foreignInterest/2/taxTakenOff",
-                "/foreignInterest/2/specialWithholdingTax",
-                "/foreignInterest/2/taxableAmount"
+                "/foreignInterest/2/specialWithholdingTax"
               ))
           ),
-          CountryCodeRuleError.copy(
+          RuleCountryCodeError.copy(
             paths = Some(
               List(
                 "/foreignInterest/2/countryCode"
@@ -272,7 +272,7 @@ class CreateAmendSavingsControllerISpec extends IntegrationBaseSpec {
           ))
       )
 
-      val countryCodeRuleError: MtdError = CountryCodeRuleError.copy(
+      val countryCodeRuleError: MtdError = RuleCountryCodeError.copy(
         paths = Some(
           Seq(
             "/foreignInterest/0/countryCode",
@@ -314,17 +314,17 @@ class CreateAmendSavingsControllerISpec extends IntegrationBaseSpec {
         message = "The value must be between 0 and 99999999999.99",
         paths = Some(
           List(
-            "/securities/taxTakenOff",
             "/securities/grossAmount",
+            "/securities/taxTakenOff",
             "/securities/netAmount",
+            "/foreignInterest/0/taxableAmount",
             "/foreignInterest/0/amountBeforeTax",
             "/foreignInterest/0/taxTakenOff",
             "/foreignInterest/0/specialWithholdingTax",
-            "/foreignInterest/0/taxableAmount",
+            "/foreignInterest/1/taxableAmount",
             "/foreignInterest/1/amountBeforeTax",
             "/foreignInterest/1/taxTakenOff",
-            "/foreignInterest/1/specialWithholdingTax",
-            "/foreignInterest/1/taxableAmount"
+            "/foreignInterest/1/specialWithholdingTax"
           ))
       )
 
@@ -365,7 +365,7 @@ class CreateAmendSavingsControllerISpec extends IntegrationBaseSpec {
           ("AA1123A", "2019-20", validRequestBodyJson, BAD_REQUEST, NinoFormatError, None),
           ("AA123456A", "20177", validRequestBodyJson, BAD_REQUEST, TaxYearFormatError, None),
           ("AA123456A", "2015-17", validRequestBodyJson, BAD_REQUEST, RuleTaxYearRangeInvalidError, None),
-          ("AA123456A", "2018-19", validRequestBodyJson, BAD_REQUEST, RuleTaxYearNotSupportedError, None),
+          ("AA123456A", "2016-17", validRequestBodyJson, BAD_REQUEST, RuleTaxYearNotSupportedError, None),
           ("AA123456A", "2019-20", invalidCountryCodeRequestBodyJson, BAD_REQUEST, countryCodeError, None),
           ("AA123456A", "2019-20", ruleCountryCodeRequestBodyJson, BAD_REQUEST, countryCodeRuleError, None),
           ("AA123456A", "2019-20", nonsenseRequestBody, BAD_REQUEST, RuleIncorrectOrEmptyBodyError, None),

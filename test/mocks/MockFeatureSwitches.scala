@@ -14,23 +14,19 @@
  * limitations under the License.
  */
 
-package v1.mocks.requestParsers
+package mocks
 
-import api.models.errors.ErrorWrapper
+import config.FeatureSwitches
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
-import v1.controllers.requestParsers.CreateAmendSavingsRequestParser
-import v1.models.request.amendSavings.{CreateAmendSavingsRawData, CreateAmendSavingsRequest}
 
-trait MockCreateCreateAmendSavingsRequestParser extends MockFactory {
+trait MockFeatureSwitches extends MockFactory {
 
-  val mockCreateAmendSavingsRequestParser: CreateAmendSavingsRequestParser = mock[CreateAmendSavingsRequestParser]
+  implicit val mockFeatureSwitches: FeatureSwitches = mock[FeatureSwitches]
 
-  object MockCreateAmendSavingsRequestParser {
-
-    def parse(data: CreateAmendSavingsRawData): CallHandler[Either[ErrorWrapper, CreateAmendSavingsRequest]] = {
-      (mockCreateAmendSavingsRequestParser.parseRequest(_: CreateAmendSavingsRawData)(_: String)).expects(data, *)
-    }
+  object MockFeatureSwitches {
+    def isDesIf_MigrationEnabled: CallHandler[Boolean] =
+      (() => mockFeatureSwitches.isDesIf_MigrationEnabled).expects()
 
   }
 

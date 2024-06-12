@@ -16,14 +16,14 @@
 
 package v1.controllers
 
-import api.controllers._
-import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
-import config.AppConfig
 import play.api.libs.json.JsValue
-import play.api.mvc.{Action, AnyContentAsJson, ControllerComponents}
-import utils.IdGenerator
-import v1.controllers.requestParsers.CreateAmendSavingsRequestParser
-import v1.models.request.amendSavings.CreateAmendSavingsRawData
+import play.api.mvc.{Action, ControllerComponents}
+import shared.config.AppConfig
+import shared.controllers._
+import shared.routing.Version
+import shared.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
+import shared.utils.{IdGenerator, Logging}
+import v1.controllers.validators.CreateAmendSavingsValidatorFactory
 import v1.services.CreateAmendSavingsService
 
 import javax.inject.{Inject, Singleton}
@@ -32,43 +32,38 @@ import scala.concurrent.ExecutionContext
 @Singleton
 class CreateAmendSavingsController @Inject() (val authService: EnrolmentsAuthService,
                                               val lookupService: MtdIdLookupService,
-                                              parser: CreateAmendSavingsRequestParser,
+                                              validatorFactory: CreateAmendSavingsValidatorFactory,
                                               service: CreateAmendSavingsService,
                                               auditService: AuditService,
                                               cc: ControllerComponents,
                                               val idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: AppConfig)
-    extends AuthorisedController(cc) {
+    extends AuthorisedController(cc)
+    with Logging {
 
   implicit val endpointLogContext: EndpointLogContext =
-    EndpointLogContext(
-      controllerName = "CreateAmendSavingsController",
-      endpointName = "createAmendSaving"
-    )
+    EndpointLogContext(controllerName = "TriggerBsasController", endpointName = "triggerBsas")
 
-  def createAmendSaving(nino: String, taxYear: String): Action[JsValue] =
+  def createAmendSavings(nino: String, taxYear: String): Action[JsValue] =
     authorisedAction(nino).async(parse.json) { implicit request =>
       implicit val ctx: RequestContext = RequestContext.from(idGenerator, endpointLogContext)
 
-      val rawData: CreateAmendSavingsRawData = CreateAmendSavingsRawData(
-        nino = nino,
-        taxYear = taxYear,
-        body = AnyContentAsJson(request.body)
-      )
+      val validator = validatorFactory.validator(nino, taxYear, request.body)
 
-      val requestHandler = RequestHandler
-        .withParser(parser)
-        .withService(service.createAmendSaving)
-        .withNoContentResult(OK)
-        .withAuditing(AuditHandler(
-          auditService = auditService,
-          auditType = "CreateAmendSavingsIncome",
-          transactionName = "create-amend-savings-income",
-          params = Map("nino" -> nino, "taxYear" -> taxYear),
-          requestBody = Some(request.body),
-          includeResponse = true
-        ))
+      val requestHandler =
+        RequestHandler
+          .withValidator(validator)
+          .withService(req => service.createAmendSaving(req))
+          .withAuditing(AuditHandler(
+            auditService = auditService,
+            auditType = "CreateAmendSavings",
+            transactionName = "create-amend-savings",
+            params = Map("nino" -> nino, "taxYear" -> taxYear),
+            requestBody = Some(request.body),
+            includeResponse = true,
+            apiVersion = Version(request)
+          ))
+          .withNoContentResult(OK)
 
-      requestHandler.handleRequest(rawData)
+      requestHandler.handleRequest()
     }
-
 }

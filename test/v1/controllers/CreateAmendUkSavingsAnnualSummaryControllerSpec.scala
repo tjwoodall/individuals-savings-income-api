@@ -16,17 +16,20 @@
 
 package v1.controllers
 
-import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
-import api.mocks.services.MockAuditService
-import api.models.audit.{AuditEvent, AuditResponse, FlattenedGenericAuditDetail}
-import api.models.auth.UserDetails
-import api.models.domain.{Nino, TaxYear}
-import api.models.errors._
-import api.models.outcomes.ResponseWrapper
-import mocks.MockAppConfig
+import api.models.domain.SavingsAccountId
+import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
+import shared.services.{MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService}
+import shared.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
+import shared.models.auth.UserDetails
+import shared.models.domain.{Nino, TaxYear}
+import shared.models.errors._
+import shared.models.outcomes.ResponseWrapper
+import shared.config.MockAppConfig
 import play.api.libs.json.{JsObject, JsValue}
-import play.api.mvc.{AnyContentAsJson, Result}
-import v1.mocks.requestParsers.MockCreateAmendUkSavingsAnnualSummaryRequestParser
+import play.api.mvc.Result
+import shared.models.audit.GenericAuditDetailFixture.nino
+import shared.utils.MockIdGenerator
+import v1.controllers.validators.mocks.MockCreateAmendUkSavingsAnnualSummaryValidatorFactory
 import v1.mocks.services.MockCreateAmendUkSavingsAnnualSummaryService
 import v1.models.request.createAmendUkSavingsAnnualSummary._
 
@@ -35,11 +38,14 @@ import scala.concurrent.Future
 
 class CreateAmendUkSavingsAnnualSummaryControllerSpec
     extends ControllerBaseSpec
-    with ControllerTestRunner
-    with MockCreateAmendUkSavingsAnnualSummaryService
-    with MockCreateAmendUkSavingsAnnualSummaryRequestParser
-    with MockAuditService
-    with MockAppConfig{
+      with ControllerTestRunner
+      with MockEnrolmentsAuthService
+      with MockMtdIdLookupService
+      with MockCreateAmendUkSavingsAnnualSummaryValidatorFactory
+      with MockCreateAmendUkSavingsAnnualSummaryService
+      with MockIdGenerator
+      with MockAuditService
+      with MockAppConfig {
 
   val taxYear: String          = "2019-20"
   val savingsAccountId: String = "acctId"
@@ -47,26 +53,17 @@ class CreateAmendUkSavingsAnnualSummaryControllerSpec
 
   val requestJson: JsObject = JsObject.empty
 
-  val rawData: CreateAmendUkSavingsAnnualSummaryRawData = CreateAmendUkSavingsAnnualSummaryRawData(
-    nino = nino,
-    taxYear = taxYear,
-    savingsAccountId = savingsAccountId,
-    body = AnyContentAsJson.apply(requestJson)
-  )
-
-  val requestData: CreateAmendUkSavingsAnnualSummaryRequest = CreateAmendUkSavingsAnnualSummaryRequest(
+  val requestData: CreateAmendUkSavingsAnnualSummaryRequestData = CreateAmendUkSavingsAnnualSummaryRequestData(
     nino = Nino(nino),
     taxYear = TaxYear.fromMtd(taxYear),
-    savingsAccountId = savingsAccountId,
+    savingsAccountId = SavingsAccountId(savingsAccountId),
     body = CreateAmendUkSavingsAnnualSummaryBody(None, None)
   )
 
   "CreateAmendUkSavingsAnnualSummaryController" should {
     "return OK" when {
       "happy path" in new Test {
-        MockCreateAmendUkSavingsAnnualSummaryRequestParser
-          .parse(rawData)
-          .returns(Right(requestData))
+        willUseValidator(returningSuccess(requestData))
 
         MockCreateAmendAmendUkSavingsAnnualSummaryService
           .createOrAmendAnnualSummary(requestData)
@@ -78,17 +75,12 @@ class CreateAmendUkSavingsAnnualSummaryControllerSpec
 
     "return the error as per spec" when {
       "the parser validation fails" in new Test {
-        MockCreateAmendUkSavingsAnnualSummaryRequestParser
-          .parse(rawData)
-          .returns(Left(ErrorWrapper(correlationId, NinoFormatError, None)))
-
+        willUseValidator(returning(NinoFormatError))
         runErrorTest(NinoFormatError)
       }
 
       "the service returns an error" in new Test {
-        MockCreateAmendUkSavingsAnnualSummaryRequestParser
-          .parse(rawData)
-          .returns(Right(requestData))
+        willUseValidator(returningSuccess(requestData))
 
         MockCreateAmendAmendUkSavingsAnnualSummaryService
           .createOrAmendAnnualSummary(requestData)
@@ -99,32 +91,32 @@ class CreateAmendUkSavingsAnnualSummaryControllerSpec
     }
   }
 
-  trait Test extends ControllerTest with AuditEventChecking[FlattenedGenericAuditDetail] {
+  trait Test extends ControllerTest with AuditEventChecking {
 
     val controller = new CreateAmendUkSavingsAnnualSummaryController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
-      parser = mockCreateAmendUkSavingsAnnualSummaryRequestParser,
+      validatorFactory = mockCreateAmendUkSavingsAnnualSummaryValidatorFactory,
       service = mockCreateAmendUkSavingsAnnualSummaryService,
       auditService = mockAuditService,
       cc = cc,
       idGenerator = mockIdGenerator
-    )
+    )(appConfig = mockAppConfig, ec = global)
 
     protected def callController(): Future[Result] =
       controller.createAmendUkSavingsAnnualSummary(nino, taxYear, savingsAccountId)(fakePostRequest(requestJson))
 
-    def event(auditResponse: AuditResponse, requestBody: Option[JsValue]): AuditEvent[FlattenedGenericAuditDetail] = {
+    def event(auditResponse: AuditResponse, requestBody: Option[JsValue]): AuditEvent[GenericAuditDetail] = {
       AuditEvent(
         auditType = "createAmendUkSavingsAnnualSummary",
         transactionName = "create-and-amend-uk-savings-account-annual-summary",
-        detail = FlattenedGenericAuditDetail(
-          versionNumber = Some("2.0"),
-          userDetails = UserDetails(mtdId, "Individual", None),
-          params = Map("nino" -> nino, "taxYear" -> taxYear, "savingsAccountId" -> savingsAccountId),
-          request = requestBody,
-          `X-CorrelationId` = correlationId,
-          auditResponse = auditResponse
+        detail = GenericAuditDetail(
+          UserDetails(mtdId, "Individual", None),
+          "2.0",
+          Map("nino" -> nino, "taxYear" -> taxYear, "savingsAccountId" -> savingsAccountId),
+          requestBody,
+          correlationId,
+          auditResponse
         )
       )
     }
