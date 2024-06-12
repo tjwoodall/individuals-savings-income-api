@@ -16,10 +16,10 @@
 
 package v1.connectors
 
-import api.connectors.ConnectorSpec
-import api.models.domain.{Nino, TaxYear}
-import api.models.outcomes.ResponseWrapper
-import v1.models.request.deleteSavings.DeleteSavingsRequest
+import shared.connectors.ConnectorSpec
+import shared.models.domain.{Nino, TaxYear}
+import shared.models.outcomes.ResponseWrapper
+import v1.models.request.deleteSavings.DeleteSavingsRequestData
 
 import scala.concurrent.Future
 
@@ -61,7 +61,7 @@ class DeleteSavingsConnectorSpec extends ConnectorSpec {
       appConfig = mockAppConfig
     )
 
-    lazy val request: DeleteSavingsRequest = DeleteSavingsRequest(Nino("AA111111A"), TaxYear.fromMtd(taxYear))
+    lazy val request: DeleteSavingsRequestData = DeleteSavingsRequestData(Nino("AA111111A"), TaxYear.fromMtd(taxYear))
   }
 
 }

@@ -16,18 +16,17 @@
 
 package v1.controllers
 
-import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
-import api.models.audit._
-import api.models.auth.UserDetails
-import api.models.domain.Nino
-import api.models.errors._
-import api.models.outcomes.ResponseWrapper
-import mocks.MockAppConfig
 import play.api.libs.json.{JsValue, Json}
-import play.api.mvc.{AnyContentAsJson, Result}
-import v1.mocks.requestParsers.MockAddUkSavingsAccountRequestParser
+import play.api.mvc.Result
+import shared.config.MockAppConfig
+import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
+import shared.models.audit._
+import shared.models.domain.Nino
+import shared.models.errors._
+import shared.models.outcomes.ResponseWrapper
 import v1.mocks.services.MockAddUkSavingsAccountService
-import v1.models.request.addUkSavingsAccount.{AddUkSavingsAccountRawData, AddUkSavingsAccountRequest, AddUkSavingsAccountRequestBody}
+import v1.mocks.validators.MockAddUkSavingsAccountValidatorFactory
+import v1.models.request.addUkSavingsAccount.{AddUkSavingsAccountRequestBody, AddUkSavingsAccountRequestData}
 import v1.models.response.addUkSavingsAccount.AddUkSavingsAccountResponse
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -38,7 +37,7 @@ class AddUkSavingsAccountControllerSpec
     with ControllerTestRunner
     with MockAppConfig
     with MockAddUkSavingsAccountService
-    with MockAddUkSavingsAccountRequestParser {
+    with MockAddUkSavingsAccountValidatorFactory {
 
   val savingsAccountId: String = "SAVKB2UVwUTBQGJ"
   val mtdId: String            = "test-mtd-id"
@@ -46,10 +45,8 @@ class AddUkSavingsAccountControllerSpec
   "AddUkSavingsAccountController" should {
     "return OK" when {
       "happy path" in new Test {
-
-        MockAddUkSavingsAccountRequestParser
-          .parse(rawData)
-          .returns(Right(requestData))
+        MockAppConfig.apiGatewayContext.returns("individuals/savings-income").anyNumberOfTimes()
+        willUseValidator(returningSuccess(requestData))
 
         MockAddUkSavingsAccountService
           .addUkSavingsAccountService(requestData)
@@ -59,19 +56,14 @@ class AddUkSavingsAccountControllerSpec
       }
     }
     "return the error as per spec" when {
-
       "the parser validation fails" in new Test {
-        MockAddUkSavingsAccountRequestParser
-          .parse(rawData)
-          .returns(Left(ErrorWrapper(correlationId, NinoFormatError, None)))
-
+        willUseValidator(returning(NinoFormatError))
         runErrorTest(NinoFormatError)
       }
 
       "the service returns an error" in new Test {
-        MockAddUkSavingsAccountRequestParser
-          .parse(rawData)
-          .returns(Right(requestData))
+        MockAppConfig.apiGatewayContext.returns("individuals/savings-income").anyNumberOfTimes()
+        willUseValidator(returningSuccess(requestData))
 
         MockAddUkSavingsAccountService
           .addUkSavingsAccountService(requestData)
@@ -82,35 +74,34 @@ class AddUkSavingsAccountControllerSpec
     }
   }
 
-  trait Test extends ControllerTest with AuditEventChecking[FlattenedGenericAuditDetail] {
+  trait Test extends ControllerTest with AuditEventChecking {
 
     private val controller = new AddUkSavingsAccountController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
-      parser = mockAddUkSavingsAccountRequestParser,
+      validatorFactory = mockAddUkSavingsAccountValidatorFactory,
       service = mockAddUkSavingsAccountService,
       auditService = mockAuditService,
       cc = cc,
       idGenerator = mockIdGenerator
     )
 
-    protected def callController(): Future[Result] = controller.addUkSavingsAccount(nino)(fakePostRequest(requestBodyJson))
+    protected def callController(): Future[Result] = controller.addUkSavingsAccount(validNino)(fakePostRequest(requestBodyJson))
 
-    protected def event(auditResponse: AuditResponse, maybeRequestBody: Option[JsValue]): AuditEvent[FlattenedGenericAuditDetail] =
+    protected def event(auditResponse: AuditResponse, maybeRequestBody: Option[JsValue]): AuditEvent[GenericAuditDetail] =
       AuditEvent(
         auditType = "AddUkSavingsAccount",
         transactionName = "add-uk-savings-account",
-        detail = FlattenedGenericAuditDetail(
-          versionNumber = Some("2.0"),
-          userDetails = UserDetails(mtdId, "Individual", None),
-          params = Map("nino" -> nino),
-          request = maybeRequestBody,
+        detail = GenericAuditDetail(
+          userType = "Individual",
+          agentReferenceNumber = None,
+          versionNumber = "1.0",
+          params = Map("nino" -> validNino),
+          requestBody = maybeRequestBody,
           `X-CorrelationId` = correlationId,
           auditResponse = auditResponse
         )
       )
-
-    MockedAppConfig.apiGatewayContext.returns("individuals/savings-income").anyNumberOfTimes()
 
     val requestBodyJson: JsValue = Json.parse("""
       |{
@@ -118,13 +109,8 @@ class AddUkSavingsAccountControllerSpec
       |}
       |""".stripMargin)
 
-    val rawData: AddUkSavingsAccountRawData = AddUkSavingsAccountRawData(
-      nino = nino,
-      body = AnyContentAsJson(requestBodyJson)
-    )
-
-    val requestData: AddUkSavingsAccountRequest = AddUkSavingsAccountRequest(
-      nino = Nino(nino),
+    val requestData: AddUkSavingsAccountRequestData = AddUkSavingsAccountRequestData(
+      nino = Nino(validNino),
       body = AddUkSavingsAccountRequestBody("Shares savings account")
     )
 

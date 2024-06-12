@@ -16,11 +16,12 @@
 
 package v1.connectors
 
-import api.connectors.DownstreamUri.DesUri
-import api.connectors.{BaseDownstreamConnector, DownstreamOutcome}
-import config.AppConfig
+import shared.config.AppConfig
+import shared.connectors.DownstreamUri.DesUri
+import shared.connectors.httpparsers.StandardDownstreamHttpParser.reads
+import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
-import v1.models.request.addUkSavingsAccount.AddUkSavingsAccountRequest
+import v1.models.request.addUkSavingsAccount.AddUkSavingsAccountRequestData
 import v1.models.response.addUkSavingsAccount.AddUkSavingsAccountResponse
 
 import javax.inject.{Inject, Singleton}
@@ -29,19 +30,16 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class AddUkSavingsAccountConnector @Inject() (val http: HttpClient, val appConfig: AppConfig) extends BaseDownstreamConnector {
 
-  def addSavings(request: AddUkSavingsAccountRequest)(implicit
+  def addSavings(request: AddUkSavingsAccountRequestData)(implicit
       hc: HeaderCarrier,
       ec: ExecutionContext,
       correlationId: String): Future[DownstreamOutcome[AddUkSavingsAccountResponse]] = {
 
-    import api.connectors.httpparsers.StandardDownstreamHttpParser._
+    import request._
 
-    val nino = request.nino.nino
+    val downstreamUri = DesUri[AddUkSavingsAccountResponse](s"income-tax/income-sources/nino/$nino")
 
-    post(
-      uri = DesUri[AddUkSavingsAccountResponse](s"income-tax/income-sources/nino/$nino"),
-      body = request.body
-    )
+    post(body, downstreamUri)
   }
 
 }

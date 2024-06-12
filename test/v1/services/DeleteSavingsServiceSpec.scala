@@ -16,13 +16,13 @@
 
 package v1.services
 
-import api.controllers.EndpointLogContext
-import api.models.domain.{Nino, TaxYear}
-import api.models.errors._
-import api.models.outcomes.ResponseWrapper
-import api.services.ServiceSpec
+import shared.controllers.EndpointLogContext
+import shared.models.domain.{Nino, TaxYear}
+import shared.models.errors._
+import shared.models.outcomes.ResponseWrapper
+import shared.services.ServiceSpec
 import v1.mocks.connectors.MockDeleteSavingsConnector
-import v1.models.request.deleteSavings.DeleteSavingsRequest
+import v1.models.request.deleteSavings.DeleteSavingsRequestData
 
 import scala.concurrent.Future
 
@@ -76,7 +76,7 @@ class DeleteSavingsServiceSpec extends ServiceSpec {
     private val nino    = Nino("AA112233A")
     private val taxYear = TaxYear.fromMtd("2021-22")
 
-    val request: DeleteSavingsRequest = DeleteSavingsRequest(
+    val request: DeleteSavingsRequestData = DeleteSavingsRequestData(
       nino = nino,
       taxYear = taxYear
     )

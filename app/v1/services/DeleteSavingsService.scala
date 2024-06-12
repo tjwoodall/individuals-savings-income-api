@@ -16,12 +16,12 @@
 
 package v1.services
 
-import api.controllers.RequestContext
-import api.models.errors._
-import api.services.{BaseService, ServiceOutcome}
 import cats.implicits._
+import shared.controllers.RequestContext
+import shared.models.errors._
+import shared.services.{BaseService, ServiceOutcome}
 import v1.connectors.DeleteSavingsConnector
-import v1.models.request.deleteSavings.DeleteSavingsRequest
+import v1.models.request.deleteSavings.DeleteSavingsRequestData
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -29,7 +29,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class DeleteSavingsService @Inject() (connector: DeleteSavingsConnector) extends BaseService {
 
-  def deleteSavings(request: DeleteSavingsRequest)(implicit ctx: RequestContext, ec: ExecutionContext): Future[ServiceOutcome[Unit]] = {
+  def deleteSavings(request: DeleteSavingsRequestData)(implicit ctx: RequestContext, ec: ExecutionContext): Future[ServiceOutcome[Unit]] = {
 
     connector.deleteSavings(request).map(_.leftMap(mapDownstreamErrors(downstreamErrorMap)))
   }

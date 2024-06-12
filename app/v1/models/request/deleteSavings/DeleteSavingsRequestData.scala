@@ -16,6 +16,7 @@
 
 package v1.models.request.deleteSavings
 
-import api.models.request.RawData
+import shared.models.domain.{Nino, TaxYear}
 
-case class DeleteSavingsRawData(nino: String, taxYear: String) extends RawData
+
+case class DeleteSavingsRequestData(nino: Nino, taxYear: TaxYear)

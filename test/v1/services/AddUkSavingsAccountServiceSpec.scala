@@ -16,13 +16,13 @@
 
 package v1.services
 
-import api.controllers.EndpointLogContext
-import api.models.domain.Nino
-import api.models.errors._
-import api.models.outcomes.ResponseWrapper
-import api.services.ServiceSpec
+import shared.controllers.EndpointLogContext
+import shared.models.domain.Nino
+import shared.models.errors._
+import shared.models.outcomes.ResponseWrapper
+import shared.services.ServiceSpec
 import v1.mocks.connectors.MockAddUkSavingsAccountConnector
-import v1.models.request.addUkSavingsAccount.{AddUkSavingsAccountRequest, AddUkSavingsAccountRequestBody}
+import v1.models.request.addUkSavingsAccount.{AddUkSavingsAccountRequestBody, AddUkSavingsAccountRequestData}
 import v1.models.response.addUkSavingsAccount.AddUkSavingsAccountResponse
 
 import scala.concurrent.Future
@@ -32,7 +32,7 @@ class AddUkSavingsAccountServiceSpec extends ServiceSpec {
   private val nino                                                   = "AA112233A"
   val addUkSavingsAccountRequestBody: AddUkSavingsAccountRequestBody = AddUkSavingsAccountRequestBody(accountName = "Shares savings account")
 
-  val addUkSavingsAccountRequest: AddUkSavingsAccountRequest = AddUkSavingsAccountRequest(
+  val addUkSavingsAccountRequest: AddUkSavingsAccountRequestData = AddUkSavingsAccountRequestData(
     nino = Nino(nino),
     body = addUkSavingsAccountRequestBody
   )

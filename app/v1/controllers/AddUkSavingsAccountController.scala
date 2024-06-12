@@ -16,14 +16,14 @@
 
 package v1.controllers
 
-import api.controllers._
-import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
-import config.AppConfig
 import play.api.libs.json.JsValue
-import play.api.mvc.{Action, AnyContentAsJson, ControllerComponents}
-import utils.IdGenerator
-import v1.controllers.requestParsers.AddUkSavingsAccountRequestParser
-import v1.models.request.addUkSavingsAccount.AddUkSavingsAccountRawData
+import play.api.mvc.{Action, ControllerComponents}
+import shared.config.AppConfig
+import shared.controllers._
+import shared.routing.Version
+import shared.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
+import shared.utils.IdGenerator
+import v1.controllers.requestParsers.validators.AddUkSavingsAccountValidatorFactory
 import v1.services.AddUkSavingsAccountService
 
 import javax.inject.{Inject, Singleton}
@@ -32,7 +32,7 @@ import scala.concurrent.ExecutionContext
 @Singleton
 class AddUkSavingsAccountController @Inject() (val authService: EnrolmentsAuthService,
                                                val lookupService: MtdIdLookupService,
-                                               parser: AddUkSavingsAccountRequestParser,
+                                               validatorFactory: AddUkSavingsAccountValidatorFactory,
                                                service: AddUkSavingsAccountService,
                                                auditService: AuditService,
                                                cc: ControllerComponents,
@@ -49,23 +49,23 @@ class AddUkSavingsAccountController @Inject() (val authService: EnrolmentsAuthSe
     authorisedAction(nino).async(parse.json) { implicit request: UserRequest[JsValue] =>
       implicit val ctx: RequestContext = RequestContext.from(idGenerator, endpointLogContext)
 
-      val rawData: AddUkSavingsAccountRawData = AddUkSavingsAccountRawData(nino = nino, body = AnyContentAsJson(request.body))
+      val validator = validatorFactory.validator(nino, request.body)
 
-      val requestHandler =
-        RequestHandler
-          .withParser(parser)
-          .withService(service.addSavings)
-          .withAuditing(AuditHandler.flattenedAuditing(
-            auditService = auditService,
-            auditType = "AddUkSavingsAccount",
-            transactionName = "add-uk-savings-account",
-            params = Map("versionNumber" -> "1.0", "nino" -> nino),
-            requestBody = Some(request.body),
-            includeResponse = true
-          ))
-          .withPlainJsonResult()
+      val requestHandler = RequestHandler
+        .withValidator(validator)
+        .withService(service.addSavings)
+        .withPlainJsonResult()
+        .withAuditing(AuditHandler(
+          auditService = auditService,
+          auditType = "AddUkSavingsAccount",
+          transactionName = "add-uk-savings-account",
+          apiVersion = Version(request),
+          params = Map("versionNumber" -> "1.0", "nino" -> nino),
+          requestBody = Some(request.body),
+          includeResponse = true
+        ))
 
-      requestHandler.handleRequest(rawData)
+      requestHandler.handleRequest()
     }
 
 }

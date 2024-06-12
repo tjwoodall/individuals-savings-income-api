@@ -16,7 +16,6 @@
 
 package v1.models.request.addUkSavingsAccount
 
-import api.models.request.RawData
-import play.api.mvc.AnyContentAsJson
+import shared.models.domain.Nino
 
-case class AddUkSavingsAccountRawData(nino: String, body: AnyContentAsJson) extends RawData
+case class AddUkSavingsAccountRequestData(nino: Nino, body: AddUkSavingsAccountRequestBody)

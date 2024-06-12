@@ -16,13 +16,13 @@
 
 package v1.endpoints
 
-import api.models.errors._
-import api.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.Status._
 import play.api.libs.json.{JsObject, JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.{ACCEPT, AUTHORIZATION}
+import shared.models.errors.{AccountNameFormatError, _}
+import shared.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 import support.IntegrationBaseSpec
 
 class AddUkSavingsAccountControllerISpec extends IntegrationBaseSpec {
@@ -115,6 +115,7 @@ class AddUkSavingsAccountControllerISpec extends IntegrationBaseSpec {
             override val taxYear: String          = requestTaxYear
             override val requestBodyJson: JsValue = requestBody
 
+
             override def setupStubs(): StubMapping = {
               AuditStub.audit()
               AuthStub.authorised()
@@ -127,10 +128,13 @@ class AddUkSavingsAccountControllerISpec extends IntegrationBaseSpec {
           }
         }
 
+        val accountNameError: MtdError = AccountNameFormatError.copy(
+          paths = Some(List("/accountName"))
+        )
         val input = List(
           ("AA1123A", "2019-20", validRequestJson, BAD_REQUEST, NinoFormatError, None),
           ("AA123456A", "2019-20", emptyRequestJson, BAD_REQUEST, RuleIncorrectOrEmptyBodyError, None),
-          ("AA123456A", "2019-20", nonValidRequestBodyJson, BAD_REQUEST, AccountNameFormatError, None)
+          ("AA123456A", "2019-20", nonValidRequestBodyJson, BAD_REQUEST, accountNameError, None)
         )
         input.foreach(args => (validationErrorTest _).tupled(args))
       }

@@ -16,13 +16,12 @@
 
 package v1.connectors
 
-import api.connectors.ConnectorSpec
-import api.mocks.MockHttpClient
-import api.models.domain.Nino
-import api.models.outcomes.ResponseWrapper
-import mocks.MockAppConfig
-import uk.gov.hmrc.http.HeaderCarrier
-import v1.models.request.addUkSavingsAccount.{AddUkSavingsAccountRequest, AddUkSavingsAccountRequestBody}
+import shared.config.MockAppConfig
+import shared.connectors.ConnectorSpec
+import shared.mocks.MockHttpClient
+import shared.models.domain.Nino
+import shared.models.outcomes.ResponseWrapper
+import v1.models.request.addUkSavingsAccount.{AddUkSavingsAccountRequestBody, AddUkSavingsAccountRequestData}
 import v1.models.response.addUkSavingsAccount.AddUkSavingsAccountResponse
 
 import scala.concurrent.Future
@@ -33,7 +32,7 @@ class AddUkSavingsAccountConnectorSpec extends ConnectorSpec {
 
   val addUkSavingsAccountRequestBody: AddUkSavingsAccountRequestBody = AddUkSavingsAccountRequestBody(accountName = "Shares savings account")
 
-  val addUkSavingsAccountRequest: AddUkSavingsAccountRequest = AddUkSavingsAccountRequest(
+  val addUkSavingsAccountRequest: AddUkSavingsAccountRequestData = AddUkSavingsAccountRequestData(
     nino = Nino(nino),
     body = addUkSavingsAccountRequestBody
   )
@@ -42,35 +41,25 @@ class AddUkSavingsAccountConnectorSpec extends ConnectorSpec {
     savingsAccountId = "SAVKB2UVwUTBQGJ"
   )
 
-  class Test extends MockHttpClient with MockAppConfig {
+  trait Test extends MockHttpClient with MockAppConfig {
 
     val connector: AddUkSavingsAccountConnector = new AddUkSavingsAccountConnector(
       http = mockHttpClient,
       appConfig = mockAppConfig
     )
 
-    MockedAppConfig.desBaseUrl returns baseUrl
-    MockedAppConfig.desToken returns "des-token"
-    MockedAppConfig.desEnvironment returns "des-environment"
-    MockedAppConfig.desEnvironmentHeaders returns Some(allowedDesHeaders)
+    MockAppConfig.desBaseUrl returns baseUrl
+    MockAppConfig.desToken returns "des-token"
+    MockAppConfig.desEnvironment returns "des-environment"
+    MockAppConfig.desEnvironmentHeaders returns Some(allowedDesHeaders)
   }
 
-  "addSavings" should {
-    "return a 200 status for a success scenario" when {
-      "valid request is supplied" in new Test {
-        val outcome                                       = Right(ResponseWrapper(correlationId, addUkSavingsAccountResponse))
-        implicit val hc: HeaderCarrier                    = HeaderCarrier(otherHeaders = otherHeaders ++ Seq("Content-Type" -> "application/json"))
-        val requiredDesHeadersPost: Seq[(String, String)] = requiredDesHeaders ++ Seq("Content-Type" -> "application/json")
+  "addSavingsConnector" when {
+    "addSavings" must {
+      "return a 200 status for a success scenario" in new DesTest with Test {
+        val outcome = Right(ResponseWrapper(correlationId, addUkSavingsAccountResponse))
 
-        MockedHttpClient
-          .post(
-            url = s"$baseUrl/income-tax/income-sources/nino/$nino",
-            config = dummyDesHeaderCarrierConfig,
-            body = addUkSavingsAccountRequestBody,
-            requiredHeaders = requiredDesHeadersPost,
-            excludedHeaders = Seq("AnotherHeader" -> "HeaderValue")
-          )
-          .returns(Future.successful(outcome))
+        willPost(s"$baseUrl/income-tax/income-sources/nino/$nino", addUkSavingsAccountRequestBody).returns(Future.successful(outcome))
 
         await(connector.addSavings(addUkSavingsAccountRequest)) shouldBe outcome
       }

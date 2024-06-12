@@ -16,12 +16,12 @@
 
 package v1.mocks.connectors
 
-import api.connectors.DownstreamOutcome
+import shared.connectors.DownstreamOutcome
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier
 import v1.connectors.AddUkSavingsAccountConnector
-import v1.models.request.addUkSavingsAccount.AddUkSavingsAccountRequest
+import v1.models.request.addUkSavingsAccount.AddUkSavingsAccountRequestData
 import v1.models.response.addUkSavingsAccount.AddUkSavingsAccountResponse
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -32,9 +32,9 @@ trait MockAddUkSavingsAccountConnector extends MockFactory {
 
   object MockAddUkSavingsAccountConnector {
 
-    def addSavings(requestData: AddUkSavingsAccountRequest): CallHandler[Future[DownstreamOutcome[AddUkSavingsAccountResponse]]] = {
+    def addSavings(requestData: AddUkSavingsAccountRequestData): CallHandler[Future[DownstreamOutcome[AddUkSavingsAccountResponse]]] = {
       (mockAddUkSavingsAccountConnector
-        .addSavings(_: AddUkSavingsAccountRequest)(_: HeaderCarrier, _: ExecutionContext, _: String))
+        .addSavings(_: AddUkSavingsAccountRequestData)(_: HeaderCarrier, _: ExecutionContext, _: String))
         .expects(requestData, *, *, *)
     }
 

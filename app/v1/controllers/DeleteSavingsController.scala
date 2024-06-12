@@ -16,13 +16,13 @@
 
 package v1.controllers
 
-import api.controllers._
-import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
-import config.AppConfig
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
-import utils.IdGenerator
-import v1.controllers.requestParsers.DeleteSavingsRequestParser
-import v1.models.request.deleteSavings.DeleteSavingsRawData
+import shared.config.AppConfig
+import shared.controllers._
+import shared.routing.Version
+import shared.services._
+import shared.utils.IdGenerator
+import v1.controllers.requestParsers.validators.DeleteSavingsValidatorFactory
 import v1.services.DeleteSavingsService
 
 import javax.inject.{Inject, Singleton}
@@ -31,7 +31,7 @@ import scala.concurrent.ExecutionContext
 @Singleton
 class DeleteSavingsController @Inject() (val authService: EnrolmentsAuthService,
                                          val lookupService: MtdIdLookupService,
-                                         parser: DeleteSavingsRequestParser,
+                                         validatorFactory: DeleteSavingsValidatorFactory,
                                          service: DeleteSavingsService,
                                          auditService: AuditService,
                                          cc: ControllerComponents,
@@ -48,21 +48,22 @@ class DeleteSavingsController @Inject() (val authService: EnrolmentsAuthService,
     authorisedAction(nino).async { implicit request =>
       implicit val ctx: RequestContext = RequestContext.from(idGenerator, endpointLogContext)
 
-      val rawData: DeleteSavingsRawData = DeleteSavingsRawData(nino = nino, taxYear = taxYear)
+      val validator = validatorFactory.validator(nino, taxYear)
 
       val requestHandler = RequestHandler
-        .withParser(parser)
+        .withValidator(validator)
         .withService(service.deleteSavings)
         .withNoContentResult()
         .withAuditing(
           AuditHandler(
             auditService,
             auditType = "DeleteSavingsIncome",
+            apiVersion = Version(request),
             transactionName = "delete-savings-income",
             params = Map("nino" -> nino, "taxYear" -> taxYear)
           )
         )
-      requestHandler.handleRequest(rawData)
+      requestHandler.handleRequest()
     }
 
 }

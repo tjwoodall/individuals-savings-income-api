@@ -16,12 +16,12 @@
 
 package v1.services
 
-import api.controllers.RequestContext
-import api.models.errors._
-import api.services.{BaseService, ServiceOutcome}
+import shared.controllers.RequestContext
+import shared.services.{BaseService, ServiceOutcome}
 import cats.implicits._
+import shared.models.errors._
 import v1.connectors.AddUkSavingsAccountConnector
-import v1.models.request.addUkSavingsAccount.AddUkSavingsAccountRequest
+import v1.models.request.addUkSavingsAccount.AddUkSavingsAccountRequestData
 import v1.models.response.addUkSavingsAccount.AddUkSavingsAccountResponse
 
 import javax.inject.{Inject, Singleton}
@@ -30,9 +30,9 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class AddUkSavingsAccountService @Inject() (connector: AddUkSavingsAccountConnector) extends BaseService {
 
-  def addSavings(request: AddUkSavingsAccountRequest)(implicit
-      ctx: RequestContext,
-      ec: ExecutionContext): Future[ServiceOutcome[AddUkSavingsAccountResponse]] = {
+  def addSavings(request: AddUkSavingsAccountRequestData)(implicit
+                                                          ctx: RequestContext,
+                                                          ec: ExecutionContext): Future[ServiceOutcome[AddUkSavingsAccountResponse]] = {
 
     connector.addSavings(request).map(_.leftMap(mapDownstreamErrors(downstreamErrorMap)))
   }

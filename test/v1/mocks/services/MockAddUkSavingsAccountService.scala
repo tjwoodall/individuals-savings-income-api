@@ -16,11 +16,11 @@
 
 package v1.mocks.services
 
-import api.controllers.RequestContext
-import api.services.ServiceOutcome
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
-import v1.models.request.addUkSavingsAccount.AddUkSavingsAccountRequest
+import shared.controllers.RequestContext
+import shared.services.ServiceOutcome
+import v1.models.request.addUkSavingsAccount.AddUkSavingsAccountRequestData
 import v1.models.response.addUkSavingsAccount.AddUkSavingsAccountResponse
 import v1.services.AddUkSavingsAccountService
 
@@ -32,9 +32,9 @@ trait MockAddUkSavingsAccountService extends MockFactory {
 
   object MockAddUkSavingsAccountService {
 
-    def addUkSavingsAccountService(requestData: AddUkSavingsAccountRequest): CallHandler[Future[ServiceOutcome[AddUkSavingsAccountResponse]]] = {
+    def addUkSavingsAccountService(requestData: AddUkSavingsAccountRequestData): CallHandler[Future[ServiceOutcome[AddUkSavingsAccountResponse]]] = {
       (mockAddUkSavingsAccountService
-        .addSavings(_: AddUkSavingsAccountRequest)(_: RequestContext, _: ExecutionContext))
+        .addSavings(_: AddUkSavingsAccountRequestData)(_: RequestContext, _: ExecutionContext))
         .expects(requestData, *, *)
     }
 
