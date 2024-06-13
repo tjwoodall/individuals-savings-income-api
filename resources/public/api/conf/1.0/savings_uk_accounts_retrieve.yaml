@@ -1,4 +1,4 @@
-summary: Retrieve UK Savings Account Annual Summary [test only]
+summary: Retrieve UK Savings Account Annual Summary
 description: |
   This endpoint enables you to retrieve a UK savings account annual summary for a tax year.
   Use it to get the annual savings interest for a previously added savings account.

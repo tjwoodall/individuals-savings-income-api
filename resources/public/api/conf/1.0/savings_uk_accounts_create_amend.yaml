@@ -1,4 +1,4 @@
-summary: Create and Amend a UK Savings Account Annual Summary [test only]
+summary: Create and Amend a UK Savings Account Annual Summary
 description: |
   This endpoint enables you to create and amend a UK savings account annual summary for a tax year.
   This enables supplying savings interest for a previously added savings account.

@@ -35,8 +35,6 @@ object AppDependencies {
   def test(scope: String = "test, it"): Seq[sbt.ModuleID] = Seq(
     "org.scalatest"       %% "scalatest"              % "3.2.18"             % scope,
     "org.scalatestplus"   %% "scalacheck-1-15"        % "3.2.11.0"           % scope,
-    "com.vladsch.flexmark" % "flexmark-all"           % "0.64.8"             % scope,
-    "org.scalacheck"      %% "scalacheck"             % "1.17.0"             % scope,
     "org.scalamock"       %% "scalamock"              % "5.2.0"              % scope,
     "org.playframework"   %% "play-test"              % PlayVersion.current  % scope,
     "uk.gov.hmrc"         %% "bootstrap-test-play-30" % bootstrap_30_version % scope,

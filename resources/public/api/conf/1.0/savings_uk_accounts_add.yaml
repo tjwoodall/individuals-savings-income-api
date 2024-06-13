@@ -1,4 +1,4 @@
-summary: Add a UK Savings Account [test only]
+summary: Add a UK Savings Account
 description: |
   This endpoint allows a developer to add a UK savings account.
   Interest income data can then be recorded against that savings account using the Amend a UK savings account annual summary endpoint.
