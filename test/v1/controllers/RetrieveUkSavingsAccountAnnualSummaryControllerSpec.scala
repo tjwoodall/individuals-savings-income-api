@@ -18,6 +18,7 @@ package v1.controllers
 
 
 
+import models.domain.SavingsAccountId
 import play.api.mvc.Result
 import shared.config.MockAppConfig
 import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
@@ -50,7 +51,7 @@ class RetrieveUkSavingsAccountAnnualSummaryControllerSpec
   private val requestData: RetrieveUkSavingsAnnualSummaryRequestData = RetrieveUkSavingsAnnualSummaryRequestData(
     nino = Nino(nino),
     taxYear = TaxYear.fromMtd(taxYear),
-    savingsAccountId = savingsAccountId
+    savingsAccountId = SavingsAccountId(savingsAccountId)
   )
 
   private val retrieveUkSavingsAnnualSummaryResponse: RetrieveUkSavingsAnnualSummaryResponse = new RetrieveUkSavingsAnnualSummaryResponse(

@@ -16,7 +16,7 @@
 
 package v1.models.response.retrieveUkSavingsAnnualSummary
 
-import support.UnitSpec
+import shared.UnitSpec
 
 class DownstreamUkSavingsAnnualIncomeItemSpec extends UnitSpec {
 

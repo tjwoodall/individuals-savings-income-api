@@ -18,6 +18,7 @@ package v1.connectors
 
 
 import mocks.MockFeatureSwitches
+import models.domain.SavingsAccountId
 import shared.connectors.ConnectorSpec
 import shared.models.domain.{Nino, TaxYear}
 import shared.models.outcomes.ResponseWrapper
@@ -40,7 +41,7 @@ class RetrieveUkSavingsAccountAnnualSummaryConnectorSpec extends ConnectorSpec w
       RetrieveUkSavingsAnnualSummaryRequestData(
         Nino(nino),
         taxYear,
-        incomeSourceId
+        SavingsAccountId(incomeSourceId)
       )
 
     val response: DownstreamUkSavingsAnnualIncomeResponse = DownstreamUkSavingsAnnualIncomeResponse(

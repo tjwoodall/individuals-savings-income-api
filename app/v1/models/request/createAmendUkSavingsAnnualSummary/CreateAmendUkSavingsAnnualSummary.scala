@@ -16,13 +16,9 @@
 
 package v1.models.request.createAmendUkSavingsAnnualSummary
 
-import api.models.domain.SavingsAccountId
+import models.domain.SavingsAccountId
 import shared.models.domain.{Nino, TaxYear}
-import api.models.request.RawData
 import play.api.libs.json.{Json, OFormat}
-import play.api.mvc.AnyContentAsJson
-
-case class CreateAmendUkSavingsAnnualSummaryRawData(nino: String, taxYear: String, savingsAccountId: String, body: AnyContentAsJson) extends RawData
 
 case class CreateAmendUkSavingsAnnualSummaryBody(taxedUkInterest: Option[BigDecimal], untaxedUkInterest: Option[BigDecimal])
 

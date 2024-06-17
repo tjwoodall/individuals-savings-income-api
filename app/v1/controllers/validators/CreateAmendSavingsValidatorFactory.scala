@@ -22,15 +22,16 @@ import shared.models.domain.TaxYear
 import shared.models.errors.MtdError
 import cats.data.Validated
 import cats.implicits._
+import config.SavingsAppConfig
 import play.api.libs.json.JsValue
 import v1.controllers.validators.CreateAmendSavingsRulesValidator.validateBusinessRules
-import v1.models.request.amendSavings.{CreateAmendSavingsRequestData, CreateAmendSavingsRequestBody}
+import v1.models.request.amendSavings.{CreateAmendSavingsRequestBody, CreateAmendSavingsRequestData}
 
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class CreateAmendSavingsValidatorFactory @Inject(){
-  private lazy val minimumTaxYear = 2019
+class CreateAmendSavingsValidatorFactory @Inject() (savingsAppConfig: SavingsAppConfig) {
+  private lazy val minimumTaxYear = savingsAppConfig.minimumPermittedTaxYear
   private lazy val resolveTaxYear = ResolveTaxYearMinimum(TaxYear.fromDownstreamInt(minimumTaxYear))
   private val resolveJson         = new ResolveNonEmptyJsonObject[CreateAmendSavingsRequestBody]()
 

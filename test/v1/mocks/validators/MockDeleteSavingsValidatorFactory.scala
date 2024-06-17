@@ -22,7 +22,7 @@ import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import shared.controllers.validators.Validator
 import shared.models.errors.MtdError
-import v1.controllers.requestParsers.validators.DeleteSavingsValidatorFactory
+import v1.controllers.validators.DeleteSavingsValidatorFactory
 import v1.models.request.deleteSavings.DeleteSavingsRequestData
 
 trait MockDeleteSavingsValidatorFactory extends MockFactory {

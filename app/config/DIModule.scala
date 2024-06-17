@@ -17,11 +17,16 @@
 package config
 
 import com.google.inject.AbstractModule
+import definition.SavingsApiDefinitionFactory
+import routing.SavingsVersionRoutingMapImpl
+import shared.definition.ApiDefinitionFactory
+import shared.routing.VersionRoutingMap
 
 class DIModule extends AbstractModule {
 
   override def configure(): Unit = {
-    bind(classOf[AppConfig]).to(classOf[AppConfigImpl]).asEagerSingleton()
+    bind(classOf[ApiDefinitionFactory]).to(classOf[SavingsApiDefinitionFactory]).asEagerSingleton()
+    bind(classOf[VersionRoutingMap]).to(classOf[SavingsVersionRoutingMapImpl]).asEagerSingleton()
   }
 
 }

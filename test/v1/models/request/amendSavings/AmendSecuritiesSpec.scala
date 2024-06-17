@@ -17,7 +17,7 @@
 package v1.models.request.amendSavings
 
 import play.api.libs.json.{JsError, JsValue, Json}
-import support.UnitSpec
+import shared.UnitSpec
 
 class AmendSecuritiesSpec extends UnitSpec {
 

@@ -16,10 +16,10 @@
 
 package v1.models.request.createAmendUkSavingsAnnualSummary
 
-import api.models.domain.SavingsAccountId
+import models.domain.SavingsAccountId
 import shared.models.domain.{Nino, TaxYear}
 import play.api.libs.json.Json
-import support.UnitSpec
+import shared.UnitSpec
 
 class DownstreamCreateAmendUkSavingsAnnualSummaryBodySpec extends UnitSpec {
 

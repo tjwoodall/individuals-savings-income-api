@@ -23,7 +23,7 @@ import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import shared.controllers.validators.Validator
 import shared.models.errors.MtdError
-import v1.controllers.requestParsers.validators.RetrieveUkSavingsAccountValidatorFactory
+import v1.controllers.validators.RetrieveUkSavingsAccountValidatorFactory
 import v1.models.request.retrieveUkSavingsAnnualSummary.RetrieveUkSavingsAnnualSummaryRequestData
 
 trait MockRetrieveUkSavingsAccountValidatorFactory extends MockFactory {

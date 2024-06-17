@@ -18,6 +18,7 @@ package config
 
 import com.google.inject.ImplementedBy
 import play.api.Configuration
+import shared.config.AppConfig
 
 import javax.inject.{Inject, Singleton}
 
@@ -30,7 +31,7 @@ trait FeatureSwitches {
 class FeatureSwitchesImpl(featureSwitchConfig: Configuration) extends FeatureSwitches {
 
   @Inject
-  def this(appConfig: AppConfig) = this(appConfig.featureSwitches)
+  def this(appConfig: AppConfig) = this(appConfig.featureSwitchConfig)
   val isDesIf_MigrationEnabled: Boolean  = isEnabled("desIf_Migration.enabled")
 
   private def isEnabled(key: String): Boolean = featureSwitchConfig.getOptional[Boolean](key).getOrElse(true)

@@ -22,7 +22,7 @@ import shared.controllers._
 import shared.routing.Version
 import shared.services._
 import shared.utils.IdGenerator
-import v1.controllers.requestParsers.validators.DeleteSavingsValidatorFactory
+import v1.controllers.validators.DeleteSavingsValidatorFactory
 import v1.services.DeleteSavingsService
 
 import javax.inject.{Inject, Singleton}

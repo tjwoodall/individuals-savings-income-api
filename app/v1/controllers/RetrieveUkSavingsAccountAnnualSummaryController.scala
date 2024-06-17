@@ -21,7 +21,7 @@ import shared.config.AppConfig
 import shared.controllers.{AuthorisedController, EndpointLogContext, RequestContext, RequestHandler}
 import shared.services.{EnrolmentsAuthService, MtdIdLookupService}
 import shared.utils.IdGenerator
-import v1.controllers.requestParsers.validators.RetrieveUkSavingsAccountValidatorFactory
+import v1.controllers.validators.RetrieveUkSavingsAccountValidatorFactory
 import v1.services.RetrieveUkSavingsAccountAnnualSummaryService
 
 import javax.inject.{Inject, Singleton}

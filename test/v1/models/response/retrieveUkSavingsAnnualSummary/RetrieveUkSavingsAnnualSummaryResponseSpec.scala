@@ -16,11 +16,10 @@
 
 package v1.models.response.retrieveUkSavingsAnnualSummary
 
-import mocks.MockAppConfig
 import play.api.libs.json.Json
-import support.UnitSpec
+import shared.UnitSpec
 
-class RetrieveUkSavingsAnnualSummaryResponseSpec extends UnitSpec with MockAppConfig {
+class RetrieveUkSavingsAnnualSummaryResponseSpec extends UnitSpec {
 
   "writes" must {
     "write as MTD JSON" in {

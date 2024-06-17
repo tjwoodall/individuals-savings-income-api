@@ -27,8 +27,8 @@ import play.api.mvc.Result
 import shared.models.audit.GenericAuditDetailFixture.nino
 import shared.models.auth.UserDetails
 import shared.services.MockMtdIdLookupService
-import v1.controllers.validators.mocks.MockCreateAmendSavingsValidatorFactory
 import v1.mocks.services.MockCreateAmendSavingsService
+import v1.mocks.validators.MockCreateAmendSavingsValidatorFactory
 import v1.models.request.amendSavings._
 
 import scala.concurrent.ExecutionContext.Implicits.global

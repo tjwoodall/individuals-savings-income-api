@@ -23,7 +23,7 @@ import shared.controllers._
 import shared.routing.Version
 import shared.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
 import shared.utils.IdGenerator
-import v1.controllers.requestParsers.validators.AddUkSavingsAccountValidatorFactory
+import v1.controllers.validators.AddUkSavingsAccountValidatorFactory
 import v1.services.AddUkSavingsAccountService
 
 import javax.inject.{Inject, Singleton}

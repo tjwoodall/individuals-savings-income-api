@@ -16,22 +16,23 @@
 
 package v1.controllers.validators
 
-import api.controllers.validators.resolvers.ResolveSavingsAccountId
 import shared.controllers.validators.Validator
 import shared.controllers.validators.resolvers.{ResolveNino, ResolveNonEmptyJsonObject, ResolveTaxYearMinimum}
 import shared.models.domain.TaxYear
 import shared.models.errors.MtdError
 import cats.data.Validated
 import cats.implicits._
+import config.SavingsAppConfig
 import play.api.libs.json.JsValue
+import resolvers.ResolveSavingsAccountId
 import v1.controllers.validators.CreateAmendUkSavingsAnnualRulesValidator.validateBusinessRules
 import v1.models.request.createAmendUkSavingsAnnualSummary.{CreateAmendUkSavingsAnnualSummaryBody, CreateAmendUkSavingsAnnualSummaryRequestData}
 
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class CreateAmendUkSavingsAnnualSummaryValidatorFactory @Inject() {
-  private lazy val minimumTaxYear = 2019
+class CreateAmendUkSavingsAnnualSummaryValidatorFactory @Inject() (savingsAppConfig: SavingsAppConfig){
+  private lazy val minimumTaxYear = savingsAppConfig.ukSavingsAccountAnnualSummaryMinimumTaxYear
   private lazy val resolveTaxYear = ResolveTaxYearMinimum(TaxYear.fromDownstreamInt(minimumTaxYear))
   private val resolveJson         = new ResolveNonEmptyJsonObject[CreateAmendUkSavingsAnnualSummaryBody]()
 

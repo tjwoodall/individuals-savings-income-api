@@ -16,6 +16,7 @@
 
 package v1.connectors
 
+import models.domain.SavingsAccountId
 import shared.config.MockAppConfig
 import shared.connectors.{ConnectorSpec, DownstreamOutcome}
 import shared.models.domain.{Nino, TaxYear}
@@ -29,7 +30,7 @@ class ListUkSavingsAccountsConnectorSpec extends ConnectorSpec with MockAppConfi
 
   val nino: String     = "AA111111A"
   val taxYear: String  = "2019"
-  val savingsAccountId = "SAVKB2UVwUTBQGJ"
+  val savingsAccountId = SavingsAccountId("SAVKB2UVwUTBQGJ")
 
   val request: ListUkSavingsAccountsRequestData                     = ListUkSavingsAccountsRequestData(Nino(nino), None)
   val requestWithSavingsAccountId: ListUkSavingsAccountsRequestData = ListUkSavingsAccountsRequestData(Nino(nino), Some(savingsAccountId))
@@ -85,7 +86,7 @@ class ListUkSavingsAccountsConnectorSpec extends ConnectorSpec with MockAppConfi
 
         willGet(
           url = s"$baseUrl/income-tax/income-sources/nino/${this.nino}",
-          parameters = Seq("incomeSourceType" -> "interest-from-uk-banks", "incomeSourceId" -> savingsAccountId)
+          parameters = Seq("incomeSourceType" -> "interest-from-uk-banks", "incomeSourceId" -> savingsAccountId.toString)
         ).returns(Future.successful(outcome))
 
         val result: DownstreamOutcome[ListUkSavingsAccountsResponse[UkSavingsAccount]] = await(connector.listUkSavingsAccounts(requestWithSavingsAccountId))

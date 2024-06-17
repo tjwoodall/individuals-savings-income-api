@@ -16,6 +16,7 @@
 
 package v1.controllers
 
+import models.domain.SavingsAccountId
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
 import shared.config.MockAppConfig
@@ -39,7 +40,7 @@ class ListUkSavingsAccountsControllerSpec
     with MockAppConfig {
 
   val nino: String = "AA123456A"
-  val savingsAccountId: String = "SAVKB2UVwUTBQGJ"
+  val savingsAccountId: SavingsAccountId = SavingsAccountId("SAVKB2UVwUTBQGJ")
 
   val requestData: ListUkSavingsAccountsRequestData = ListUkSavingsAccountsRequestData(
     nino = Nino(nino),
@@ -120,7 +121,7 @@ class ListUkSavingsAccountsControllerSpec
       idGenerator = mockIdGenerator
     )
 
-    protected def callController(): Future[Result] = controller.listUkSavingsAccounts(nino, Some(savingsAccountId))(fakeGetRequest)
+    protected def callController(): Future[Result] = controller.listUkSavingsAccounts(nino, Some(savingsAccountId.toString))(fakeGetRequest)
   }
 
 }

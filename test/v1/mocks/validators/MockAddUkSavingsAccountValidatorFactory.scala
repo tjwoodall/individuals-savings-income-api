@@ -23,7 +23,7 @@ import org.scalamock.scalatest.MockFactory
 import play.api.libs.json.JsValue
 import shared.controllers.validators.Validator
 import shared.models.errors.MtdError
-import v1.controllers.requestParsers.validators.AddUkSavingsAccountValidatorFactory
+import v1.controllers.validators.AddUkSavingsAccountValidatorFactory
 import v1.models.request.addUkSavingsAccount.AddUkSavingsAccountRequestData
 
 trait MockAddUkSavingsAccountValidatorFactory extends MockFactory {

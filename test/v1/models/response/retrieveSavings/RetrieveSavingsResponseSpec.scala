@@ -18,7 +18,7 @@ package v1.models.response.retrieveSavings
 
 import play.api.libs.json.{JsError, JsValue, Json}
 import shared.models.domain.Timestamp
-import support.UnitSpec
+import shared.UnitSpec
 
 class RetrieveSavingsResponseSpec extends UnitSpec {
 

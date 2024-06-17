@@ -17,7 +17,7 @@
 package v1.models.response.retrieveUkSavingsAnnualSummary
 
 import play.api.libs.json.Json
-import support.UnitSpec
+import shared.UnitSpec
 
 class DownstreamUkSavingsAnnualIncomeResponseSpec extends UnitSpec {
 

@@ -16,7 +16,7 @@
 
 package v1.controllers
 
-import api.models.domain.SavingsAccountId
+import models.domain.SavingsAccountId
 import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import shared.services.{MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService}
 import shared.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
@@ -29,8 +29,8 @@ import play.api.libs.json.{JsObject, JsValue}
 import play.api.mvc.Result
 import shared.models.audit.GenericAuditDetailFixture.nino
 import shared.utils.MockIdGenerator
-import v1.controllers.validators.mocks.MockCreateAmendUkSavingsAnnualSummaryValidatorFactory
 import v1.mocks.services.MockCreateAmendUkSavingsAnnualSummaryService
+import v1.mocks.validators.MockCreateAmendUkSavingsAnnualSummaryValidatorFactory
 import v1.models.request.createAmendUkSavingsAnnualSummary._
 
 import scala.concurrent.ExecutionContext.Implicits.global

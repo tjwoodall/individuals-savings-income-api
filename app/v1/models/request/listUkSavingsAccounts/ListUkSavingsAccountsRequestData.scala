@@ -16,6 +16,7 @@
 
 package v1.models.request.listUkSavingsAccounts
 
+import models.domain.SavingsAccountId
 import shared.models.domain.Nino
 
-case class ListUkSavingsAccountsRequestData(nino: Nino, savingsAccountId: Option[String])
+case class ListUkSavingsAccountsRequestData(nino: Nino, savingsAccountId: Option[SavingsAccountId])

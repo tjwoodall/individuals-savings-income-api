@@ -22,6 +22,7 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.{WSClient, WSRequest, WSResponse}
 import play.api.{Application, Environment, Mode}
+import shared.UnitSpec
 
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter

@@ -16,10 +16,10 @@
 
 package v1.endpoints
 
-import api.models.errors.SavingsAccountIdFormatErrorNew
 import shared.models.errors._
 import shared.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
+import models.errors.SavingsAccountIdFormatErrorNew
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status._
 import play.api.libs.json.{JsObject, JsValue, Json}

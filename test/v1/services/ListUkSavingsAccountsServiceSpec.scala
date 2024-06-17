@@ -17,6 +17,7 @@
 package v1.services
 
 
+import models.domain.SavingsAccountId
 import shared.controllers.EndpointLogContext
 import shared.models.domain.Nino
 import shared.models.errors._
@@ -31,7 +32,7 @@ import scala.concurrent.Future
 class ListUkSavingsAccountsServiceSpec extends ServiceSpec {
 
   private val nino             = "AA112233A"
-  private val savingsAccountId = "SAVKB2UVwUTBQGJ"
+  private val savingsAccountId = SavingsAccountId("SAVKB2UVwUTBQGJ")
 
   private val requestData = ListUkSavingsAccountsRequestData(Nino(nino), Some(savingsAccountId))
 

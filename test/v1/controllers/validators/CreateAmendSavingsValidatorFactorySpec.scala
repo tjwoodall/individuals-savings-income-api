@@ -16,14 +16,15 @@
 
 package v1.controllers.validators
 
-import shared.config.MockAppConfig
+import config.SavingsAppConfig
+import mocks.MockSavingsAppConfig
 import shared.models.domain.{Nino, TaxYear}
 import shared.models.errors._
 import play.api.libs.json.{JsValue, Json}
-import support.UnitSpec
+import shared.UnitSpec
 import v1.models.request.amendSavings.{CreateAmendSavingsRequestBody, CreateAmendSavingsRequestData}
 
-class CreateAmendSavingsValidatorFactorySpec extends UnitSpec with MockAppConfig {
+class CreateAmendSavingsValidatorFactorySpec extends UnitSpec with MockSavingsAppConfig{
 
   private implicit val correlationId: String = "1234"
 
@@ -133,7 +134,9 @@ class CreateAmendSavingsValidatorFactorySpec extends UnitSpec with MockAppConfig
   private val parsedTaxYear = TaxYear.fromMtd(validTaxYear)
   private val parsedBody    = validRequestBodyJson.as[CreateAmendSavingsRequestBody]
 
-  val validatorFactory = new CreateAmendSavingsValidatorFactory
+  implicit val savingsAppConfig: SavingsAppConfig = mockSavingsAppConfig
+
+  val validatorFactory = new CreateAmendSavingsValidatorFactory(savingsAppConfig)
 
   private def validator(nino: String, taxYear: String, body: JsValue) =
     validatorFactory.validator(nino, taxYear, body)

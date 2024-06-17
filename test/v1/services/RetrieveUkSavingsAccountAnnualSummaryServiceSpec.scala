@@ -17,6 +17,7 @@
 package v1.services
 
 
+import models.domain.SavingsAccountId
 import shared.controllers.EndpointLogContext
 import shared.models.domain.{Nino, TaxYear}
 import shared.models.errors._
@@ -32,7 +33,7 @@ class RetrieveUkSavingsAccountAnnualSummaryServiceSpec extends ServiceSpec {
 
   private val nino           = "AA112233A"
   private val taxYear        = "2019-20"
-  private val incomeSourceId = "SAVKB2UVwUTBQGJ"
+  private val incomeSourceId = SavingsAccountId("SAVKB2UVwUTBQGJ")
 
   private val request = RetrieveUkSavingsAnnualSummaryRequestData(Nino(nino), TaxYear.fromMtd(taxYear), incomeSourceId)
 

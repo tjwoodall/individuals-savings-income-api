@@ -16,7 +16,7 @@
 
 package v1.services
 
-import api.models.domain.SavingsAccountId
+import models.domain.SavingsAccountId
 import shared.controllers.EndpointLogContext
 import shared.models.domain.{Nino, TaxYear}
 import shared.models.errors._

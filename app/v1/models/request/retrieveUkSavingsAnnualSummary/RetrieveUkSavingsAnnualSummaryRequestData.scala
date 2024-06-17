@@ -16,5 +16,6 @@
 
 package v1.models.request.retrieveUkSavingsAnnualSummary
 
+import models.domain.SavingsAccountId
 import shared.models.domain.{Nino, TaxYear}
-case class RetrieveUkSavingsAnnualSummaryRequestData(nino: Nino, taxYear: TaxYear, savingsAccountId: String)
+case class RetrieveUkSavingsAnnualSummaryRequestData(nino: Nino, taxYear: TaxYear, savingsAccountId: SavingsAccountId)
