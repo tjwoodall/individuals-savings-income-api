@@ -12,7 +12,7 @@ description: |
   | -------------------------------- | ---------------------------------------------- |
   | N/A - DEFAULT                    | Simulates success response.                    |
   | NOT_FOUND                        | Simulates the scenario where no data is found. |
-  | STATEFUL                         | Performs a stateful create or update.          |
+  | STATEFUL                         | Performs a stateful create or update.  <br/><br/> Use the savingsAccountId of a savings account created with Add a UK Savings Account, otherwise a MATCHING_RESOURCE_NOT_FOUND error will be returned.         |
   | REQUEST_CANNOT_BE_FULFILLED      | Simulates the scenario where the request cannot be fulfilled for various reasons other than the ones triggering other errors.|
 
 tags:
