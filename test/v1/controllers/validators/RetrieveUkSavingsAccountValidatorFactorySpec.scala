@@ -16,10 +16,10 @@
 
 package v1.controllers.validators
 
-import config.SavingsAppConfig
-import mocks.{MockCurrentDateTime, MockSavingsAppConfig}
+import mocks.MockCurrentDateTime
 import models.domain.SavingsAccountId
 import shared.UnitSpec
+import shared.config.{AppConfig, MockAppConfig}
 import shared.models.domain.{Nino, TaxYear}
 import shared.models.errors._
 import utils.CurrentDateTime
@@ -28,22 +28,22 @@ import v1.models.request.retrieveUkSavingsAnnualSummary.RetrieveUkSavingsAnnualS
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
-class RetrieveUkSavingsAccountValidatorFactorySpec extends UnitSpec with MockSavingsAppConfig {
+class RetrieveUkSavingsAccountValidatorFactorySpec extends UnitSpec with MockAppConfig {
 
   private implicit val correlationId: String = "1234"
-  private val validNino             = "AA123456A"
-  private val validTaxYear          = "2021-22"
-  private val validSavingsAccountId = SavingsAccountId("SAVKB2UVwUTBQGJ")
-  private val parsedNino = Nino(validNino)
-  private val parsedTaxYear = TaxYear.fromMtd(validTaxYear)
+  private val validNino                      = "AA123456A"
+  private val validTaxYear                   = "2021-22"
+  private val validSavingsAccountId          = SavingsAccountId("SAVKB2UVwUTBQGJ")
+  private val parsedNino                     = Nino(validNino)
+  private val parsedTaxYear                  = TaxYear.fromMtd(validTaxYear)
 
   class Test extends MockCurrentDateTime {
 
     implicit val dateTimeProvider: CurrentDateTime = mockCurrentDateTime
     val dateTimeFormatter: DateTimeFormatter       = DateTimeFormatter.ISO_LOCAL_DATE
 
-    implicit val savingsAppConfig: SavingsAppConfig = mockSavingsAppConfig
-    val validator = new RetrieveUkSavingsAccountValidatorFactory(savingsAppConfig)
+    implicit val appConfig: AppConfig = mockAppConfig
+    val validator                     = new RetrieveUkSavingsAccountValidatorFactory(mockAppConfig)
 
     MockCurrentDateTime.getLocalDate
       .returns(LocalDate.parse("2022-07-11", dateTimeFormatter))

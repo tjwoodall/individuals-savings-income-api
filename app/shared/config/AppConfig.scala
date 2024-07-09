@@ -35,6 +35,9 @@ class AppConfig @Inject() (config: ServicesConfig, configuration: Configuration)
   // API name
   def appName: String = config.getString("appName")
 
+  val minimumPermittedTaxYear: Int                     = 2020
+  val ukSavingsAccountAnnualSummaryMinimumTaxYear: Int = 2018
+
   // MTD ID Lookup Config
   def mtdIdBaseUrl: String = config.baseUrl("mtd-id-lookup")
 

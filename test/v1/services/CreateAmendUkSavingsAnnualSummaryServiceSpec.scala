@@ -22,12 +22,8 @@ import shared.models.domain.{Nino, TaxYear}
 import shared.models.errors._
 import shared.models.outcomes.ResponseWrapper
 import shared.services.ServiceSpec
-import v1.mocks.connectors.MockCreateAmendUkSavingsAnnualSummaryConnector
-import v1.models.request.createAmendUkSavingsAnnualSummary.{
-  CreateAmendUkSavingsAnnualSummaryBody,
-  CreateAmendUkSavingsAnnualSummaryRequestData,
-  DownstreamCreateAmendUkSavingsAnnualSummaryBody
-}
+import v1.createAmendUkSavingsAnnualSummary.def1.model.request.{Def1_CreateAmendUkSavingsAnnualSummaryRequestBody, Def1_CreateAmendUkSavingsAnnualSummaryRequestData}
+import v1.createAmendUkSavingsAnnualSummary.{CreateAmendUkSavingsAnnualSummaryService, MockCreateAmendUkSavingsAnnualSummaryConnector}
 
 import scala.concurrent.Future
 
@@ -37,14 +33,12 @@ class CreateAmendUkSavingsAnnualSummaryServiceSpec extends ServiceSpec {
   private val taxYear                  = TaxYear.fromMtd("2019-20")
   private val savingsAccountId: String = "ABC1234567890"
 
-  private val request = CreateAmendUkSavingsAnnualSummaryRequestData(
+  private val requestData = Def1_CreateAmendUkSavingsAnnualSummaryRequestData(
     nino = nino,
     taxYear = taxYear,
     SavingsAccountId(savingsAccountId),
-    body = CreateAmendUkSavingsAnnualSummaryBody(None, None)
+    mtdBody = Def1_CreateAmendUkSavingsAnnualSummaryRequestBody(None, None)
   )
-
-  private val downstreamBody: DownstreamCreateAmendUkSavingsAnnualSummaryBody = DownstreamCreateAmendUkSavingsAnnualSummaryBody(request)
 
   trait Test extends MockCreateAmendUkSavingsAnnualSummaryConnector {
     implicit val logContext: EndpointLogContext = EndpointLogContext("Savings", "amend")
@@ -61,10 +55,10 @@ class CreateAmendUkSavingsAnnualSummaryServiceSpec extends ServiceSpec {
         val outcome = Right(ResponseWrapper(correlationId, ()))
 
         MockCreateAmendUkSavingsAnnualSummaryConnector
-          .createOrAmendAnnualSummary(nino, taxYear, downstreamBody)
+          .createOrAmendAnnualSummary(requestData)
           .returns(Future.successful(outcome))
 
-        await(service.createAmend(request)) shouldBe outcome
+        await(service.createAmend(requestData)) shouldBe outcome
       }
 
       "map errors according to spec" when {
@@ -73,10 +67,10 @@ class CreateAmendUkSavingsAnnualSummaryServiceSpec extends ServiceSpec {
           s"a $downstreamErrorCode error is returned from the service" in new Test {
 
             MockCreateAmendUkSavingsAnnualSummaryConnector
-              .createOrAmendAnnualSummary(nino, taxYear, downstreamBody)
+              .createOrAmendAnnualSummary(requestData)
               .returns(Future.successful(Left(ResponseWrapper(correlationId, DownstreamErrors.single(DownstreamErrorCode(downstreamErrorCode))))))
 
-            await(service.createAmend(request)) shouldBe Left(ErrorWrapper(correlationId, error))
+            await(service.createAmend(requestData)) shouldBe Left(ErrorWrapper(correlationId, error))
           }
 
         val errors = List(
