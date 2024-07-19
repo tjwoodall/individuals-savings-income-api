@@ -11,4 +11,4 @@ GET        /other/:nino/:taxYear                                          v1.ret
 PUT        /uk-accounts/:nino/:taxYear/:savingsAccountId            v1.createAmendUkSavingsAnnualSummary.CreateAmendUkSavingsAnnualSummaryController.createAmendUkSavingsAnnualSummary(nino: String, taxYear: String, savingsAccountId: String)
 
 # UK Savings Income Annual Summary routes:
-GET        /uk-accounts/:nino/:taxYear/:savingsAccountId             v1.controllers.RetrieveUkSavingsAccountAnnualSummaryController.retrieveUkSavingAccount(nino: String, taxYear: String, savingsAccountId: String)
+GET        /uk-accounts/:nino/:taxYear/:savingsAccountId             v1.retrieveUkSavingsAccountAnnualSummary.RetrieveUkSavingsAccountAnnualSummaryController.retrieveUkSavingAccount(nino: String, taxYear: String, savingsAccountId: String)
