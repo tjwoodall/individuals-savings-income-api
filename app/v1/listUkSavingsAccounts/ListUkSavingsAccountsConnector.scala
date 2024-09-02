@@ -16,8 +16,9 @@
 
 package v1.listUkSavingsAccounts
 
+import config.FeatureSwitches
 import shared.config.AppConfig
-import shared.connectors.DownstreamUri.DesUri
+import shared.connectors.DownstreamUri.{DesUri, IfsUri}
 import shared.connectors.httpparsers.StandardDownstreamHttpParser.reads
 import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
@@ -28,12 +29,13 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class ListUkSavingsAccountsConnector @Inject() (val http: HttpClient, val appConfig: AppConfig) extends BaseDownstreamConnector {
+class ListUkSavingsAccountsConnector @Inject()(val http: HttpClient, val appConfig: AppConfig)(
+  implicit featureSwitches: FeatureSwitches) extends BaseDownstreamConnector {
 
   def listUkSavingsAccounts(request: ListUkSavingsAccountsRequestData)(implicit
-      hc: HeaderCarrier,
-      ec: ExecutionContext,
-      correlationId: String): Future[DownstreamOutcome[ListUkSavingsAccountsResponse[UkSavingsAccount]]] = {
+                                                                       hc: HeaderCarrier,
+                                                                       ec: ExecutionContext,
+                                                                       correlationId: String): Future[DownstreamOutcome[ListUkSavingsAccountsResponse[UkSavingsAccount]]] = {
 
     import request._
     import schema._
@@ -42,11 +44,20 @@ class ListUkSavingsAccountsConnector @Inject() (val http: HttpClient, val appCon
 
     val incomeSourceTypeParam = "incomeSourceType" -> "interest-from-uk-banks"
 
-    get(
-      DesUri[DownstreamResp](s"income-tax/income-sources/nino/$nino"),
-      request.savingsAccountId
-        .fold(Seq(incomeSourceTypeParam))(savingsId => Seq(incomeSourceTypeParam, "incomeSourceId" -> savingsId.toString))
-    )
+
+    if (featureSwitches.isListUkSavingsDownstreamURLEnabled) {
+      get(
+        IfsUri[DownstreamResp](s"income-tax/income-sources/$nino"),
+        request.savingsAccountId
+          .fold(Seq(incomeSourceTypeParam))(savingsId => Seq(incomeSourceTypeParam, "incomeSourceId" -> savingsId.toString))
+      )
+    } else {
+      get(
+        DesUri[DownstreamResp](s"income-tax/income-sources/nino/$nino"),
+        request.savingsAccountId
+          .fold(Seq(incomeSourceTypeParam))(savingsId => Seq(incomeSourceTypeParam, "incomeSourceId" -> savingsId.toString))
+      )
+    }
   }
 
 }
