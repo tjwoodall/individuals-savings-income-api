@@ -33,7 +33,7 @@ class ListUkSavingsAccountsControllerISpec extends IntegrationBaseSpec {
     val nino: String             = "AA123456A"
     val savingsAccountId: String = "SAVKB2UVwUTBQGJ"
 
-    val desResponse: JsValue = Json.parse(
+    val downstreamResponse: JsValue = Json.parse(
       """
         |[
         |   {
@@ -108,7 +108,7 @@ class ListUkSavingsAccountsControllerISpec extends IntegrationBaseSpec {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DownstreamStub.onSuccess(DownstreamStub.GET, desUri, Map("incomeSourceId" -> savingsAccountId), OK, desResponse)
+          DownstreamStub.onSuccess(DownstreamStub.GET, desUri, Map("incomeSourceId" -> savingsAccountId), OK, downstreamResponse)
         }
 
         val response: WSResponse = await(request.get())

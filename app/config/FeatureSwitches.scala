@@ -25,6 +25,7 @@ import javax.inject.{Inject, Singleton}
 @ImplementedBy(classOf[FeatureSwitchesImpl])
 trait FeatureSwitches {
   def isDesIf_MigrationEnabled: Boolean
+  def isListUkSavingsDownstreamURLEnabled: Boolean
 }
 
 @Singleton
@@ -35,6 +36,8 @@ class FeatureSwitchesImpl(featureSwitchConfig: Configuration) extends FeatureSwi
   val isDesIf_MigrationEnabled: Boolean  = isEnabled("desIf_Migration.enabled")
 
   private def isEnabled(key: String): Boolean = featureSwitchConfig.getOptional[Boolean](key).getOrElse(true)
+
+  val isListUkSavingsDownstreamURLEnabled: Boolean = isEnabled("listUkSavingsDownstreamURL.enabled")
 }
 
 object FeatureSwitches {
