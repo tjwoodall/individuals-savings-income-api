@@ -95,7 +95,7 @@ class ListUkSavingsAccountsConnectorSpec extends ConnectorSpec with MockAppConfi
 
         willGet(
           url = s"$baseUrl/income-tax/income-sources/${this.nino}",
-          parameters = Seq("incomeSourceType" -> "interest-from-uk-banks")
+          parameters = Seq("incomeSourceType" -> "09")
         ).returns(Future.successful(outcome))
 
         val result: DownstreamOutcome[ListUkSavingsAccountsResponse[UkSavingsAccount]] = await(connector.listUkSavingsAccounts(request))
@@ -137,7 +137,7 @@ class ListUkSavingsAccountsConnectorSpec extends ConnectorSpec with MockAppConfi
 
         willGet(
           url = s"$baseUrl/income-tax/income-sources/${this.nino}",
-          parameters = Seq("incomeSourceType" -> "interest-from-uk-banks", "incomeSourceId" -> savingsAccountId.toString)
+          parameters = Seq("incomeSourceType" -> "09", "incomeSourceId" -> savingsAccountId.toString)
         ).returns(Future.successful(outcome))
 
         val result: DownstreamOutcome[ListUkSavingsAccountsResponse[UkSavingsAccount]] =

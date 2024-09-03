@@ -42,16 +42,16 @@ class ListUkSavingsAccountsConnector @Inject()(val http: HttpClient, val appConf
 
     val nino = request.nino.nino
 
-    val incomeSourceTypeParam = "incomeSourceType" -> "interest-from-uk-banks"
-
 
     if (featureSwitches.isListUkSavingsDownstreamURLEnabled) {
+      val incomeSourceTypeParam = "incomeSourceType" -> "09"
       get(
         IfsUri[DownstreamResp](s"income-tax/income-sources/$nino"),
         request.savingsAccountId
           .fold(Seq(incomeSourceTypeParam))(savingsId => Seq(incomeSourceTypeParam, "incomeSourceId" -> savingsId.toString))
       )
     } else {
+      val incomeSourceTypeParam = "incomeSourceType" -> "interest-from-uk-banks"
       get(
         DesUri[DownstreamResp](s"income-tax/income-sources/nino/$nino"),
         request.savingsAccountId
