@@ -35,7 +35,7 @@ trait IntegrationBaseSpec extends UnitSpec with WireMockHelper with GuiceOneServ
   lazy val client: WSClient = app.injector.instanceOf[WSClient]
 
   def servicesConfig: Map[String, Any] = Map(
-    "microservice.services.des.host"                   -> mockHost,
+    "microservice.services.des.host"                    -> mockHost,
     "microservice.services.des.port"                    -> mockPort,
     "microservice.services.ifs.host"                    -> mockHost,
     "microservice.services.ifs.port"                    -> mockPort,
@@ -53,7 +53,7 @@ trait IntegrationBaseSpec extends UnitSpec with WireMockHelper with GuiceOneServ
     "microservice.services.auth.port"                   -> mockPort,
     "auditing.consumer.baseUri.port"                    -> mockPort,
     "minimumPermittedTaxYear"                           -> 2020,
-    "feature-switch.listUkSavingsDownstreamURL.enabled" -> false,
+    "feature-switch.listUkSavingsDownstreamURL.enabled" -> false
   )
 
   override implicit lazy val app: Application = new GuiceApplicationBuilder()
@@ -81,7 +81,7 @@ trait IntegrationBaseSpec extends UnitSpec with WireMockHelper with GuiceOneServ
   def document(response: WSResponse): JsValue = Json.parse(response.body)
 
   def getCurrentTaxYear: String = {
-    val currentDate : LocalDate = LocalDate.now()
+    val currentDate: LocalDate = LocalDate.now()
 
     val taxYearStartDate: LocalDate = LocalDate.parse(
       s"${currentDate.getYear}-04-06",

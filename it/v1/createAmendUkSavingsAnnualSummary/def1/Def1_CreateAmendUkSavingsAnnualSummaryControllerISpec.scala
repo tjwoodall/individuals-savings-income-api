@@ -24,7 +24,7 @@ import play.api.libs.json.{JsObject, JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
 import shared.models.errors._
-import shared.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
+import shared.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 import support.{IntegrationBaseSpec, WireMockMethods}
 
 class Def1_CreateAmendUkSavingsAnnualSummaryControllerISpec extends IntegrationBaseSpec with WireMockMethods {
@@ -109,7 +109,8 @@ class Def1_CreateAmendUkSavingsAnnualSummaryControllerISpec extends IntegrationB
             Json.parse("""{ "taxedUkInterest": -10.99 }""".stripMargin),
             BAD_REQUEST,
             ValueFormatError.withPath("/taxedUkInterest")
-        ))
+          )
+        )
 
         input.foreach(args => (validationErrorTest _).tupled(args))
       }
@@ -142,7 +143,7 @@ class Def1_CreateAmendUkSavingsAnnualSummaryControllerISpec extends IntegrationB
 
         val errors = Seq(
           (BAD_REQUEST, "INVALID_NINO", BAD_REQUEST, NinoFormatError),
-          (BAD_REQUEST, "INVALID_TAXYEAR", BAD_REQUEST, TaxYearFormatError), //remove once DES to IFS migration complete
+          (BAD_REQUEST, "INVALID_TAXYEAR", BAD_REQUEST, TaxYearFormatError), // remove once DES to IFS migration complete
           (BAD_REQUEST, "INVALID_TYPE", INTERNAL_SERVER_ERROR, InternalError),
           (BAD_REQUEST, "INVALID_PAYLOAD", INTERNAL_SERVER_ERROR, InternalError),
           (FORBIDDEN, "NOT_FOUND_INCOME_SOURCE", NOT_FOUND, NotFoundError),

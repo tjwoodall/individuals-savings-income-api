@@ -19,6 +19,7 @@ package v1.listUkSavingsAccounts
 import models.domain.SavingsAccountId
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
+import play.api.Configuration
 import shared.config.MockAppConfig
 import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import shared.models.domain.Nino
@@ -118,6 +119,14 @@ class ListUkSavingsAccountsControllerSpec
       cc = cc,
       idGenerator = mockIdGenerator
     )
+
+    MockedAppConfig.featureSwitchConfig.anyNumberOfTimes() returns Configuration(
+      "supporting-agents-access-control.enabled" -> true
+    )
+
+    MockedAppConfig
+      .endpointAllowsSupportingAgents(controller.endpointName)
+      .anyNumberOfTimes() returns true
 
     protected def callController(): Future[Result] = controller.listUkSavingsAccounts(nino, Some(savingsAccountId.toString))(fakeGetRequest)
   }

@@ -23,12 +23,14 @@ import shared.controllers.validators.Validator
 import shared.controllers.validators.resolvers.{ResolveNino, ResolveTaxYearMinimum}
 import shared.models.domain.TaxYear
 import shared.models.errors.MtdError
+import config.SavingsConfig
 import v1.retrieveSavings.def1.model.request.Def1_RetrieveSavingsRequestData
 import v1.retrieveSavings.model.request.RetrieveSavingsRequestData
 
-class Def1_RetrieveSavingsValidator(nino: String, taxYear: String)(appConfig: AppConfig) extends Validator[RetrieveSavingsRequestData] {
+class Def1_RetrieveSavingsValidator(nino: String, taxYear: String)(appConfig: AppConfig, savingsConfig: SavingsConfig)
+    extends Validator[RetrieveSavingsRequestData] {
 
-  private lazy val minimumTaxYear = appConfig.minimumPermittedTaxYear
+  private lazy val minimumTaxYear = savingsConfig.minimumPermittedTaxYear
   private lazy val resolveTaxYear = ResolveTaxYearMinimum(TaxYear.fromDownstreamInt(minimumTaxYear))
 
   def validate: Validated[Seq[MtdError], RetrieveSavingsRequestData] =

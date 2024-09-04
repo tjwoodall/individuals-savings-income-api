@@ -25,10 +25,10 @@ import uk.gov.hmrc.auth.core.ConfidenceLevel
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class SavingsApiDefinitionFactory @Inject()(protected val appConfig: AppConfig) extends ApiDefinitionFactory{
+class SavingsApiDefinitionFactory @Inject() (protected val appConfig: AppConfig) extends ApiDefinitionFactory {
 
-  override val readScope      = "read:self-assessment"
-  override val writeScope     = "write:self-assessment"
+  override val readScope           = "read:self-assessment"
+  override val writeScope          = "write:self-assessment"
   override lazy val logger: Logger = Logger(this.getClass)
 
   override lazy val confidenceLevel: ConfidenceLevel = {

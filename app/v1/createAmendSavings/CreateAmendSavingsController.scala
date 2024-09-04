@@ -38,6 +38,8 @@ class CreateAmendSavingsController @Inject() (val authService: EnrolmentsAuthSer
     extends AuthorisedController(cc)
     with Logging {
 
+  val endpointName: String = "create-amend-savings"
+
   implicit val endpointLogContext: EndpointLogContext =
     EndpointLogContext(controllerName = "TriggerBsasController", endpointName = "triggerBsas")
 
@@ -64,4 +66,5 @@ class CreateAmendSavingsController @Inject() (val authService: EnrolmentsAuthSer
 
       requestHandler.handleRequest()
     }
+
 }

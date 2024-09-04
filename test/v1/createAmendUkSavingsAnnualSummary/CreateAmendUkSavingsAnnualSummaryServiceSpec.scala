@@ -22,7 +22,10 @@ import shared.models.domain.{Nino, TaxYear}
 import shared.models.errors._
 import shared.models.outcomes.ResponseWrapper
 import shared.services.ServiceSpec
-import v1.createAmendUkSavingsAnnualSummary.def1.model.request.{Def1_CreateAmendUkSavingsAnnualSummaryRequestBody, Def1_CreateAmendUkSavingsAnnualSummaryRequestData}
+import v1.createAmendUkSavingsAnnualSummary.def1.model.request.{
+  Def1_CreateAmendUkSavingsAnnualSummaryRequestBody,
+  Def1_CreateAmendUkSavingsAnnualSummaryRequestData
+}
 
 import scala.concurrent.Future
 

@@ -17,6 +17,7 @@
 package v1.retrieveSavings
 
 import play.api.mvc.Result
+import play.api.Configuration
 import shared.config.MockAppConfig
 import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import shared.models.domain.{Nino, TaxYear, Timestamp}
@@ -114,6 +115,14 @@ class RetrieveSavingsControllerSpec
       cc = cc,
       idGenerator = mockIdGenerator
     )
+
+    MockedAppConfig.featureSwitchConfig.anyNumberOfTimes() returns Configuration(
+      "supporting-agents-access-control.enabled" -> true
+    )
+
+    MockedAppConfig
+      .endpointAllowsSupportingAgents(controller.endpointName)
+      .anyNumberOfTimes() returns true
 
     protected def callController(): Future[Result] = controller.retrieveSaving(nino, taxYear)(fakeGetRequest)
   }

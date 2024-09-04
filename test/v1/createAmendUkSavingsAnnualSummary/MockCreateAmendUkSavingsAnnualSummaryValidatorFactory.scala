@@ -37,7 +37,8 @@ trait MockCreateAmendUkSavingsAnnualSummaryValidatorFactory extends MockFactory 
 
   }
 
-  def willUseValidator(use: Validator[CreateAmendUkSavingsAnnualSummaryRequestData]): CallHandler[Validator[CreateAmendUkSavingsAnnualSummaryRequestData]] = {
+  def willUseValidator(
+      use: Validator[CreateAmendUkSavingsAnnualSummaryRequestData]): CallHandler[Validator[CreateAmendUkSavingsAnnualSummaryRequestData]] = {
     MockedCreateAmendUkSavingsAnnualSummaryValidatorFactory
       .validator()
       .anyNumberOfTimes()

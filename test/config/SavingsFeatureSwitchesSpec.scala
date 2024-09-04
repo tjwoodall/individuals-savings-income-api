@@ -19,28 +19,28 @@ package config
 import play.api.Configuration
 import shared.UnitSpec
 
-class FeatureSwitchesSpec extends UnitSpec {
+class SavingsFeatureSwitchesSpec extends UnitSpec {
 
-  def aFeatureSwitchFor(featureName: String, switch: FeatureSwitches => Boolean): Unit =
+  def aFeatureSwitchFor(featureName: String, switch: SavingsFeatureSwitches => Boolean): Unit =
     s"a feature switch for $featureName" should {
       "be true" when {
         "absent from the config" in {
-          val configuration = Configuration.empty
-          val featureSwitches = FeatureSwitches(configuration)
+          val configuration   = Configuration.empty
+          val featureSwitches = SavingsFeatureSwitches(configuration)
           switch(featureSwitches) shouldBe true
         }
 
         "enabled" in {
-          val configuration = Configuration(featureName + ".enabled" -> true)
-          val featureSwitches = FeatureSwitches(configuration)
+          val configuration   = Configuration(featureName + ".enabled" -> true)
+          val featureSwitches = SavingsFeatureSwitches(configuration)
           switch(featureSwitches) shouldBe true
         }
       }
 
       "be false" when {
         "disabled" in {
-          val configuration = Configuration(featureName + ".enabled" -> false)
-          val featureSwitches = FeatureSwitches(configuration)
+          val configuration   = Configuration(featureName + ".enabled" -> false)
+          val featureSwitches = SavingsFeatureSwitches(configuration)
           switch(featureSwitches) shouldBe false
         }
       }

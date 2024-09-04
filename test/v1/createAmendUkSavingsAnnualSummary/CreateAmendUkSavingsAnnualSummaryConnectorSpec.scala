@@ -16,17 +16,21 @@
 
 package v1.createAmendUkSavingsAnnualSummary
 
-import mocks.MockFeatureSwitches
 import models.domain.SavingsAccountId
 import play.api.libs.json.{JsObject, Json}
 import shared.connectors.{ConnectorSpec, DownstreamOutcome}
 import shared.models.domain.{Nino, TaxYear}
 import shared.models.outcomes.ResponseWrapper
-import v1.createAmendUkSavingsAnnualSummary.def1.model.request.{Def1_CreateAmendUkSavingsAnnualSummaryRequestBody, Def1_CreateAmendUkSavingsAnnualSummaryRequestData, Def1_DownstreamCreateAmendUkSavingsAnnualSummaryRequestBody}
+import config.MockSavingsConfig
+import v1.createAmendUkSavingsAnnualSummary.def1.model.request.{
+  Def1_CreateAmendUkSavingsAnnualSummaryRequestBody,
+  Def1_CreateAmendUkSavingsAnnualSummaryRequestData,
+  Def1_DownstreamCreateAmendUkSavingsAnnualSummaryRequestBody
+}
 
 import scala.concurrent.Future
 
-class CreateAmendUkSavingsAnnualSummaryConnectorSpec extends ConnectorSpec with MockFeatureSwitches {
+class CreateAmendUkSavingsAnnualSummaryConnectorSpec extends ConnectorSpec with MockSavingsConfig {
 
   val nino: String = "AA111111A"
 
@@ -48,7 +52,8 @@ class CreateAmendUkSavingsAnnualSummaryConnectorSpec extends ConnectorSpec with 
     "createAmendUkSavingsAccountAnnualSummary called for a non Tax Year Specific tax year" must {
       "return a 200 status for a success scenario" in new DesTest with Test {
 
-        MockFeatureSwitches.isDesIf_MigrationEnabled.returns(false)
+        MockedSavingsConfig.featureSwitches.returns(mockSavingsFeatureSwitches).anyNumberOfTimes()
+        MockedSavingsConfig.isDesIf_MigrationEnabled.returns(false)
         def taxYear: TaxYear = TaxYear.fromMtd("2019-20")
         val url: String      = s"$baseUrl/income-tax/nino/$nino/income-source/savings/annual/${taxYear.asDownstream}"
         willPost(url, downstreamRequestBody) returns Future.successful(outcome)
@@ -58,8 +63,8 @@ class CreateAmendUkSavingsAnnualSummaryConnectorSpec extends ConnectorSpec with 
       }
 
       "return a 200 status for a success scenario when desIf_Migration is enabled" in new IfsTest with Test {
-
-        MockFeatureSwitches.isDesIf_MigrationEnabled.returns(true)
+        MockedSavingsConfig.featureSwitches.returns(mockSavingsFeatureSwitches).anyNumberOfTimes()
+        MockedSavingsConfig.isDesIf_MigrationEnabled.returns(true)
         def taxYear: TaxYear = TaxYear.fromMtd("2019-20")
         val url: String      = s"$baseUrl/income-tax/nino/$nino/income-source/savings/annual/${taxYear.asDownstream}"
         willPost(url, downstreamRequestBody) returns Future.successful(outcome)
@@ -86,7 +91,7 @@ class CreateAmendUkSavingsAnnualSummaryConnectorSpec extends ConnectorSpec with 
     def taxYear: TaxYear
 
     protected val connector: CreateAmendUkSavingsAnnualSummaryConnector =
-      new CreateAmendUkSavingsAnnualSummaryConnector(http = mockHttpClient, appConfig = mockAppConfig)
+      new CreateAmendUkSavingsAnnualSummaryConnector(http = mockHttpClient, appConfig = mockAppConfig, savingsConfig = mockSavingsConfig)
 
     protected val requestData: Def1_CreateAmendUkSavingsAnnualSummaryRequestData =
       Def1_CreateAmendUkSavingsAnnualSummaryRequestData(

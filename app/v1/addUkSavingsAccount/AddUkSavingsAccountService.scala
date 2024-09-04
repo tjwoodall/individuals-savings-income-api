@@ -30,8 +30,8 @@ import scala.concurrent.{ExecutionContext, Future}
 class AddUkSavingsAccountService @Inject() (connector: AddUkSavingsAccountConnector) extends BaseService {
 
   def addSavings(request: AddUkSavingsAccountRequestData)(implicit
-                                                          ctx: RequestContext,
-                                                          ec: ExecutionContext): Future[ServiceOutcome[AddUkSavingsAccountResponse]] = {
+      ctx: RequestContext,
+      ec: ExecutionContext): Future[ServiceOutcome[AddUkSavingsAccountResponse]] = {
 
     connector.addSavings(request).map(_.leftMap(mapDownstreamErrors(downstreamErrorMap)))
   }

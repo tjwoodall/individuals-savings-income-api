@@ -26,37 +26,44 @@ trait MockAppConfig extends MockFactory {
 
   implicit val mockAppConfig: AppConfig = mock[AppConfig]
 
-  object MockAppConfig {
-    def minimumPermittedTaxYear: CallHandler[Int]                     = (() => mockAppConfig.minimumPermittedTaxYear).expects()
-    def ukSavingsAccountAnnualSummaryMinimumTaxYear: CallHandler[Int] = (() => mockAppConfig.ukSavingsAccountAnnualSummaryMinimumTaxYear).expects()
+  object MockedAppConfig {
 
     // MTD ID Lookup Config
     def mtdIdBaseUrl: CallHandler0[String] = (() => mockAppConfig.mtdIdBaseUrl: String).expects()
 
     // DES Config
-    def desBaseUrl: CallHandler0[String]                         = (() => mockAppConfig.desBaseUrl: String).expects()
-    def desToken: CallHandler0[String]                           = (() => mockAppConfig.desToken: String).expects()
-    def desEnv: CallHandler0[String]                             = (() => mockAppConfig.desEnv: String).expects()
-    def desEnvironment: CallHandler0[String]                     = (() => mockAppConfig.desEnv: String).expects()
-    def desEnvironmentHeaders: CallHandler0[Option[Seq[String]]] = (() => mockAppConfig.desEnvironmentHeaders: Option[Seq[String]]).expects()
-    def desDownstreamConfig: CallHandler0[DownstreamConfig]      = (() => mockAppConfig.desDownstreamConfig: DownstreamConfig).expects()
+    def desBaseUrl: CallHandler0[String]     = (() => mockAppConfig.desDownstreamConfig.baseUrl: String).expects()
+    def desToken: CallHandler0[String]       = (() => mockAppConfig.desDownstreamConfig.token: String).expects()
+    def desEnv: CallHandler0[String]         = (() => mockAppConfig.desDownstreamConfig.env: String).expects()
+    def desEnvironment: CallHandler0[String] = (() => mockAppConfig.desDownstreamConfig.env: String).expects()
+
+    def desEnvironmentHeaders: CallHandler0[Option[Seq[String]]] =
+      (() => mockAppConfig.desDownstreamConfig.environmentHeaders: Option[Seq[String]]).expects()
+
+    def desDownstreamConfig: CallHandler0[DownstreamConfig] = (() => mockAppConfig.desDownstreamConfig: DownstreamConfig).expects()
 
     // IFS Config
-    def ifsBaseUrl: CallHandler0[String]                         = (() => mockAppConfig.ifsBaseUrl: String).expects()
-    def ifsToken: CallHandler0[String]                           = (() => mockAppConfig.ifsToken: String).expects()
-    def ifsEnv: CallHandler0[String]                             = (() => mockAppConfig.ifsEnv: String).expects()
-    def ifsEnabled: CallHandler0[Boolean]                        = (() => mockAppConfig.ifsEnabled: Boolean).expects()
-    def ifsEnvironment: CallHandler0[String]                     = (() => mockAppConfig.ifsEnv: String).expects()
-    def ifsEnvironmentHeaders: CallHandler0[Option[Seq[String]]] = (() => mockAppConfig.ifsEnvironmentHeaders: Option[Seq[String]]).expects()
-    def ifsDownstreamConfig: CallHandler0[DownstreamConfig]      = (() => mockAppConfig.ifsDownstreamConfig: DownstreamConfig).expects()
+    def ifsBaseUrl: CallHandler0[String] = (() => mockAppConfig.ifsDownstreamConfig.baseUrl: String).expects()
+    def ifsToken: CallHandler0[String]   = (() => mockAppConfig.ifsDownstreamConfig.token: String).expects()
+    def ifsEnv: CallHandler0[String]     = (() => mockAppConfig.ifsDownstreamConfig.env: String).expects()
+    // def ifsEnabled: CallHandler0[Boolean]                        = (() => mockAppConfig.ifsEnabled: Boolean).expects()
+    def ifsEnvironment: CallHandler0[String] = (() => mockAppConfig.ifsDownstreamConfig.env: String).expects()
+
+    def ifsEnvironmentHeaders: CallHandler0[Option[Seq[String]]] =
+      (() => mockAppConfig.ifsDownstreamConfig.environmentHeaders: Option[Seq[String]]).expects()
+
+    def ifsDownstreamConfig: CallHandler0[DownstreamConfig] = (() => mockAppConfig.ifsDownstreamConfig: DownstreamConfig).expects()
 
     // TYS IFS Config
-    def tysIfsBaseUrl: CallHandler0[String]                         = (() => mockAppConfig.tysIfsBaseUrl: String).expects()
-    def tysIfsToken: CallHandler0[String]                           = (() => mockAppConfig.tysIfsToken: String).expects()
-    def tysIfsEnv: CallHandler0[String]                             = (() => mockAppConfig.tysIfsEnv: String).expects()
-    def tysIfsEnvironment: CallHandler0[String]                     = (() => mockAppConfig.tysIfsEnv: String).expects()
-    def tysIfsEnvironmentHeaders: CallHandler0[Option[Seq[String]]] = (() => mockAppConfig.tysIfsEnvironmentHeaders: Option[Seq[String]]).expects()
-    def tysIfsDownstreamConfig: CallHandler0[DownstreamConfig]      = (() => mockAppConfig.tysIfsDownstreamConfig: DownstreamConfig).expects()
+    def tysIfsBaseUrl: CallHandler0[String]     = (() => mockAppConfig.tysIfsDownstreamConfig.baseUrl: String).expects()
+    def tysIfsToken: CallHandler0[String]       = (() => mockAppConfig.tysIfsDownstreamConfig.token: String).expects()
+    def tysIfsEnv: CallHandler0[String]         = (() => mockAppConfig.tysIfsDownstreamConfig.env: String).expects()
+    def tysIfsEnvironment: CallHandler0[String] = (() => mockAppConfig.tysIfsDownstreamConfig.env: String).expects()
+
+    def tysIfsEnvironmentHeaders: CallHandler0[Option[Seq[String]]] =
+      (() => mockAppConfig.tysIfsDownstreamConfig.environmentHeaders: Option[Seq[String]]).expects()
+
+    def tysIfsDownstreamConfig: CallHandler0[DownstreamConfig] = (() => mockAppConfig.tysIfsDownstreamConfig: DownstreamConfig).expects()
 
     // API Config
     def featureSwitchConfig: CallHandler0[Configuration]         = (() => mockAppConfig.featureSwitchConfig: Configuration).expects()
@@ -75,6 +82,12 @@ trait MockAppConfig extends MockFactory {
 
     def confidenceLevelCheckEnabled: CallHandler0[ConfidenceLevelConfig] =
       (() => mockAppConfig.confidenceLevelConfig).expects()
+
+    def confidenceLevelConfig: CallHandler0[ConfidenceLevelConfig] =
+      (() => mockAppConfig.confidenceLevelConfig).expects()
+
+    def endpointAllowsSupportingAgents(endpointName: String): CallHandler[Boolean] =
+      (mockAppConfig.endpointAllowsSupportingAgents(_: String)).expects(endpointName)
 
     def allowRequestCannotBeFulfilledHeader(version: Version): CallHandler[Boolean] =
       (mockAppConfig.allowRequestCannotBeFulfilledHeader: Version => Boolean).expects(version)

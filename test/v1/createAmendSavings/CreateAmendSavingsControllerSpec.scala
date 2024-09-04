@@ -18,6 +18,7 @@ package v1.createAmendSavings
 
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
+import play.api.Configuration
 import shared.config.MockAppConfig
 import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import shared.models.audit.GenericAuditDetailFixture.nino
@@ -27,7 +28,12 @@ import shared.models.domain.{Nino, TaxYear}
 import shared.models.errors._
 import shared.models.outcomes.ResponseWrapper
 import shared.services.MockMtdIdLookupService
-import v1.createAmendSavings.def1.model.request.{AmendForeignInterestItem, AmendSecurities, Def1_CreateAmendSavingsRequestBody, Def1_CreateAmendSavingsRequestData}
+import v1.createAmendSavings.def1.model.request.{
+  AmendForeignInterestItem,
+  AmendSecurities,
+  Def1_CreateAmendSavingsRequestBody,
+  Def1_CreateAmendSavingsRequestData
+}
 import v1.createAmendSavings.model.request.CreateAmendSavingsRequestData
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -142,7 +148,7 @@ class CreateAmendSavingsControllerSpec
     }
   }
 
-  trait Test extends ControllerTest with AuditEventChecking {
+  trait Test extends ControllerTest with AuditEventChecking[GenericAuditDetail] {
 
     val controller = new CreateAmendSavingsController(
       authService = mockEnrolmentsAuthService,
@@ -153,6 +159,14 @@ class CreateAmendSavingsControllerSpec
       cc = cc,
       idGenerator = mockIdGenerator
     )(appConfig = mockAppConfig, ec = global)
+
+    MockedAppConfig.featureSwitchConfig.anyNumberOfTimes() returns Configuration(
+      "supporting-agents-access-control.enabled" -> true
+    )
+
+    MockedAppConfig
+      .endpointAllowsSupportingAgents(controller.endpointName)
+      .anyNumberOfTimes() returns true
 
     protected def callController(): Future[Result] = controller.createAmendSavings(nino, taxYear)(fakePostRequest(requestBodyJson))
 

@@ -36,6 +36,8 @@ class DeleteSavingsController @Inject() (val authService: EnrolmentsAuthService,
                                          val idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends AuthorisedController(cc) {
 
+  val endpointName: String = "delete-savings"
+
   implicit val endpointLogContext: EndpointLogContext =
     EndpointLogContext(
       controllerName = "DeleteSavingsController",

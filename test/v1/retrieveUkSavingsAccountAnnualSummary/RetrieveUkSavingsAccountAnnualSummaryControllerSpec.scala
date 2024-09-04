@@ -18,6 +18,7 @@ package v1.retrieveUkSavingsAccountAnnualSummary
 
 import models.domain.SavingsAccountId
 import play.api.mvc.Result
+import play.api.Configuration
 import shared.config.MockAppConfig
 import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import shared.models.domain.{Nino, TaxYear}
@@ -25,7 +26,10 @@ import shared.models.errors._
 import shared.models.outcomes.ResponseWrapper
 import v1.retrieveUkSavingsAccountAnnualSummary.def1.model.RetrieveUkSavingsAccountAnnualSummaryControllerFixture
 import v1.retrieveUkSavingsAccountAnnualSummary.def1.model.request.Def1_RetrieveUkSavingsAccountAnnualSummaryRequestData
-import v1.retrieveUkSavingsAccountAnnualSummary.def1.model.response.{Def1_RetrieveUkSavingsAccountAnnualSummaryResponse, Def1_RetrieveUkSavingsAnnualIncomeItem}
+import v1.retrieveUkSavingsAccountAnnualSummary.def1.model.response.{
+  Def1_RetrieveUkSavingsAccountAnnualSummaryResponse,
+  Def1_RetrieveUkSavingsAnnualIncomeItem
+}
 import v1.retrieveUkSavingsAccountAnnualSummary.model.request.RetrieveUkSavingsAccountAnnualSummaryRequestData
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -104,6 +108,14 @@ class RetrieveUkSavingsAccountAnnualSummaryControllerSpec
       cc = cc,
       idGenerator = mockIdGenerator
     )
+
+    MockedAppConfig.featureSwitchConfig.anyNumberOfTimes() returns Configuration(
+      "supporting-agents-access-control.enabled" -> true
+    )
+
+    MockedAppConfig
+      .endpointAllowsSupportingAgents(controller.endpointName)
+      .anyNumberOfTimes() returns true
 
     protected def callController(): Future[Result] = controller.retrieveUkSavingAccount(nino, taxYear, savingsAccountId)(fakeRequest)
   }

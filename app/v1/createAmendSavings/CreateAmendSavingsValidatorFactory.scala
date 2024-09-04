@@ -19,15 +19,16 @@ package v1.createAmendSavings
 import play.api.libs.json.JsValue
 import shared.config.AppConfig
 import shared.controllers.validators.Validator
+import config.SavingsConfig
 import v1.createAmendSavings.def1.Def1_CreateAmendSavingsValidator
 import v1.createAmendSavings.model.request.CreateAmendSavingsRequestData
 
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class CreateAmendSavingsValidatorFactory @Inject() (appConfig: AppConfig) {
+class CreateAmendSavingsValidatorFactory @Inject() (appConfig: AppConfig, savingsConfig: SavingsConfig) {
 
   def validator(nino: String, taxYear: String, body: JsValue): Validator[CreateAmendSavingsRequestData] =
-    new Def1_CreateAmendSavingsValidator(nino, taxYear, body)(appConfig)
+    new Def1_CreateAmendSavingsValidator(nino, taxYear, body)(appConfig, savingsConfig)
 
 }

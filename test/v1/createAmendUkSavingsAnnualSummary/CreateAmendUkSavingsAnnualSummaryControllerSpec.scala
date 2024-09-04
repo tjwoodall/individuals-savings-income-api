@@ -19,6 +19,7 @@ package v1.createAmendUkSavingsAnnualSummary
 import models.domain.SavingsAccountId
 import play.api.libs.json.{JsObject, JsValue}
 import play.api.mvc.Result
+import play.api.Configuration
 import shared.config.MockAppConfig
 import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import shared.models.audit.GenericAuditDetailFixture.nino
@@ -29,7 +30,10 @@ import shared.models.errors._
 import shared.models.outcomes.ResponseWrapper
 import shared.services.{MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService}
 import shared.utils.MockIdGenerator
-import v1.createAmendUkSavingsAnnualSummary.def1.model.request.{Def1_CreateAmendUkSavingsAnnualSummaryRequestBody, Def1_CreateAmendUkSavingsAnnualSummaryRequestData}
+import v1.createAmendUkSavingsAnnualSummary.def1.model.request.{
+  Def1_CreateAmendUkSavingsAnnualSummaryRequestBody,
+  Def1_CreateAmendUkSavingsAnnualSummaryRequestData
+}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -89,7 +93,7 @@ class CreateAmendUkSavingsAnnualSummaryControllerSpec
     }
   }
 
-  trait Test extends ControllerTest with AuditEventChecking {
+  trait Test extends ControllerTest with AuditEventChecking[GenericAuditDetail] {
 
     val controller = new CreateAmendUkSavingsAnnualSummaryController(
       authService = mockEnrolmentsAuthService,
@@ -100,6 +104,14 @@ class CreateAmendUkSavingsAnnualSummaryControllerSpec
       cc = cc,
       idGenerator = mockIdGenerator
     )(appConfig = mockAppConfig, ec = global)
+
+    MockedAppConfig.featureSwitchConfig.anyNumberOfTimes() returns Configuration(
+      "supporting-agents-access-control.enabled" -> true
+    )
+
+    MockedAppConfig
+      .endpointAllowsSupportingAgents(controller.endpointName)
+      .anyNumberOfTimes() returns true
 
     protected def callController(): Future[Result] =
       controller.createAmendUkSavingsAnnualSummary(nino, taxYear, savingsAccountId)(fakePostRequest(requestJson))

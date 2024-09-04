@@ -25,13 +25,19 @@ import shared.controllers.validators.Validator
 import shared.controllers.validators.resolvers.{ResolveNino, ResolveNonEmptyJsonObject, ResolveTaxYearMinimum}
 import shared.models.domain.TaxYear
 import shared.models.errors.MtdError
+import config.SavingsConfig
 import v1.createAmendUkSavingsAnnualSummary.def1.Def1_CreateAmendUkSavingsAnnualRulesValidator.validateBusinessRules
-import v1.createAmendUkSavingsAnnualSummary.def1.model.request.{Def1_CreateAmendUkSavingsAnnualSummaryRequestBody, Def1_CreateAmendUkSavingsAnnualSummaryRequestData}
+import v1.createAmendUkSavingsAnnualSummary.def1.model.request.{
+  Def1_CreateAmendUkSavingsAnnualSummaryRequestBody,
+  Def1_CreateAmendUkSavingsAnnualSummaryRequestData
+}
 import v1.createAmendUkSavingsAnnualSummary.model.request._
 
-class Def1_CreateAmendUkSavingsAnnualSummaryValidator(nino: String, taxYear: String, savingsAccountId: String, body: JsValue)(appConfig: AppConfig)
+class Def1_CreateAmendUkSavingsAnnualSummaryValidator(nino: String, taxYear: String, savingsAccountId: String, body: JsValue)(
+    appConfig: AppConfig,
+    savingsConfig: SavingsConfig)
     extends Validator[CreateAmendUkSavingsAnnualSummaryRequestData] {
-  private lazy val minimumTaxYear = appConfig.ukSavingsAccountAnnualSummaryMinimumTaxYear
+  private lazy val minimumTaxYear = savingsConfig.ukSavingsAccountAnnualSummaryMinimumTaxYear
   private lazy val resolveTaxYear = ResolveTaxYearMinimum(TaxYear.fromDownstreamInt(minimumTaxYear))
   private val resolveJson         = new ResolveNonEmptyJsonObject[Def1_CreateAmendUkSavingsAnnualSummaryRequestBody]()
 

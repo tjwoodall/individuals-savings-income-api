@@ -20,9 +20,10 @@ import shared.UnitSpec
 import shared.config.{AppConfig, MockAppConfig}
 import shared.models.domain.{Nino, TaxYear}
 import shared.models.errors._
+import config.MockSavingsConfig
 import v1.retrieveSavings.def1.model.request.Def1_RetrieveSavingsRequestData
 
-class Def1_RetrieveSavingsValidatorSpec extends UnitSpec with MockAppConfig {
+class Def1_RetrieveSavingsValidatorSpec extends UnitSpec with MockAppConfig with MockSavingsConfig {
 
   private implicit val correlationId: String = "1234"
 
@@ -32,7 +33,7 @@ class Def1_RetrieveSavingsValidatorSpec extends UnitSpec with MockAppConfig {
   private val parsedTaxYear = TaxYear.fromMtd(validTaxYear)
 
   implicit val appConfig: AppConfig                    = mockAppConfig
-  private def validator(nino: String, taxYear: String) = new Def1_RetrieveSavingsValidator(nino, taxYear)(mockAppConfig)
+  private def validator(nino: String, taxYear: String) = new Def1_RetrieveSavingsValidator(nino, taxYear)(mockAppConfig, mockSavingsConfig)
 
   "running a validation" should {
     "return no errors" when {

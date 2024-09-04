@@ -16,7 +16,7 @@
 
 package v1.listUkSavingsAccounts
 
-import config.FeatureSwitches
+import config.SavingsConfig
 import shared.config.AppConfig
 import shared.connectors.DownstreamUri.{DesUri, IfsUri}
 import shared.connectors.httpparsers.StandardDownstreamHttpParser.reads
@@ -29,21 +29,20 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class ListUkSavingsAccountsConnector @Inject()(val http: HttpClient, val appConfig: AppConfig)(
-  implicit featureSwitches: FeatureSwitches) extends BaseDownstreamConnector {
+class ListUkSavingsAccountsConnector @Inject() (val http: HttpClient, val appConfig: AppConfig, val savingsConfig: SavingsConfig)
+    extends BaseDownstreamConnector {
 
   def listUkSavingsAccounts(request: ListUkSavingsAccountsRequestData)(implicit
-                                                                       hc: HeaderCarrier,
-                                                                       ec: ExecutionContext,
-                                                                       correlationId: String): Future[DownstreamOutcome[ListUkSavingsAccountsResponse[UkSavingsAccount]]] = {
+      hc: HeaderCarrier,
+      ec: ExecutionContext,
+      correlationId: String): Future[DownstreamOutcome[ListUkSavingsAccountsResponse[UkSavingsAccount]]] = {
 
     import request._
     import schema._
 
     val nino = request.nino.nino
 
-
-    if (featureSwitches.isListUkSavingsDownstreamURLEnabled) {
+    if (savingsConfig.featureSwitches.isListUkSavingsDownstreamURLEnabled) {
       val incomeSourceTypeParam = "incomeSourceType" -> "09"
       get(
         IfsUri[DownstreamResp](s"income-tax/income-sources/$nino"),

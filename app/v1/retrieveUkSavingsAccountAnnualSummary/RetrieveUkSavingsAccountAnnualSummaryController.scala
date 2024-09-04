@@ -34,6 +34,8 @@ class RetrieveUkSavingsAccountAnnualSummaryController @Inject() (val authService
                                                                  val idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends AuthorisedController(cc) {
 
+  val endpointName: String = "retrieve-uk-savings-account-annual-summary"
+
   implicit val endpointLogContext: EndpointLogContext =
     EndpointLogContext(
       controllerName = "RetrieveUkSavingsAccountAnnualSummaryController",

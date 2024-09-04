@@ -18,6 +18,7 @@ package v1.addUkSavingsAccount
 
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
+import play.api.Configuration
 import shared.config.MockAppConfig
 import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import shared.models.audit._
@@ -43,7 +44,7 @@ class AddUkSavingsAccountControllerSpec
   "AddUkSavingsAccountController" should {
     "return OK" when {
       "happy path" in new Test {
-        MockAppConfig.apiGatewayContext.returns("individuals/savings-income").anyNumberOfTimes()
+        MockedAppConfig.apiGatewayContext.returns("individuals/savings-income").anyNumberOfTimes()
         willUseValidator(returningSuccess(requestData))
 
         MockAddUkSavingsAccountService
@@ -60,7 +61,7 @@ class AddUkSavingsAccountControllerSpec
       }
 
       "the service returns an error" in new Test {
-        MockAppConfig.apiGatewayContext.returns("individuals/savings-income").anyNumberOfTimes()
+        MockedAppConfig.apiGatewayContext.returns("individuals/savings-income").anyNumberOfTimes()
         willUseValidator(returningSuccess(requestData))
 
         MockAddUkSavingsAccountService
@@ -72,9 +73,9 @@ class AddUkSavingsAccountControllerSpec
     }
   }
 
-  trait Test extends ControllerTest with AuditEventChecking {
+  trait Test extends ControllerTest with AuditEventChecking[GenericAuditDetail] {
 
-    private val controller = new AddUkSavingsAccountController(
+    protected val controller = new AddUkSavingsAccountController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
       validatorFactory = mockAddUkSavingsAccountValidatorFactory,
@@ -83,6 +84,14 @@ class AddUkSavingsAccountControllerSpec
       cc = cc,
       idGenerator = mockIdGenerator
     )
+
+    MockedAppConfig.featureSwitchConfig.anyNumberOfTimes() returns Configuration(
+      "supporting-agents-access-control.enabled" -> true
+    )
+
+    MockedAppConfig
+      .endpointAllowsSupportingAgents(controller.endpointName)
+      .anyNumberOfTimes() returns true
 
     protected def callController(): Future[Result] = controller.addUkSavingsAccount(validNino)(fakePostRequest(requestBodyJson))
 

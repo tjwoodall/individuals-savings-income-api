@@ -14,22 +14,18 @@
  * limitations under the License.
  */
 
-package mocks
+package config
 
-import config.FeatureSwitches
-import org.scalamock.handlers.CallHandler
-import org.scalamock.scalatest.MockFactory
+import play.api.Configuration
+import shared.config.{AppConfig, FeatureSwitches}
 
-trait MockFeatureSwitches extends MockFactory {
+/** API-specific feature switches.
+  */
+case class SavingsFeatureSwitches(val featureSwitchConfig: Configuration) extends FeatureSwitches {
+  def isDesIf_MigrationEnabled: Boolean            = isEnabled("desIf_Migration")
+  def isListUkSavingsDownstreamURLEnabled: Boolean = isEnabled("listUkSavingsDownstreamURL")
+}
 
-  implicit val mockFeatureSwitches: FeatureSwitches = mock[FeatureSwitches]
-
-  object MockFeatureSwitches {
-    def isDesIf_MigrationEnabled: CallHandler[Boolean] =
-      (() => mockFeatureSwitches.isDesIf_MigrationEnabled).expects()
-
-    def isListUkSavingsDownstreamURLEnabled: CallHandler[Boolean] =
-      (() => mockFeatureSwitches.isListUkSavingsDownstreamURLEnabled).expects()
-  }
-
+object SavingsFeatureSwitches {
+  def apply()(implicit appConfig: AppConfig): SavingsFeatureSwitches = SavingsFeatureSwitches(appConfig.featureSwitchConfig)
 }

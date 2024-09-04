@@ -35,7 +35,9 @@ class CreateAmendUkSavingsAnnualSummaryController @Inject() (val authService: En
                                                              auditService: AuditService,
                                                              cc: ControllerComponents,
                                                              val idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: AppConfig)
-  extends AuthorisedController(cc) {
+    extends AuthorisedController(cc) {
+
+  val endpointName: String = "create-amend-uk-savings-annual-summary"
 
   implicit val endpointLogContext: EndpointLogContext =
     EndpointLogContext(
@@ -65,4 +67,5 @@ class CreateAmendUkSavingsAnnualSummaryController @Inject() (val authService: En
 
       requestHandler.handleRequest()
     }
+
 }

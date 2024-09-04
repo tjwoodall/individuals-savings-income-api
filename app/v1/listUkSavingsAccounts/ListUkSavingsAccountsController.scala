@@ -34,6 +34,8 @@ class ListUkSavingsAccountsController @Inject() (val authService: EnrolmentsAuth
                                                  val idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends AuthorisedController(cc) {
 
+  val endpointName: String = "list-uk-savings-accounts"
+
   implicit val endpointLogContext: EndpointLogContext =
     EndpointLogContext(
       controllerName = "ListUkSavingsAccountsController",

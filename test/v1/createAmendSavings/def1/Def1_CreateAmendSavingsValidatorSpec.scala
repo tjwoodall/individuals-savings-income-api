@@ -21,10 +21,11 @@ import shared.UnitSpec
 import shared.config.MockAppConfig
 import shared.models.domain.{Nino, TaxYear}
 import shared.models.errors._
+import config.MockSavingsConfig
 import v1.createAmendSavings.def1.model.request.{Def1_CreateAmendSavingsRequestBody, Def1_CreateAmendSavingsRequestData}
 import v1.createAmendSavings.model.request.CreateAmendSavingsRequestData
 
-class Def1_CreateAmendSavingsValidatorSpec extends UnitSpec with MockAppConfig {
+class Def1_CreateAmendSavingsValidatorSpec extends UnitSpec with MockAppConfig with MockSavingsConfig {
 
   private implicit val correlationId: String = "1234"
 
@@ -135,7 +136,7 @@ class Def1_CreateAmendSavingsValidatorSpec extends UnitSpec with MockAppConfig {
   private val parsedBody    = validRequestBodyJson.as[Def1_CreateAmendSavingsRequestBody]
 
   private def validator(nino: String, taxYear: String, body: JsValue) =
-    new Def1_CreateAmendSavingsValidator(nino, taxYear, body)(mockAppConfig)
+    new Def1_CreateAmendSavingsValidator(nino, taxYear, body)(mockAppConfig, mockSavingsConfig)
 
   "validator" should {
     "return the parsed domain object" when {

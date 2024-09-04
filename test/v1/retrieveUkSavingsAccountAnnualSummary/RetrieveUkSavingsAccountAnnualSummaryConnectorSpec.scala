@@ -16,18 +16,21 @@
 
 package v1.retrieveUkSavingsAccountAnnualSummary
 
-import mocks.MockFeatureSwitches
 import models.domain.SavingsAccountId
 import shared.connectors.ConnectorSpec
 import shared.models.domain.{Nino, TaxYear}
 import shared.models.outcomes.ResponseWrapper
+import config.MockSavingsConfig
 import v1.retrieveUkSavingsAccountAnnualSummary.def1.model.request.Def1_RetrieveUkSavingsAccountAnnualSummaryRequestData
-import v1.retrieveUkSavingsAccountAnnualSummary.def1.model.response.{Def1_RetrieveUkSavingsAccountAnnualSummaryResponse, Def1_RetrieveUkSavingsAnnualIncomeItem}
+import v1.retrieveUkSavingsAccountAnnualSummary.def1.model.response.{
+  Def1_RetrieveUkSavingsAccountAnnualSummaryResponse,
+  Def1_RetrieveUkSavingsAnnualIncomeItem
+}
 import v1.retrieveUkSavingsAccountAnnualSummary.model.request.RetrieveUkSavingsAccountAnnualSummaryRequestData
 
 import scala.concurrent.Future
 
-class RetrieveUkSavingsAccountAnnualSummaryConnectorSpec extends ConnectorSpec with MockFeatureSwitches {
+class RetrieveUkSavingsAccountAnnualSummaryConnectorSpec extends ConnectorSpec with MockSavingsConfig {
 
   val nino: String           = "AA111111A"
   val incomeSourceId: String = "SAVKB2UVwUTBQGJ"
@@ -55,8 +58,9 @@ class RetrieveUkSavingsAccountAnnualSummaryConnectorSpec extends ConnectorSpec w
 
     val connector: RetrieveUkSavingsAccountAnnualSummaryConnector = new RetrieveUkSavingsAccountAnnualSummaryConnector(
       http = mockHttpClient,
-      appConfig = mockAppConfig
-    )(mockFeatureSwitches)
+      appConfig = mockAppConfig,
+      savingsConfig = mockSavingsConfig
+    )
 
   }
 
@@ -64,7 +68,8 @@ class RetrieveUkSavingsAccountAnnualSummaryConnectorSpec extends ConnectorSpec w
     "retrieveUkSavingsAccountAnnualSummary called" must {
       "return a 200 status for a success scenario" in new DesTest with Test {
 
-        MockFeatureSwitches.isDesIf_MigrationEnabled.returns(false)
+        MockedSavingsConfig.featureSwitches.returns(mockSavingsFeatureSwitches).anyNumberOfTimes()
+        MockedSavingsConfig.isDesIf_MigrationEnabled.returns(false)
         def taxYear: TaxYear = TaxYear.fromMtd("2019-20")
         private val outcome  = Right(ResponseWrapper(correlationId, response))
         willGet(
@@ -76,7 +81,8 @@ class RetrieveUkSavingsAccountAnnualSummaryConnectorSpec extends ConnectorSpec w
 
       "return a 200 status for a success scenario when desIf_Migration is enabled" in new IfsTest with Test {
 
-        MockFeatureSwitches.isDesIf_MigrationEnabled.returns(true)
+        MockedSavingsConfig.featureSwitches.returns(mockSavingsFeatureSwitches).anyNumberOfTimes()
+        MockedSavingsConfig.isDesIf_MigrationEnabled.returns(true)
         def taxYear: TaxYear = TaxYear.fromMtd("2019-20")
         private val outcome  = Right(ResponseWrapper(correlationId, response))
         willGet(
