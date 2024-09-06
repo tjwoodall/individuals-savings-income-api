@@ -21,7 +21,6 @@ import play.api.http.Status
 import play.api.http.Status.OK
 import play.api.libs.json.Json
 import play.api.libs.ws.WSResponse
-import shared.config.AppConfig
 import shared.routing.Version1
 import support.IntegrationBaseSpec
 
@@ -32,24 +31,8 @@ class DocumentationControllerISpec extends IntegrationBaseSpec {
 
   private val apiTitle = "Individuals Savings Income (MTD)"
 
-  private val config          = app.injector.instanceOf[AppConfig]
-  private val confidenceLevel = config.confidenceLevelConfig.confidenceLevel
-
   private val apiDefinitionJson = Json.parse(s"""
        |{
-       |  "scopes": [
-       |    {
-       |      "key": "read:self-assessment",
-       |      "name": "View your Self Assessment information",
-       |      "description": "Allow read access to self assessment data",
-       |      "confidenceLevel": $confidenceLevel
-       |    }, {
-       |      "key": "write:self-assessment",
-       |      "name": "Change your Self Assessment information",
-       |      "description": "Allow write access to self assessment data",
-       |      "confidenceLevel": $confidenceLevel
-       |    }
-       |  ],
        |  "api": {
        |    "name": "$apiTitle",
        |    "description": "An API for providing individuals savings income data",
