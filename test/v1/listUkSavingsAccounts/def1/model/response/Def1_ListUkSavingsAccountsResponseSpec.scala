@@ -73,9 +73,9 @@ class Def1_ListUkSavingsAccountsResponseSpec extends UnitSpec {
   val validListUkSavingsAccountResponse = Def1_ListUkSavingsAccountsResponse(
     Some(
       Seq(
-        Def1_UkSavingsAccount("000000000000001", "Bank Account 1"),
-        Def1_UkSavingsAccount("000000000000002", "Bank Account 2"),
-        Def1_UkSavingsAccount("000000000000003", "Bank Account 3")
+        Def1_UkSavingsAccount("000000000000001", Some("Bank Account 1")),
+        Def1_UkSavingsAccount("000000000000002", Some("Bank Account 2")),
+        Def1_UkSavingsAccount("000000000000003", Some("Bank Account 3"))
       )
     )
   )

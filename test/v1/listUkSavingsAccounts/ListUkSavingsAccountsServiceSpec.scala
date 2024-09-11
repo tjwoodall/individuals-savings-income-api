@@ -37,9 +37,9 @@ class ListUkSavingsAccountsServiceSpec extends ServiceSpec {
   private val validResponse = Def1_ListUkSavingsAccountsResponse(
     savingsAccounts = Some(
       Seq(
-        Def1_UkSavingsAccount(savingsAccountId = "000000000000001", accountName = "Bank Account 1"),
-        Def1_UkSavingsAccount(savingsAccountId = "000000000000002", accountName = "Bank Account 2"),
-        Def1_UkSavingsAccount(savingsAccountId = "000000000000003", accountName = "Bank Account 3")
+        Def1_UkSavingsAccount(savingsAccountId = "000000000000001", accountName = Some("Bank Account 1")),
+        Def1_UkSavingsAccount(savingsAccountId = "000000000000002", accountName = Some("Bank Account 2")),
+        Def1_UkSavingsAccount(savingsAccountId = "000000000000003", accountName = Some("Bank Account 3"))
       )
     )
   )

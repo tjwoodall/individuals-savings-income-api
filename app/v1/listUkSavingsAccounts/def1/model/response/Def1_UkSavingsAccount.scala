@@ -20,7 +20,7 @@ import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 import v1.listUkSavingsAccounts.model.response.UkSavingsAccount
 
-case class Def1_UkSavingsAccount(savingsAccountId: String, accountName: String) extends UkSavingsAccount
+case class Def1_UkSavingsAccount(savingsAccountId: String, accountName: Option[String]) extends UkSavingsAccount
 
 object Def1_UkSavingsAccount {
 
@@ -28,7 +28,7 @@ object Def1_UkSavingsAccount {
 
   implicit val reads: Reads[Def1_UkSavingsAccount] = (
     (JsPath \ "incomeSourceId").read[String] and
-      (JsPath \ "incomeSourceName").read[String]
+      (JsPath \ "incomeSourceName").readNullable[String]
   )(Def1_UkSavingsAccount.apply _)
 
 }

@@ -30,10 +30,18 @@ class Def1_UkSavingsAccountSpec extends UnitSpec {
     """.stripMargin
   )
 
-  val invalidUkSavingsAccountFromDESJson = Json.parse(
+  val validNoOptUkSavingsAccountFromDESJson = Json.parse(
     """
       |{
       |   "incomeSourceId": "SAVKB2UVwUTBQGJ"
+      |}
+    """.stripMargin
+  )
+
+  val invalidUkSavingsAccountFromDESJson = Json.parse(
+    """
+      |{
+      |   "incomeSourceName": "Shares savings account"
       |}
     """.stripMargin
   )
@@ -47,13 +55,26 @@ class Def1_UkSavingsAccountSpec extends UnitSpec {
     """.stripMargin
   )
 
+  val validNoOptUkSavingsAccountFromMTDJson = Json.parse(
+    """
+      |{
+      |   "savingsAccountId": "SAVKB2UVwUTBQGJ"
+      |}
+    """.stripMargin
+  )
+
   val emptyJson = Json.parse("{}")
 
   "Def1_UkSavingsAccount" should {
     "return a valid Def1_UkSavingsAccount model " when {
       "a valid uk savings account json from DES is supplied" in {
         validUkSavingsAccountFromDESJson.as[Def1_UkSavingsAccount] shouldBe
-          Def1_UkSavingsAccount("SAVKB2UVwUTBQGJ", "Shares savings account")
+          Def1_UkSavingsAccount("SAVKB2UVwUTBQGJ", Some("Shares savings account"))
+      }
+
+      "a valid uk savings account json with mandatory fields only from DES is supplied" in {
+        validNoOptUkSavingsAccountFromDESJson.as[Def1_UkSavingsAccount] shouldBe
+          Def1_UkSavingsAccount("SAVKB2UVwUTBQGJ",None)
       }
     }
 
@@ -71,8 +92,13 @@ class Def1_UkSavingsAccountSpec extends UnitSpec {
 
     "return a valid MTD uk savings json" when {
       "a valid Def1_UkSavingsAccount model is supplier" in {
-        Json.toJson(Def1_UkSavingsAccount("SAVKB2UVwUTBQGJ", "Shares savings account")) shouldBe
+        Json.toJson(Def1_UkSavingsAccount("SAVKB2UVwUTBQGJ", Some("Shares savings account"))) shouldBe
           validUkSavigsAccountFromMTDJson
+      }
+      
+      "a valid Def1_UkSavingsAccount model with mandatory fields only is supplier" in {
+        Json.toJson(Def1_UkSavingsAccount("SAVKB2UVwUTBQGJ",None)) shouldBe
+          validNoOptUkSavingsAccountFromMTDJson
       }
     }
   }
