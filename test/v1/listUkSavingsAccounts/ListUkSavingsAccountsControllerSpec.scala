@@ -46,7 +46,7 @@ class ListUkSavingsAccountsControllerSpec
     savingsAccountId = Some(savingsAccountId)
   )
 
-  val validListUkSavingsAccountResponse: Def1_ListUkSavingsAccountsResponse[Def1_UkSavingsAccount] = Def1_ListUkSavingsAccountsResponse(
+  private val validListUkSavingsAccountResponse: Def1_ListUkSavingsAccountsResponse[Def1_UkSavingsAccount] = Def1_ListUkSavingsAccountsResponse(
     Some(
       Seq(
         Def1_UkSavingsAccount("000000000000001", Some("Bank Account 1")),
