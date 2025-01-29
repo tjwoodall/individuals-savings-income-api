@@ -35,10 +35,11 @@ trait SavingsVersionRoutingMap {
 
 // Add routes corresponding to available versions...
 @Singleton
-case class SavingsVersionRoutingMapImpl @Inject() (defaultRouter: Router, v1Router: v1.Routes) extends VersionRoutingMap {
+case class SavingsVersionRoutingMapImpl @Inject() (defaultRouter: Router, v1Router: v1.Routes, v2Router: v2.Routes) extends VersionRoutingMap {
 
   val map: Map[Version, Router] = Map(
-    Version1 -> v1Router
+    Version1 -> v1Router,
+    Version1 -> v2Router
   )
 
 }
