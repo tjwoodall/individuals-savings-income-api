@@ -102,7 +102,7 @@ class AddUkSavingsAccountControllerSpec
         detail = GenericAuditDetail(
           userType = "Individual",
           agentReferenceNumber = None,
-          versionNumber = "1.0",
+          versionNumber = "2.0",
           params = Map("nino" -> validNino),
           requestBody = maybeRequestBody,
           `X-CorrelationId` = correlationId,

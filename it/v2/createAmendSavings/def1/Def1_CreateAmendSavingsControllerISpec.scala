@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package v1.createAmendSavings.def1
+package v2.createAmendSavings.def1
 
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.ACCEPT
@@ -465,7 +465,7 @@ class Def1_CreateAmendSavingsControllerISpec extends IntegrationBaseSpec {
       setupStubs()
       buildRequest(mtdUri)
         .withHttpHeaders(
-          (ACCEPT, "application/vnd.hmrc.1.0+json"),
+          (ACCEPT, "application/vnd.hmrc.2.0+json"),
           (AUTHORIZATION, "Bearer 123") // some bearer token
         )
     }

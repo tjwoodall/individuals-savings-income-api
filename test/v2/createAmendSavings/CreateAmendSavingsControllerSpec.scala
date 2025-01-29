@@ -176,7 +176,7 @@ class CreateAmendSavingsControllerSpec
         transactionName = "create-amend-savings-income",
         detail = GenericAuditDetail(
           UserDetails(mtdId, "Individual", None),
-          "1.0",
+          "2.0",
           Map("nino" -> nino, "taxYear" -> taxYear),
           requestBody,
           correlationId,
