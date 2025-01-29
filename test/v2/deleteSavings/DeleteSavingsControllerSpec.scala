@@ -25,6 +25,7 @@ import shared.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
 import shared.models.domain.{Nino, TaxYear}
 import shared.models.errors._
 import shared.models.outcomes.ResponseWrapper
+import shared.routing.{Version, Version2}
 import v2.deleteSavings.def1.model.request.Def1_DeleteSavingsRequestData
 import v2.deleteSavings.model.request.DeleteSavingsRequestData
 
@@ -37,6 +38,8 @@ class DeleteSavingsControllerSpec
     with MockDeleteSavingsService
     with MockDeleteSavingsValidatorFactory
     with MockAppConfig {
+
+  override val apiVersion: Version = Version2
 
   private val taxYear = "2021-22"
 

@@ -26,10 +26,27 @@ object Def1_ListUkSavingsAccountsResponse extends JsonUtils {
 
   implicit def writes[E: Writes]: OWrites[Def1_ListUkSavingsAccountsResponse[E]] = Json.writes[Def1_ListUkSavingsAccountsResponse[E]]
 
-  implicit def reads[E: Reads]: Reads[Def1_ListUkSavingsAccountsResponse[E]] =
-    JsPath
-      .readNullable[Seq[E]]
-      .mapEmptySeqToNone
-      .map(Def1_ListUkSavingsAccountsResponse(_))
+  implicit def reads[E: Reads]: Reads[Def1_ListUkSavingsAccountsResponse[E]] = {
+    case arr: JsArray =>
+      // Can remove this case when listUkSavingsDownstreamURL feature switch is removed.
+      // Also remove DES tests from Def1_ListUkSavingsAccountsResponseSpec etc
+      arr.validate(JsPath
+        .readNullable[Seq[E]]
+        .mapEmptySeqToNone
+        .map(Def1_ListUkSavingsAccountsResponse(_))
+      )
+
+    case JsObject(fields) if fields.size == 1 && fields.contains("bbsi") =>
+      fields.get("bbsi").map(arr =>
+        arr.validate(JsPath
+          .readNullable[Seq[E]]
+          .mapEmptySeqToNone
+          .map(Def1_ListUkSavingsAccountsResponse(_))
+        )
+      ).getOrElse(JsError("Unexpected JSON format"))
+
+    case _ =>
+      JsError("Unexpected JSON format")
+  }
 
 }

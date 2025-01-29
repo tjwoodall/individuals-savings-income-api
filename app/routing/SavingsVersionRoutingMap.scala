@@ -19,7 +19,7 @@ package routing
 import com.google.inject.Singleton
 import play.api.routing.Router
 import shared.config.AppConfig
-import shared.routing.{Version, Version1, VersionRoutingMap}
+import shared.routing.{Version, Version1, Version2, VersionRoutingMap}
 
 import javax.inject.Inject
 
@@ -33,7 +33,7 @@ case class SavingsVersionRoutingMap @Inject() (
 
   val map: Map[Version, Router] = Map(
     Version1 -> v1Router,
-    Version1 -> v2Router
+    Version2 -> v2Router
   )
 
 }
