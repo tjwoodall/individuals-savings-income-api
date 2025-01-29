@@ -22,7 +22,7 @@ import shared.auth.AuthSupportingAgentsAllowedISpec
 
 class SavingsIncomeAuthSupportingAgentsAllowedISpec extends AuthSupportingAgentsAllowedISpec {
 
-  val callingApiVersion = "1.0"
+  val callingApiVersion = "2.0"
 
   private val taxYear = "2021-22"
 
