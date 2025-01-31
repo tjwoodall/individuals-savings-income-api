@@ -18,27 +18,22 @@ package routing
 
 import com.google.inject.Singleton
 import play.api.routing.Router
-import shared.routing.{Version, Version1, VersionRoutingMap}
+import shared.config.AppConfig
+import shared.routing.{Version, Version1, Version2, VersionRoutingMap}
 
 import javax.inject.Inject
 
-// So that we can have API-independent implementations of
-// VersionRoutingRequestHandler and VersionRoutingRequestHandlerSpec
-// implement this for the specific API...
-trait SavingsVersionRoutingMap {
-  val defaultRouter: Router
-
-  val map: Map[Version, Router]
-
-  final def versionRouter(version: Version): Option[Router] = map.get(version)
-}
-
-// Add routes corresponding to available versions...
 @Singleton
-case class SavingsVersionRoutingMapImpl @Inject() (defaultRouter: Router, v1Router: v1.Routes) extends VersionRoutingMap {
+case class SavingsVersionRoutingMap @Inject() (
+                                                appConfig: AppConfig,
+                                                defaultRouter: Router,
+                                                v1Router: v1.Routes,
+                                                v2Router: v2.Routes
+                                              ) extends VersionRoutingMap {
 
   val map: Map[Version, Router] = Map(
-    Version1 -> v1Router
+    Version1 -> v1Router,
+    Version2 -> v2Router
   )
 
 }

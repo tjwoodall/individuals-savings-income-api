@@ -19,7 +19,7 @@ package definition
 import play.api.Logger
 import shared.config.AppConfig
 import shared.definition.{APIDefinition, APIStatus, APIVersion, ApiDefinitionFactory, Definition}
-import shared.routing.{Version, Version1}
+import shared.routing.{Version, Version1, Version2}
 
 import javax.inject.{Inject, Singleton}
 
@@ -40,6 +40,11 @@ class SavingsApiDefinitionFactory @Inject() (protected val appConfig: AppConfig)
             version = Version1,
             status = buildAPIStatus(Version1),
             endpointsEnabled = appConfig.endpointsEnabled(Version1)
+          ),
+          APIVersion(
+            version = Version2,
+            status = buildAPIStatus(Version2),
+            endpointsEnabled = appConfig.endpointsEnabled(Version2)
           )
         ),
         requiresTrust = None
