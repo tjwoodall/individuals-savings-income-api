@@ -16,6 +16,7 @@
 
 package v2.createAmendSavings
 
+import models.errors.RuleOutsideAmendmentWindowError
 import shared.controllers.EndpointLogContext
 import shared.models.domain.{Nino, TaxYear}
 import shared.models.errors._
@@ -54,6 +55,7 @@ class CreateAmendSavingsServiceSpec extends ServiceSpec {
         val errors = List(
           ("INVALID_TAXABLE_ENTITY_ID", NinoFormatError),
           ("INVALID_TAX_YEAR", TaxYearFormatError),
+          ("OUTSIDE_AMENDMENT_WINDOW", RuleOutsideAmendmentWindowError),
           ("INVALID_CORRELATIONID", InternalError),
           ("INVALID_PAYLOAD", InternalError),
           ("SERVER_ERROR", InternalError),

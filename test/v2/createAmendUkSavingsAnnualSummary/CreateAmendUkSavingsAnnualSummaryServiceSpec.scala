@@ -17,6 +17,7 @@
 package v2.createAmendUkSavingsAnnualSummary
 
 import models.domain.SavingsAccountId
+import models.errors.RuleOutsideAmendmentWindowError
 import shared.controllers.EndpointLogContext
 import shared.models.domain.{Nino, TaxYear}
 import shared.models.errors._
@@ -97,7 +98,8 @@ class CreateAmendUkSavingsAnnualSummaryServiceSpec extends ServiceSpec {
           "INVALID_INCOMESOURCE_TYPE"  -> InternalError,
           "INVALID_CORRELATIONID"      -> InternalError,
           "INCOMPATIBLE_INCOME_SOURCE" -> InternalError,
-          "TAX_YEAR_NOT_SUPPORTED"     -> RuleTaxYearNotSupportedError
+          "TAX_YEAR_NOT_SUPPORTED"     -> RuleTaxYearNotSupportedError,
+          "OUTSIDE_AMENDMENT_WINDOW"   -> RuleOutsideAmendmentWindowError
         )
 
         (errors ++ tysErrors).foreach(args => (serviceError _).tupled(args))

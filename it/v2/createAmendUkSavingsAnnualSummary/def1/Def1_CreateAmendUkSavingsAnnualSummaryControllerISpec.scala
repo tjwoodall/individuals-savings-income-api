@@ -17,7 +17,7 @@
 package v2.createAmendUkSavingsAnnualSummary.def1
 
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
-import models.errors.SavingsAccountIdFormatErrorNew
+import models.errors.{RuleOutsideAmendmentWindowError, SavingsAccountIdFormatErrorNew}
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status._
 import play.api.libs.json.{JsObject, JsValue, Json}
@@ -152,6 +152,7 @@ class Def1_CreateAmendUkSavingsAnnualSummaryControllerISpec extends IntegrationB
           (FORBIDDEN, "MISSING_CHARITIES_NAME_INVESTMENT", INTERNAL_SERVER_ERROR, InternalError),
           (FORBIDDEN, "MISSING_INVESTMENT_AMOUNT", INTERNAL_SERVER_ERROR, InternalError),
           (FORBIDDEN, "INVALID_ACCOUNTING_PERIOD", BAD_REQUEST, RuleTaxYearNotSupportedError),
+          (UNPROCESSABLE_ENTITY, "OUTSIDE_AMENDMENT_WINDOW", BAD_REQUEST, RuleOutsideAmendmentWindowError),
           (GONE, "GONE", INTERNAL_SERVER_ERROR, InternalError),
           (NOT_FOUND, "NOT_FOUND", NOT_FOUND, NotFoundError),
           (INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, InternalError),

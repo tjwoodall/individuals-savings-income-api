@@ -17,7 +17,7 @@ The Individuals Savings Income API allows a developer to create, amend, retrieve
 
 Run from the console using: `sbt run` (starts on port 9770 by default)
 
-Start the service manager profile: `sm2 --start MTDFB_INDIVIDUALS_SAVINGS_INCOME`
+Start the service manager profile: `sm2 --start MTDFB_INDIVIDUALS_SAVINGS_INCOME_API`
 
 ## Run Tests
 

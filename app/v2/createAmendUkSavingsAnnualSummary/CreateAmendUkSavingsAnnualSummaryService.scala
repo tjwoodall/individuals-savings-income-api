@@ -17,6 +17,7 @@
 package v2.createAmendUkSavingsAnnualSummary
 
 import cats.implicits._
+import models.errors.RuleOutsideAmendmentWindowError
 import shared.controllers.RequestContext
 import shared.models.errors._
 import shared.services.{BaseService, ServiceOutcome}
@@ -46,6 +47,7 @@ class CreateAmendUkSavingsAnnualSummaryService @Inject() (connector: CreateAmend
       "MISSING_CHARITIES_NAME_INVESTMENT" -> InternalError,
       "MISSING_INVESTMENT_AMOUNT"         -> InternalError,
       "INVALID_ACCOUNTING_PERIOD"         -> RuleTaxYearNotSupportedError,
+      "OUTSIDE_AMENDMENT_WINDOW"          -> RuleOutsideAmendmentWindowError,
       "GONE"                              -> InternalError,
       "NOT_FOUND"                         -> NotFoundError,
       "SERVER_ERROR"                      -> InternalError,
