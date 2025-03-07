@@ -16,9 +16,11 @@
 
 package auth
 
+import play.api.http.Status.NO_CONTENT
 import play.api.libs.json.JsValue
 import play.api.libs.ws.{WSRequest, WSResponse}
 import shared.auth.AuthSupportingAgentsAllowedISpec
+import shared.services.DownstreamStub.{DELETE, HTTPMethod}
 
 class SavingsIncomeAuthSupportingAgentsAllowedISpec extends AuthSupportingAgentsAllowedISpec {
 
@@ -33,6 +35,12 @@ class SavingsIncomeAuthSupportingAgentsAllowedISpec extends AuthSupportingAgents
   def sendMtdRequest(request: WSRequest): WSResponse = await(request.delete())
 
   val downstreamUri: String = s"/income-tax/income/savings/$nino/$taxYear"
+
+  override val downstreamHttpMethod: HTTPMethod = DELETE
+
+  override val downstreamSuccessStatus: Int = NO_CONTENT
+
+  override val expectedMtdSuccessStatus: Int = NO_CONTENT
 
   val maybeDownstreamResponseJson: Option[JsValue] = None
 

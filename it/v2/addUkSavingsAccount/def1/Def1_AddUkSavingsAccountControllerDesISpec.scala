@@ -17,15 +17,19 @@
 package v2.addUkSavingsAccount.def1
 
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
+import models.errors.{AccountNameFormatError, RuleDuplicateAccountNameError, RuleMaximumSavingsAccountsLimitError}
 import play.api.http.Status._
 import play.api.libs.json.{JsObject, JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.{ACCEPT, AUTHORIZATION}
-import shared.models.errors.{AccountNameFormatError, _}
+import shared.models.errors._
 import shared.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
-import support.IntegrationBaseSpec
+import shared.support.IntegrationBaseSpec
 
-class Def1_AddUkSavingsAccountControllerISpec extends IntegrationBaseSpec {
+class Def1_AddUkSavingsAccountControllerDesISpec extends IntegrationBaseSpec {
+
+  override def servicesConfig: Map[String, Any] =
+    Map("feature-switch.des_hip_migration_1393.enabled" -> false) ++ super.servicesConfig
 
   private trait Test {
 

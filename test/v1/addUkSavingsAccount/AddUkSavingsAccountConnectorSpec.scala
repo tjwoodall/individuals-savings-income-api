@@ -16,7 +16,8 @@
 
 package v1.addUkSavingsAccount
 
-import shared.config.MockAppConfig
+import play.api.Configuration
+import shared.config.MockSharedAppConfig
 import shared.connectors.ConnectorSpec
 import shared.mocks.MockHttpClient
 import shared.models.domain.Nino
@@ -42,21 +43,33 @@ class AddUkSavingsAccountConnectorSpec extends ConnectorSpec {
     savingsAccountId = "SAVKB2UVwUTBQGJ"
   )
 
-  trait Test extends MockHttpClient with MockAppConfig {
+  trait Test extends MockHttpClient with MockSharedAppConfig {
 
     val connector: AddUkSavingsAccountConnector = new AddUkSavingsAccountConnector(
       http = mockHttpClient,
-      appConfig = mockAppConfig
+      appConfig = mockSharedAppConfig
     )
 
   }
 
-  "addSavingsConnector" when {
+  "AddUkSavingsAccountConnector" when {
     "addSavings" must {
-      "return a 200 status for a success scenario" in new DesTest with Test {
-        val outcome = Right(ResponseWrapper(correlationId, addUkSavingsAccountResponse))
+      val outcome = Right(ResponseWrapper(correlationId, addUkSavingsAccountResponse))
 
-        willPost(s"$baseUrl/income-tax/income-sources/nino/$nino", addUkSavingsAccountRequestBody).returns(Future.successful(outcome))
+      "return a 200 status for a success scenario when feature switch is disabled (DES enabled)" in new DesTest with Test {
+        MockedSharedAppConfig.featureSwitchConfig returns Configuration("des_hip_migration_1393.enabled" -> false)
+
+        willPost(s"$baseUrl/income-tax/income-sources/nino/$nino", addUkSavingsAccountRequestBody)
+          .returns(Future.successful(outcome))
+
+        await(connector.addSavings(addUkSavingsAccountRequest)) shouldBe outcome
+      }
+
+      "return a 200 status for a success scenario when feature switch is enabled (HIP enabled)" in new HipTest with Test {
+        MockedSharedAppConfig.featureSwitchConfig returns Configuration("des_hip_migration_1393.enabled" -> true)
+
+        willPost(s"$baseUrl/itsd/income-sources/$nino", addUkSavingsAccountRequestBody)
+          .returns(Future.successful(outcome))
 
         await(connector.addSavings(addUkSavingsAccountRequest)) shouldBe outcome
       }

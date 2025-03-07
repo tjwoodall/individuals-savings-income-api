@@ -17,16 +17,14 @@
 package v2.retrieveUkSavingsAccountAnnualSummary
 
 import models.domain.SavingsAccountId
+import models.errors.SavingsAccountIdFormatError
 import shared.controllers.EndpointLogContext
 import shared.models.domain.{Nino, TaxYear}
 import shared.models.errors._
 import shared.models.outcomes.ResponseWrapper
 import shared.services.ServiceSpec
 import v2.retrieveUkSavingsAccountAnnualSummary.def1.model.request.Def1_RetrieveUkSavingsAccountAnnualSummaryRequestData
-import v2.retrieveUkSavingsAccountAnnualSummary.def1.model.response.{
-  Def1_RetrieveUkSavingsAccountAnnualSummaryResponse,
-  Def1_RetrieveUkSavingsAnnualIncomeItem
-}
+import v2.retrieveUkSavingsAccountAnnualSummary.def1.model.response.{Def1_RetrieveUkSavingsAccountAnnualSummaryResponse, Def1_RetrieveUkSavingsAnnualIncomeItem}
 import v2.retrieveUkSavingsAccountAnnualSummary.model.response.RetrieveUkSavingsAccountAnnualSummaryResponse
 
 import scala.concurrent.Future

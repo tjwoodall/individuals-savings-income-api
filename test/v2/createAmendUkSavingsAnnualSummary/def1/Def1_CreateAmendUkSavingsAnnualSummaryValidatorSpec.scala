@@ -18,15 +18,15 @@ package v2.createAmendUkSavingsAnnualSummary.def1
 
 import models.domain.SavingsAccountId
 import play.api.libs.json.{JsValue, Json}
-import shared.UnitSpec
-import shared.config.MockAppConfig
 import shared.models.domain.{Nino, TaxYear}
 import shared.models.errors._
 import config.MockSavingsConfig
+import shared.config.MockSharedAppConfig
+import shared.utils.UnitSpec
 import v2.createAmendUkSavingsAnnualSummary.def1.model.request._
 import v2.createAmendUkSavingsAnnualSummary.model.request.CreateAmendUkSavingsAnnualSummaryRequestData
 
-class Def1_CreateAmendUkSavingsAnnualSummaryValidatorSpec extends UnitSpec with MockAppConfig with MockSavingsConfig {
+class Def1_CreateAmendUkSavingsAnnualSummaryValidatorSpec extends UnitSpec with MockSharedAppConfig with MockSavingsConfig {
 
   private implicit val correlationId: String = "1234"
 
@@ -98,7 +98,7 @@ class Def1_CreateAmendUkSavingsAnnualSummaryValidatorSpec extends UnitSpec with 
   private val parsedMtdBody         = validMtdRequestBodyJson.as[Def1_CreateAmendUkSavingsAnnualSummaryRequestBody]
 
   private def validator(nino: String, taxYear: String, savingsAccountId: String, body: JsValue) =
-    new Def1_CreateAmendUkSavingsAnnualSummaryValidator(nino, taxYear, savingsAccountId, body)(mockAppConfig, mockSavingsConfig)
+    new Def1_CreateAmendUkSavingsAnnualSummaryValidator(nino, taxYear, savingsAccountId, body)(mockSharedAppConfig, mockSavingsConfig)
 
   "validator" should {
     "return the parsed domain object" when {

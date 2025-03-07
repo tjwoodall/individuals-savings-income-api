@@ -19,12 +19,13 @@ package v1.deleteSavings
 import play.api.libs.json.JsValue
 import play.api.mvc.Result
 import play.api.Configuration
-import shared.config.MockAppConfig
+import shared.config.MockSharedAppConfig
 import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import shared.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
 import shared.models.domain.{Nino, TaxYear}
 import shared.models.errors._
 import shared.models.outcomes.ResponseWrapper
+import shared.routing.{Version, Version1}
 import v1.deleteSavings.def1.model.request.Def1_DeleteSavingsRequestData
 import v1.deleteSavings.model.request.DeleteSavingsRequestData
 
@@ -36,7 +37,9 @@ class DeleteSavingsControllerSpec
     with ControllerTestRunner
     with MockDeleteSavingsService
     with MockDeleteSavingsValidatorFactory
-    with MockAppConfig {
+    with MockSharedAppConfig {
+
+  override val apiVersion: Version = Version1
 
   private val taxYear = "2021-22"
 
@@ -89,11 +92,11 @@ class DeleteSavingsControllerSpec
       idGenerator = mockIdGenerator
     )
 
-    MockedAppConfig.featureSwitchConfig.anyNumberOfTimes() returns Configuration(
+    MockedSharedAppConfig.featureSwitchConfig.anyNumberOfTimes() returns Configuration(
       "supporting-agents-access-control.enabled" -> true
     )
 
-    MockedAppConfig
+    MockedSharedAppConfig
       .endpointAllowsSupportingAgents(controller.endpointName)
       .anyNumberOfTimes() returns true
 

@@ -20,7 +20,7 @@ import cats.data.Validated
 import cats.implicits.catsSyntaxTuple3Semigroupal
 import play.api.libs.json.JsValue
 import config.SavingsConfig
-import shared.config.AppConfig
+import shared.config.SharedAppConfig
 import shared.controllers.validators.Validator
 import shared.controllers.validators.resolvers.{ResolveNino, ResolveNonEmptyJsonObject, ResolveTaxYearMinimum}
 import shared.models.domain.TaxYear
@@ -29,7 +29,7 @@ import v1.createAmendSavings.def1.Def1_CreateAmendSavingsRulesValidator.validate
 import v1.createAmendSavings.def1.model.request.{Def1_CreateAmendSavingsRequestBody, Def1_CreateAmendSavingsRequestData}
 import v1.createAmendSavings.model.request.CreateAmendSavingsRequestData
 
-class Def1_CreateAmendSavingsValidator(nino: String, taxYear: String, body: JsValue)(appConfig: AppConfig, savingsConfig: SavingsConfig)
+class Def1_CreateAmendSavingsValidator(nino: String, taxYear: String, body: JsValue)(appConfig: SharedAppConfig, savingsConfig: SavingsConfig)
     extends Validator[CreateAmendSavingsRequestData] {
 
   private lazy val minimumTaxYear = savingsConfig.minimumPermittedTaxYear

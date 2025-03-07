@@ -20,7 +20,7 @@ import models.domain.SavingsAccountId
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
 import play.api.Configuration
-import shared.config.MockAppConfig
+import shared.config.MockSharedAppConfig
 import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import shared.models.domain.Nino
 import shared.models.errors.{ErrorWrapper, NinoFormatError, NotFoundError}
@@ -36,7 +36,7 @@ class ListUkSavingsAccountsControllerSpec
     with ControllerTestRunner
     with MockListUkSavingsAccountsService
     with MockListUkSavingsAccountsValidatorFactory
-    with MockAppConfig {
+    with MockSharedAppConfig {
 
   val nino: String                       = "AA123456A"
   val savingsAccountId: SavingsAccountId = SavingsAccountId("SAVKB2UVwUTBQGJ")
@@ -120,11 +120,11 @@ class ListUkSavingsAccountsControllerSpec
       idGenerator = mockIdGenerator
     )
 
-    MockedAppConfig.featureSwitchConfig.anyNumberOfTimes() returns Configuration(
+    MockedSharedAppConfig.featureSwitchConfig.anyNumberOfTimes() returns Configuration(
       "supporting-agents-access-control.enabled" -> true
     )
 
-    MockedAppConfig
+    MockedSharedAppConfig
       .endpointAllowsSupportingAgents(controller.endpointName)
       .anyNumberOfTimes() returns true
 

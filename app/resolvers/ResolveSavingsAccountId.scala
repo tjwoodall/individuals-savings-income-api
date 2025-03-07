@@ -18,7 +18,7 @@ package resolvers
 
 import cats.data.Validated
 import models.domain.SavingsAccountId
-import models.errors.SavingsAccountIdFormatErrorNew
+import models.errors.SavingsAccountIdFormatError
 import shared.controllers.validators.resolvers.{ResolveStringPattern, ResolverSupport}
 import shared.models.errors.MtdError
 
@@ -27,7 +27,7 @@ object ResolveSavingsAccountId extends ResolverSupport {
   private val savingsAccountIdRegex = "^[A-Za-z0-9]{15}$".r
 
   val resolver: Resolver[String, SavingsAccountId] = {
-    ResolveStringPattern(savingsAccountIdRegex, SavingsAccountIdFormatErrorNew).resolver.map(SavingsAccountId)
+    ResolveStringPattern(savingsAccountIdRegex, SavingsAccountIdFormatError).resolver.map(SavingsAccountId)
   }
 
   def apply(value: String): Validated[Seq[MtdError], SavingsAccountId] = resolver(value)

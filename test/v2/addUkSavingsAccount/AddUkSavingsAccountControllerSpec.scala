@@ -16,10 +16,11 @@
 
 package v2.addUkSavingsAccount
 
+import models.errors.RuleMaximumSavingsAccountsLimitError
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
 import play.api.Configuration
-import shared.config.MockAppConfig
+import shared.config.MockSharedAppConfig
 import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import shared.models.audit._
 import shared.models.domain.Nino
@@ -34,7 +35,7 @@ import scala.concurrent.Future
 class AddUkSavingsAccountControllerSpec
     extends ControllerBaseSpec
     with ControllerTestRunner
-    with MockAppConfig
+    with MockSharedAppConfig
     with MockAddUkSavingsAccountService
     with MockAddUkSavingsAccountValidatorFactory {
 
@@ -44,7 +45,7 @@ class AddUkSavingsAccountControllerSpec
   "AddUkSavingsAccountController" should {
     "return OK" when {
       "happy path" in new Test {
-        MockedAppConfig.apiGatewayContext.returns("individuals/savings-income").anyNumberOfTimes()
+        MockedSharedAppConfig.apiGatewayContext.returns("individuals/savings-income").anyNumberOfTimes()
         willUseValidator(returningSuccess(requestData))
 
         MockAddUkSavingsAccountService
@@ -61,7 +62,7 @@ class AddUkSavingsAccountControllerSpec
       }
 
       "the service returns an error" in new Test {
-        MockedAppConfig.apiGatewayContext.returns("individuals/savings-income").anyNumberOfTimes()
+        MockedSharedAppConfig.apiGatewayContext.returns("individuals/savings-income").anyNumberOfTimes()
         willUseValidator(returningSuccess(requestData))
 
         MockAddUkSavingsAccountService
@@ -85,11 +86,11 @@ class AddUkSavingsAccountControllerSpec
       idGenerator = mockIdGenerator
     )
 
-    MockedAppConfig.featureSwitchConfig.anyNumberOfTimes() returns Configuration(
+    MockedSharedAppConfig.featureSwitchConfig.anyNumberOfTimes() returns Configuration(
       "supporting-agents-access-control.enabled" -> true
     )
 
-    MockedAppConfig
+    MockedSharedAppConfig
       .endpointAllowsSupportingAgents(controller.endpointName)
       .anyNumberOfTimes() returns true
 

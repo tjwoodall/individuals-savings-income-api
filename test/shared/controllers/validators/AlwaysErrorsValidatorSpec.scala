@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,12 +14,21 @@
  * limitations under the License.
  */
 
-package shared
+package shared.controllers.validators
 
-import org.scalamock.scalatest.MockFactory
-import org.scalatest.EitherValues
-import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.AnyWordSpecLike
-import play.api.test.{DefaultAwaitTimeout, FutureAwaits}
+import cats.data.Validated.Invalid
+import play.api.http.Status
+import shared.models.errors.MtdError
+import shared.utils.UnitSpec
 
-trait UnitSpec extends AnyWordSpecLike with MockFactory with EitherValues with Matchers with FutureAwaits with DefaultAwaitTimeout
+class AlwaysErrorsValidatorSpec extends UnitSpec {
+
+  "AlwaysErrorsValidator" must {
+    "always return the errors that it is constructed with" in {
+      val errors = Seq(MtdError("E1", "", Status.BAD_REQUEST), MtdError("E2", "", Status.BAD_REQUEST))
+
+      AlwaysErrorsValidator(errors).validate shouldBe Invalid(errors)
+    }
+  }
+
+}

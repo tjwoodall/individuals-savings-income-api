@@ -16,8 +16,8 @@
 
 package v1.listUkSavingsAccounts
 
-import shared.UnitSpec
 import shared.controllers.validators.Validator
+import shared.utils.UnitSpec
 import v1.listUkSavingsAccounts.def1.Def1_ListUkSavingsAccountsValidator
 import v1.listUkSavingsAccounts.model.request.ListUkSavingsAccountsRequestData
 

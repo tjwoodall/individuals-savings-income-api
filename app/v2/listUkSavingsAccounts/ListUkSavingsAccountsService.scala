@@ -17,6 +17,7 @@
 package v2.listUkSavingsAccounts
 
 import cats.implicits._
+import models.errors.SavingsAccountIdFormatError
 import shared.controllers.RequestContext
 import shared.models.errors._
 import shared.services.{BaseService, ServiceOutcome}

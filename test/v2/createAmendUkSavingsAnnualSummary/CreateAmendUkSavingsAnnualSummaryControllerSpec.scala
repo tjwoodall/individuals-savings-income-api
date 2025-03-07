@@ -20,20 +20,17 @@ import models.domain.SavingsAccountId
 import play.api.libs.json.{JsObject, JsValue}
 import play.api.mvc.Result
 import play.api.Configuration
-import shared.config.MockAppConfig
+import shared.config.MockSharedAppConfig
 import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
-import shared.models.audit.GenericAuditDetailFixture.nino
 import shared.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
 import shared.models.auth.UserDetails
 import shared.models.domain.{Nino, TaxYear}
 import shared.models.errors._
 import shared.models.outcomes.ResponseWrapper
+import shared.routing.{Version, Version2}
 import shared.services.{MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService}
 import shared.utils.MockIdGenerator
-import v2.createAmendUkSavingsAnnualSummary.def1.model.request.{
-  Def1_CreateAmendUkSavingsAnnualSummaryRequestBody,
-  Def1_CreateAmendUkSavingsAnnualSummaryRequestData
-}
+import v2.createAmendUkSavingsAnnualSummary.def1.model.request.{Def1_CreateAmendUkSavingsAnnualSummaryRequestBody, Def1_CreateAmendUkSavingsAnnualSummaryRequestData}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -47,7 +44,9 @@ class CreateAmendUkSavingsAnnualSummaryControllerSpec
     with MockCreateAmendUkSavingsAnnualSummaryService
     with MockIdGenerator
     with MockAuditService
-    with MockAppConfig {
+    with MockSharedAppConfig {
+
+  override val apiVersion: Version = Version2
 
   val taxYear: String          = "2019-20"
   val savingsAccountId: String = "acctId"
@@ -56,7 +55,7 @@ class CreateAmendUkSavingsAnnualSummaryControllerSpec
   val requestJson: JsObject = JsObject.empty
 
   val requestData: Def1_CreateAmendUkSavingsAnnualSummaryRequestData = Def1_CreateAmendUkSavingsAnnualSummaryRequestData(
-    nino = Nino(nino),
+    nino = Nino(validNino),
     taxYear = TaxYear.fromMtd(taxYear),
     savingsAccountId = SavingsAccountId(savingsAccountId),
     mtdBody = Def1_CreateAmendUkSavingsAnnualSummaryRequestBody(None, None)
@@ -103,18 +102,18 @@ class CreateAmendUkSavingsAnnualSummaryControllerSpec
       auditService = mockAuditService,
       cc = cc,
       idGenerator = mockIdGenerator
-    )(appConfig = mockAppConfig, ec = global)
+    )(appConfig = mockSharedAppConfig, ec = global)
 
-    MockedAppConfig.featureSwitchConfig.anyNumberOfTimes() returns Configuration(
+    MockedSharedAppConfig.featureSwitchConfig.anyNumberOfTimes() returns Configuration(
       "supporting-agents-access-control.enabled" -> true
     )
 
-    MockedAppConfig
+    MockedSharedAppConfig
       .endpointAllowsSupportingAgents(controller.endpointName)
       .anyNumberOfTimes() returns true
 
     protected def callController(): Future[Result] =
-      controller.createAmendUkSavingsAnnualSummary(nino, taxYear, savingsAccountId)(fakePostRequest(requestJson))
+      controller.createAmendUkSavingsAnnualSummary(validNino, taxYear, savingsAccountId)(fakePostRequest(requestJson))
 
     def event(auditResponse: AuditResponse, requestBody: Option[JsValue]): AuditEvent[GenericAuditDetail] = {
       AuditEvent(
@@ -123,7 +122,7 @@ class CreateAmendUkSavingsAnnualSummaryControllerSpec
         detail = GenericAuditDetail(
           UserDetails(mtdId, "Individual", None),
           "2.0",
-          Map("nino" -> nino, "taxYear" -> taxYear, "savingsAccountId" -> savingsAccountId),
+          Map("nino" -> validNino, "taxYear" -> taxYear, "savingsAccountId" -> savingsAccountId),
           requestBody,
           correlationId,
           auditResponse

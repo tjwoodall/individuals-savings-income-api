@@ -58,7 +58,7 @@ class RetrieveUkSavingsAccountAnnualSummaryConnectorSpec extends ConnectorSpec w
 
     val connector: RetrieveUkSavingsAccountAnnualSummaryConnector = new RetrieveUkSavingsAccountAnnualSummaryConnector(
       http = mockHttpClient,
-      appConfig = mockAppConfig,
+      appConfig = mockSharedAppConfig,
       savingsConfig = mockSavingsConfig
     )
 

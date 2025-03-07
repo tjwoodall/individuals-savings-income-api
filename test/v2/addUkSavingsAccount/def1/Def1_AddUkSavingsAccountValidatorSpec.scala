@@ -16,10 +16,11 @@
 
 package v2.addUkSavingsAccount.def1
 
+import models.errors.AccountNameFormatError
 import play.api.libs.json.{JsObject, JsValue, Json}
-import shared.UnitSpec
 import shared.models.domain.Nino
-import shared.models.errors.{AccountNameFormatError, ErrorWrapper, NinoFormatError, RuleIncorrectOrEmptyBodyError}
+import shared.models.errors.{ErrorWrapper, NinoFormatError, RuleIncorrectOrEmptyBodyError}
+import shared.utils.UnitSpec
 import v2.addUkSavingsAccount.def1.model.request.{Def1_AddUkSavingsAccountRequestBody, Def1_AddUkSavingsAccountRequestData}
 import v2.addUkSavingsAccount.model.request.AddUkSavingsAccountRequestData
 

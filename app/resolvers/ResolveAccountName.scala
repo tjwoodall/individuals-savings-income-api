@@ -16,9 +16,9 @@
 
 package resolvers
 
-import shared.models.errors.AccountNameFormatError
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
+import models.errors.AccountNameFormatError
 import resolvers.ResolveAccountName.regex
 import shared.models.errors.MtdError
 

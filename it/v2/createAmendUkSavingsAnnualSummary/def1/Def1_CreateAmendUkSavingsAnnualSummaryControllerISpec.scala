@@ -17,7 +17,7 @@
 package v2.createAmendUkSavingsAnnualSummary.def1
 
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
-import models.errors.{RuleOutsideAmendmentWindowError, SavingsAccountIdFormatErrorNew}
+import models.errors.{RuleOutsideAmendmentWindowError, SavingsAccountIdFormatError}
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status._
 import play.api.libs.json.{JsObject, JsValue, Json}
@@ -25,9 +25,9 @@ import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
 import shared.models.errors._
 import shared.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
-import support.{IntegrationBaseSpec, WireMockMethods}
+import shared.support.IntegrationBaseSpec
 
-class Def1_CreateAmendUkSavingsAnnualSummaryControllerISpec extends IntegrationBaseSpec with WireMockMethods {
+class Def1_CreateAmendUkSavingsAnnualSummaryControllerISpec extends IntegrationBaseSpec {
 
   val requestJson: JsValue =
     Json.parse("""{
@@ -100,7 +100,7 @@ class Def1_CreateAmendUkSavingsAnnualSummaryControllerISpec extends IntegrationB
           ("AA123456A", "BAD_TAX_YEAR", "ABCDE1234567890", requestJson, BAD_REQUEST, TaxYearFormatError),
           ("AA123456A", "2020-22", "ABCDE1234567890", requestJson, BAD_REQUEST, RuleTaxYearRangeInvalidError),
           ("AA123456A", "2016-17", "ABCDE1234567890", requestJson, BAD_REQUEST, RuleTaxYearNotSupportedError),
-          ("AA123456A", "2020-21", "BAD_ACCT_ID", requestJson, BAD_REQUEST, SavingsAccountIdFormatErrorNew),
+          ("AA123456A", "2020-21", "BAD_ACCT_ID", requestJson, BAD_REQUEST, SavingsAccountIdFormatError),
           ("AA123456A", "2020-21", "ABCDE1234567890", JsObject.empty, BAD_REQUEST, RuleIncorrectOrEmptyBodyError),
           (
             "AA123456A",

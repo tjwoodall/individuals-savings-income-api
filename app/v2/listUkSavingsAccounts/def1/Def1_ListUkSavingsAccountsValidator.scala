@@ -20,9 +20,10 @@ import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
 import cats.implicits.catsSyntaxTuple2Semigroupal
 import models.domain.SavingsAccountId
+import models.errors.SavingsAccountIdFormatError
 import shared.controllers.validators.Validator
 import shared.controllers.validators.resolvers.ResolveNino
-import shared.models.errors.{MtdError, SavingsAccountIdFormatError}
+import shared.models.errors.MtdError
 import v2.listUkSavingsAccounts.def1.model.request.Def1_ListUkSavingsAccountsRequestData
 import v2.listUkSavingsAccounts.model.request.ListUkSavingsAccountsRequestData
 

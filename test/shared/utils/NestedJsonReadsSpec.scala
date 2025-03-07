@@ -18,7 +18,6 @@ package shared.utils
 
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
-import shared.UnitSpec
 import shared.utils.NestedJsonReads._
 
 class NestedJsonReadsSpec extends UnitSpec {
@@ -56,20 +55,6 @@ class NestedJsonReadsSpec extends UnitSpec {
       |  }
       |}""".stripMargin)
 
-  "Valid Json" should {
-
-    "return JsSuccess" in {
-      firstOutput.validate[Test] shouldBe a[JsSuccess[_]]
-    }
-  }
-
-  "A missing path" should {
-
-    "return a None" in {
-      firstOutput.as[Test] shouldBe Test("string", None)
-    }
-  }
-
   val fourthOutput: JsValue = Json.parse("""{
       | "a" : {
       |   "b" : {
@@ -80,21 +65,55 @@ class NestedJsonReadsSpec extends UnitSpec {
       |  }
       |}""".stripMargin)
 
-  "With no missing sections" should {
+  val jsonWithNull: JsValue = Json.parse("""{
+      | "a" : {
+      |   "b" : {
+      |     "c" : "string"
+      |   },
+      |   "c" : {
+      |     "e" : null
+      |   }
+      |  }
+      |}""".stripMargin)
 
+  "Valid Json" should {
+
+    "return JsSuccess" in {
+      firstOutput.validate[Test] shouldBe a[JsSuccess[_]]
+    }
+  }
+
+  "A missing path" should {
+    "return a None" in {
+      firstOutput.as[Test] shouldBe Test("string", None)
+    }
+  }
+
+  "With no missing sections" should {
     "return a full test as the second parameter" in {
       secondOutput.as[Test] shouldBe Test("string", Some("example"))
     }
   }
 
-  case class Test(param: String, param3: Option[String])
+  "With no missing sections and a null value" should {
+    "return a full test as the second parameter" in {
+      jsonWithNull.as[Test] shouldBe Test("string", None)
+    }
+  }
 
   "Path with an invalid data type" should {
-
     "return a None " in {
       thirdOutput.validate[Test] shouldBe a[JsError]
     }
   }
+
+  "Empty path" should {
+    "return a None " in {
+      fourthOutput.validate[Test] shouldBe a[JsSuccess[_]]
+    }
+  }
+
+  case class Test(param: String, param3: Option[String])
 
   object Test {
 
@@ -103,13 +122,6 @@ class NestedJsonReadsSpec extends UnitSpec {
         (__ \ "a" \ "c" \ "e").readNestedNullable[String]
     )(Test.apply _)
 
-  }
-
-  "Empty path" should {
-
-    "return a None " in {
-      fourthOutput.validate[Test] shouldBe a[JsSuccess[_]]
-    }
   }
 
 }

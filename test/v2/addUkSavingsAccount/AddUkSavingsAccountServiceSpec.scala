@@ -16,6 +16,7 @@
 
 package v2.addUkSavingsAccount
 
+import models.errors.{RuleDuplicateAccountNameError, RuleMaximumSavingsAccountsLimitError}
 import shared.controllers.EndpointLogContext
 import shared.models.domain.Nino
 import shared.models.errors._
@@ -51,42 +52,50 @@ class AddUkSavingsAccountServiceSpec extends ServiceSpec {
 
   }
 
-  "addSavings" should {
-    "return a 200 status for a success scenario" when {
-      "valid request is supplied" in new Test {
-        private val outcome = Right(ResponseWrapper(correlationId, addUkSavingsAccountResponse))
-
-        MockAddUkSavingsAccountConnector
-          .addSavings(addUkSavingsAccountRequest)
-          .returns(Future.successful(outcome))
-
-        await(service.addSavings(addUkSavingsAccountRequest)) shouldBe outcome
-      }
-    }
-    "map errors according to spec" when {
-
-      def serviceError(desErrorCode: String, error: MtdError): Unit =
-        s"a $desErrorCode error is returned from the service" in new Test {
+  "AddUkSavingsAccountService" when {
+    "addSavings" should {
+      "return a 200 status for a success scenario" when {
+        "valid request is supplied" in new Test {
+          private val outcome = Right(ResponseWrapper(correlationId, addUkSavingsAccountResponse))
 
           MockAddUkSavingsAccountConnector
             .addSavings(addUkSavingsAccountRequest)
-            .returns(Future.successful(Left(ResponseWrapper(correlationId, DownstreamErrors.single(DownstreamErrorCode(desErrorCode))))))
+            .returns(Future.successful(outcome))
 
-          await(service.addSavings(addUkSavingsAccountRequest)) shouldBe Left(ErrorWrapper(correlationId, error))
+          await(service.addSavings(addUkSavingsAccountRequest)) shouldBe outcome
         }
+      }
 
-      val input = List(
-        ("INVALID_IDVALUE", NinoFormatError),
-        ("MAX_ACCOUNTS_REACHED", RuleMaximumSavingsAccountsLimitError),
-        ("ALREADY_EXISTS", RuleDuplicateAccountNameError),
-        ("INVALID_IDTYPE", InternalError),
-        ("INVALID_PAYLOAD", InternalError),
-        ("SERVER_ERROR", InternalError),
-        ("SERVICE_UNAVAILABLE", InternalError)
-      )
+      "map errors according to spec" when {
+        def serviceError(downstreamErrorCode: String, error: MtdError): Unit =
+          s"a code $downstreamErrorCode error is returned from the service" in new Test {
 
-      input.foreach(args => (serviceError _).tupled(args))
+            MockAddUkSavingsAccountConnector
+              .addSavings(addUkSavingsAccountRequest)
+              .returns(Future.successful(Left(ResponseWrapper(correlationId, DownstreamErrors.single(DownstreamErrorCode(downstreamErrorCode))))))
 
+            await(service.addSavings(addUkSavingsAccountRequest)) shouldBe Left(ErrorWrapper(correlationId, error))
+          }
+
+        val desErrors = List(
+          ("INVALID_IDVALUE", NinoFormatError),
+          ("MAX_ACCOUNTS_REACHED", RuleMaximumSavingsAccountsLimitError),
+          ("ALREADY_EXISTS", RuleDuplicateAccountNameError),
+          ("INVALID_IDTYPE", InternalError),
+          ("INVALID_PAYLOAD", InternalError),
+          ("SERVER_ERROR", InternalError),
+          ("SERVICE_UNAVAILABLE", InternalError)
+        )
+
+        val hipErrors = List(
+          ("1215", NinoFormatError),
+          ("1011", RuleMaximumSavingsAccountsLimitError),
+          ("1214", RuleDuplicateAccountNameError),
+          ("1000", InternalError)
+        )
+
+        (desErrors ++ hipErrors).foreach(args => (serviceError _).tupled(args))
+      }
     }
   }
 

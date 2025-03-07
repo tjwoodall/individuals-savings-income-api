@@ -59,7 +59,7 @@ class DeleteSavingsConnectorSpec extends ConnectorSpec {
 
     val connector: DeleteSavingsConnector = new DeleteSavingsConnector(
       http = mockHttpClient,
-      appConfig = mockAppConfig
+      appConfig = mockSharedAppConfig
     )
 
     lazy val request: DeleteSavingsRequestData = Def1_DeleteSavingsRequestData(Nino("AA111111A"), TaxYear.fromMtd(taxYear))

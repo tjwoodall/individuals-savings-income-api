@@ -16,18 +16,18 @@
 
 package v1.deleteSavings
 
-import shared.UnitSpec
-import shared.config.MockAppConfig
 import config.MockSavingsConfig
+import shared.config.MockSharedAppConfig
+import shared.utils.UnitSpec
 import v1.deleteSavings.def1.Def1_DeleteSavingsValidator
 
-class DeleteSavingsValidatorFactorySpec extends UnitSpec with MockAppConfig with MockSavingsConfig {
+class DeleteSavingsValidatorFactorySpec extends UnitSpec with MockSharedAppConfig with MockSavingsConfig {
   private val validNino    = "AA123456A"
   private val validTaxYear = "2020-21"
 
   private val invalidNino    = "not-a-nino"
   private val invalidTaxYear = "not-a-tax-year"
-  val validatorFactory       = new DeleteSavingsValidatorFactory(mockAppConfig, mockSavingsConfig)
+  val validatorFactory       = new DeleteSavingsValidatorFactory(mockSharedAppConfig, mockSavingsConfig)
 
   "validator" should {
     "return the Def1 validator" when {

@@ -17,6 +17,7 @@
 package v2.retrieveUkSavingsAccountAnnualSummary
 
 import cats.data.EitherT
+import models.errors.SavingsAccountIdFormatError
 import shared.controllers.{EndpointLogContext, RequestContext}
 import shared.models.errors._
 import shared.models.outcomes.ResponseWrapper

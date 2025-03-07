@@ -23,14 +23,13 @@ import play.api.mvc.{AnyContentAsEmpty, ControllerComponents, Result}
 import play.api.test.Helpers.stubControllerComponents
 import play.api.test.{FakeRequest, ResultExtractors}
 import shared.config.Deprecation.NotDeprecated
-import shared.config.{MockAppConfig, RealAppConfig}
+import shared.config.{MockSharedAppConfig, RealAppConfig}
 import shared.models.audit.{AuditError, AuditEvent, AuditResponse}
 import shared.models.domain.Nino
 import shared.models.errors.{BadRequestError, ErrorWrapper, MtdError}
-import shared.routing.{Version, Version1}
+import shared.routing.{Version, Version9}
 import shared.services.{MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService}
-import shared.UnitSpec
-import shared.utils.MockIdGenerator
+import shared.utils.{MockIdGenerator, UnitSpec}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.Future
@@ -43,9 +42,9 @@ abstract class ControllerBaseSpec
     with ResultExtractors
     with MockAuditService
     with ControllerSpecHateoasSupport
-    with MockAppConfig {
+    with MockSharedAppConfig {
 
-  protected val apiVersion: Version = Version1
+  protected val apiVersion: Version = Version9
 
   lazy val fakeRequest: FakeRequest[AnyContentAsEmpty.type] =
     FakeRequest().withHeaders(HeaderNames.ACCEPT -> s"application/vnd.hmrc.${apiVersion.name}+json")
@@ -75,9 +74,9 @@ trait ControllerTestRunner extends MockEnrolmentsAuthService with MockMtdIdLooku
 
     MockedMtdIdLookupService.lookup(validNino).returns(Future.successful(Right("test-mtd-id")))
     MockedEnrolmentsAuthService.authoriseUser()
-    MockIdGenerator.generateCorrelationId.returns(correlationId)
+    MockedIdGenerator.generateCorrelationId.returns(correlationId)
 
-    MockedAppConfig
+    MockedSharedAppConfig
       .deprecationFor(apiVersion)
       .returns(NotDeprecated.valid)
       .anyNumberOfTimes()

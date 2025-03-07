@@ -16,7 +16,6 @@
 
 package shared.utils
 
-import shared.models.errors._
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.Configuration
 import play.api.http.Status
@@ -25,7 +24,7 @@ import play.api.libs.json.Json
 import play.api.mvc.{AnyContent, RequestHeader, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import shared.UnitSpec
+import shared.models.errors._
 import uk.gov.hmrc.auth.core.InsufficientEnrolments
 import uk.gov.hmrc.http.{HeaderCarrier, JsValidationException, NotFoundException}
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
@@ -39,47 +38,6 @@ import scala.concurrent.{ExecutionContext, Future}
 import scala.util.control.NoStackTrace
 
 class ErrorHandlerSpec extends UnitSpec with GuiceOneAppPerSuite {
-
-  def anyVersionHeader: (String, String) = ACCEPT -> s"application/vnd.hmrc.1.0+json"
-
-  class Test() {
-    val method = "some-method"
-
-    val requestHeader: FakeRequest[AnyContent] = FakeRequest().withHeaders(anyVersionHeader)
-
-    val auditConnector: AuditConnector = mock[AuditConnector]
-    val httpAuditEvent: HttpAuditEvent = mock[HttpAuditEvent]
-
-    val eventTags: Map[String, String] = Map("transactionName" -> "event.transactionName")
-
-    val dataEvent: DataEvent = DataEvent(
-      auditSource = "auditSource",
-      auditType = "event.auditType",
-      eventId = "",
-      tags = eventTags,
-      detail = Map("test" -> "test"),
-      generatedAt = Instant.now()
-    )
-
-    (httpAuditEvent
-      .dataEvent(_: String, _: String, _: RequestHeader, _: Map[String, String], _: TruncationLog)(_: HeaderCarrier))
-      .expects(*, *, *, *, *, *)
-      .returns(dataEvent)
-
-    (auditConnector
-      .sendEvent(_: DataEvent)(_: HeaderCarrier, _: ExecutionContext))
-      .expects(*, *, *)
-      .returns(Future.successful(Success))
-
-    val configuration: Configuration = Configuration(
-      "appName"                                         -> "myApp",
-      "bootstrap.errorHandler.warnOnly.statusCodes"     -> List(OK),
-      "bootstrap.errorHandler.suppress4xxErrorMessages" -> false,
-      "bootstrap.errorHandler.suppress5xxErrorMessages" -> false
-    )
-
-    val handler = new ErrorHandler(configuration, auditConnector, httpAuditEvent)
-  }
 
   "onClientError" should {
     "return 404 with error body" when {
@@ -184,6 +142,47 @@ class ErrorHandlerSpec extends UnitSpec with GuiceOneAppPerSuite {
         contentAsJson(result) shouldBe InternalError.asJson
       }
     }
+  }
+
+  def anyVersionHeader: (String, String) = ACCEPT -> s"application/vnd.hmrc.1.0+json"
+
+  class Test {
+    val method = "some-method"
+
+    val requestHeader: FakeRequest[AnyContent] = FakeRequest().withHeaders(anyVersionHeader)
+
+    val auditConnector: AuditConnector = mock[AuditConnector]
+    val httpAuditEvent: HttpAuditEvent = mock[HttpAuditEvent]
+
+    val eventTags: Map[String, String] = Map("transactionName" -> "event.transactionName")
+
+    val dataEvent: DataEvent = DataEvent(
+      auditSource = "auditSource",
+      auditType = "event.auditType",
+      eventId = "",
+      tags = eventTags,
+      detail = Map("test" -> "test"),
+      generatedAt = Instant.now()
+    )
+
+    (httpAuditEvent
+      .dataEvent(_: String, _: String, _: RequestHeader, _: Map[String, String], _: TruncationLog)(_: HeaderCarrier))
+      .expects(*, *, *, *, *, *)
+      .returns(dataEvent)
+
+    (auditConnector
+      .sendEvent(_: DataEvent)(_: HeaderCarrier, _: ExecutionContext))
+      .expects(*, *, *)
+      .returns(Future.successful(Success))
+
+    val configuration: Configuration = Configuration(
+      "appName"                                         -> "myApp",
+      "bootstrap.errorHandler.warnOnly.statusCodes"     -> List(OK),
+      "bootstrap.errorHandler.suppress4xxErrorMessages" -> false,
+      "bootstrap.errorHandler.suppress5xxErrorMessages" -> false
+    )
+
+    val handler = new ErrorHandler(configuration, auditConnector, httpAuditEvent)
   }
 
 }

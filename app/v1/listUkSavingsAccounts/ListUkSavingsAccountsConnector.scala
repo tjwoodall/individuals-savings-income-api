@@ -17,7 +17,7 @@
 package v1.listUkSavingsAccounts
 
 import config.SavingsConfig
-import shared.config.AppConfig
+import shared.config.SharedAppConfig
 import shared.connectors.DownstreamUri.{DesUri, IfsUri}
 import shared.connectors.httpparsers.StandardDownstreamHttpParser.reads
 import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome}
@@ -29,7 +29,7 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class ListUkSavingsAccountsConnector @Inject() (val http: HttpClient, val appConfig: AppConfig, val savingsConfig: SavingsConfig)
+class ListUkSavingsAccountsConnector @Inject() (val http: HttpClient, val appConfig: SharedAppConfig, val savingsConfig: SavingsConfig)
     extends BaseDownstreamConnector {
 
   def listUkSavingsAccounts(request: ListUkSavingsAccountsRequestData)(implicit

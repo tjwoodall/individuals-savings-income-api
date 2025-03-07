@@ -17,7 +17,7 @@
 package v1.retrieveSavings
 
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
-import shared.config.AppConfig
+import shared.config.SharedAppConfig
 import shared.controllers.{AuthorisedController, EndpointLogContext, RequestContext, RequestHandler}
 import shared.services.{EnrolmentsAuthService, MtdIdLookupService}
 import shared.utils.IdGenerator
@@ -31,7 +31,7 @@ class RetrieveSavingsController @Inject() (val authService: EnrolmentsAuthServic
                                            validatorFactory: RetrieveSavingsValidatorFactory,
                                            service: RetrieveSavingsService,
                                            cc: ControllerComponents,
-                                           val idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: AppConfig)
+                                           val idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: SharedAppConfig)
     extends AuthorisedController(cc) {
 
   val endpointName: String = "retrieve-savings"

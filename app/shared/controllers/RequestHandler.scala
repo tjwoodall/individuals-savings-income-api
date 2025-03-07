@@ -23,7 +23,7 @@ import play.api.http.Status
 import play.api.libs.json.{JsValue, Writes}
 import play.api.mvc.Result
 import play.api.mvc.Results.InternalServerError
-import shared.config.AppConfig
+import shared.config.SharedAppConfig
 import shared.config.Deprecation.Deprecated
 import shared.controllers.validators.Validator
 import shared.hateoas.{HateoasData, HateoasFactory, HateoasLinksFactory, HateoasWrapper}
@@ -37,7 +37,7 @@ import shared.utils.Logging
 import scala.concurrent.{ExecutionContext, Future}
 
 trait RequestHandler {
-  def handleRequest()(implicit ctx: RequestContext, request: UserRequest[_], ec: ExecutionContext, appConfig: AppConfig): Future[Result]
+  def handleRequest()(implicit ctx: RequestContext, request: UserRequest[_], ec: ExecutionContext, appConfig: SharedAppConfig): Future[Result]
 }
 
 object RequestHandler {
@@ -57,10 +57,11 @@ object RequestHandler {
       service: Input => Future[ServiceOutcome[Output]],
       errorHandling: ErrorHandling = ErrorHandling.Default,
       resultCreator: ResultCreator[Input, Output] = ResultCreator.noContent[Input, Output](),
-      auditHandler: Option[AuditHandler] = None
+      auditHandler: Option[AuditHandler] = None,
+      responseModifier: Option[Output => Output] = None
   ) extends RequestHandler {
 
-    def handleRequest()(implicit ctx: RequestContext, request: UserRequest[_], ec: ExecutionContext, appConfig: AppConfig): Future[Result] =
+    def handleRequest()(implicit ctx: RequestContext, request: UserRequest[_], ec: ExecutionContext, appConfig: SharedAppConfig): Future[Result] =
       Delegate.handleRequest()
 
     def withErrorHandling(errorHandling: ErrorHandling): RequestHandlerBuilder[Input, Output] =
@@ -68,6 +69,9 @@ object RequestHandler {
 
     def withAuditing(auditHandler: AuditHandler): RequestHandlerBuilder[Input, Output] =
       copy(auditHandler = Some(auditHandler))
+
+    def withResponseModifier(responseModifier: Output => Output): RequestHandlerBuilder[Input, Output] =
+      copy(responseModifier = Option(responseModifier))
 
     /** Shorthand for
       * {{{
@@ -112,7 +116,7 @@ object RequestHandler {
     // Scoped as a private delegate so as to keep the logic completely separate from the configuration
     private object Delegate extends RequestHandler with Logging with RequestContextImplicits {
 
-      implicit class Response(result: Result)(implicit appConfig: AppConfig, apiVersion: Version) {
+      implicit class Response(result: Result)(implicit appConfig: SharedAppConfig, apiVersion: Version) {
 
         private def withDeprecationHeaders: List[(String, String)] = {
 
@@ -137,7 +141,8 @@ object RequestHandler {
           val headers =
             responseHeaders ++
               List(
-                "X-CorrelationId" -> correlationId
+                "X-CorrelationId"        -> correlationId,
+                "X-Content-Type-Options" -> "nosniff"
               ) ++
               withDeprecationHeaders
 
@@ -150,7 +155,7 @@ object RequestHandler {
           ctx: RequestContext,
           request: UserRequest[_],
           ec: ExecutionContext,
-          appConfig: AppConfig
+          appConfig: SharedAppConfig
       ): Future[Result] = {
 
         logger.info(
@@ -158,15 +163,21 @@ object RequestHandler {
             s"with correlationId : ${ctx.correlationId}")
 
         val result =
-          if (simulateRequestCannotBeFulfilled)
+          if (simulateRequestCannotBeFulfilled) {
             EitherT[Future, ErrorWrapper, Result](Future.successful(Left(ErrorWrapper(ctx.correlationId, RuleRequestCannotBeFulfilledError))))
-          else
+          } else {
             for {
               parsedRequest   <- EitherT.fromEither[Future](validator.validateAndWrapResult())
               serviceResponse <- EitherT(service(parsedRequest))
             } yield doWithContext(ctx.withCorrelationId(serviceResponse.correlationId)) { implicit ctx: RequestContext =>
-              handleSuccess(parsedRequest, serviceResponse)
+              responseModifier match {
+                case Some(modifier) =>
+                  handleSuccess(parsedRequest, serviceResponse.copy(responseData = modifier(serviceResponse.responseData)))
+                case None =>
+                  handleSuccess(parsedRequest, serviceResponse)
+              }
             }
+          }
 
         result.leftMap { errorWrapper =>
           doWithContext(ctx.withCorrelationId(errorWrapper.correlationId)) { implicit ctx: RequestContext =>
@@ -175,7 +186,7 @@ object RequestHandler {
         }.merge
       }
 
-      private def simulateRequestCannotBeFulfilled(implicit request: UserRequest[_], appConfig: AppConfig): Boolean =
+      private def simulateRequestCannotBeFulfilled(implicit request: UserRequest[_], appConfig: SharedAppConfig): Boolean =
         request.headers.get("Gov-Test-Scenario").contains("REQUEST_CANNOT_BE_FULFILLED") &&
           appConfig.allowRequestCannotBeFulfilledHeader(Version(request))
 
@@ -185,7 +196,7 @@ object RequestHandler {
           ctx: RequestContext,
           request: UserRequest[_],
           ec: ExecutionContext,
-          appConfig: AppConfig): Result = {
+          appConfig: SharedAppConfig): Result = {
 
         implicit val apiVersion: Version = Version(request)
 
@@ -201,8 +212,11 @@ object RequestHandler {
         result
       }
 
-      private def handleFailure(
-          errorWrapper: ErrorWrapper)(implicit ctx: RequestContext, request: UserRequest[_], ec: ExecutionContext, appConfig: AppConfig): Result = {
+      private def handleFailure(errorWrapper: ErrorWrapper)(implicit
+          ctx: RequestContext,
+          request: UserRequest[_],
+          ec: ExecutionContext,
+          appConfig: SharedAppConfig): Result = {
 
         implicit val apiVersion: Version = Version(request)
         logger.warn(
@@ -222,7 +236,7 @@ object RequestHandler {
         InternalServerError(InternalError.asJson)
       }
 
-      def auditIfRequired(httpStatus: Int, response: Either[ErrorWrapper, Option[JsValue]])(implicit
+      private def auditIfRequired(httpStatus: Int, response: Either[ErrorWrapper, Option[JsValue]])(implicit
           ctx: RequestContext,
           request: UserRequest[_],
           ec: ExecutionContext): Unit =

@@ -19,7 +19,7 @@ package v1.retrieveUkSavingsAccountAnnualSummary.def1
 import cats.data.Validated
 import cats.implicits.catsSyntaxTuple3Semigroupal
 import resolvers.ResolveSavingsAccountId
-import shared.config.AppConfig
+import shared.config.SharedAppConfig
 import shared.controllers.validators.Validator
 import shared.controllers.validators.resolvers.{ResolveNino, ResolveTaxYearMinimum}
 import shared.models.domain.TaxYear
@@ -28,7 +28,7 @@ import config.SavingsConfig
 import v1.retrieveUkSavingsAccountAnnualSummary.def1.model.request.Def1_RetrieveUkSavingsAccountAnnualSummaryRequestData
 import v1.retrieveUkSavingsAccountAnnualSummary.model.request.RetrieveUkSavingsAccountAnnualSummaryRequestData
 
-class Def1_RetrieveUkSavingsAccountAnnualSummaryValidator(nino: String, taxYear: String, savingsAccountId: String)(appConfig: AppConfig,
+class Def1_RetrieveUkSavingsAccountAnnualSummaryValidator(nino: String, taxYear: String, savingsAccountId: String)(appConfig: SharedAppConfig,
                                                                                                                    savingsConfig: SavingsConfig)
     extends Validator[RetrieveUkSavingsAccountAnnualSummaryRequestData] {
   private lazy val minimumTaxYear = savingsConfig.minimumPermittedTaxYear

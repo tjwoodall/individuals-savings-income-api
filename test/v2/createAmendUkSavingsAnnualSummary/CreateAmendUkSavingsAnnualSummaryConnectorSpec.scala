@@ -91,7 +91,7 @@ class CreateAmendUkSavingsAnnualSummaryConnectorSpec extends ConnectorSpec with 
     def taxYear: TaxYear
 
     protected val connector: CreateAmendUkSavingsAnnualSummaryConnector =
-      new CreateAmendUkSavingsAnnualSummaryConnector(http = mockHttpClient, appConfig = mockAppConfig, savingsConfig = mockSavingsConfig)
+      new CreateAmendUkSavingsAnnualSummaryConnector(http = mockHttpClient, appConfig = mockSharedAppConfig, savingsConfig = mockSavingsConfig)
 
     protected val requestData: Def1_CreateAmendUkSavingsAnnualSummaryRequestData =
       Def1_CreateAmendUkSavingsAnnualSummaryRequestData(

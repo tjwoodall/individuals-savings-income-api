@@ -76,7 +76,7 @@ class RetrieveSavingsConnectorSpec extends ConnectorSpec {
     )
 
     val connector: RetrieveSavingsConnector =
-      new RetrieveSavingsConnector(http = mockHttpClient, appConfig = mockAppConfig)
+      new RetrieveSavingsConnector(http = mockHttpClient, appConfig = mockSharedAppConfig)
 
   }
 

@@ -18,7 +18,7 @@ package v1.createAmendUkSavingsAnnualSummary
 
 import config.SavingsConfig
 import play.api.http.Status
-import shared.config.AppConfig
+import shared.config.SharedAppConfig
 import shared.connectors.DownstreamUri.{DesUri, IfsUri, TaxYearSpecificIfsUri}
 import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
@@ -28,7 +28,7 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class CreateAmendUkSavingsAnnualSummaryConnector @Inject() (val http: HttpClient, val appConfig: AppConfig, savingsConfig: SavingsConfig)
+class CreateAmendUkSavingsAnnualSummaryConnector @Inject() (val http: HttpClient, val appConfig: SharedAppConfig, savingsConfig: SavingsConfig)
     extends BaseDownstreamConnector {
 
   def createOrAmendUKSavingsAccountSummary(requestData: CreateAmendUkSavingsAnnualSummaryRequestData)(implicit

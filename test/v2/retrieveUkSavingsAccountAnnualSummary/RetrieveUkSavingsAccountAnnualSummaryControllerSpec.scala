@@ -19,17 +19,14 @@ package v2.retrieveUkSavingsAccountAnnualSummary
 import models.domain.SavingsAccountId
 import play.api.mvc.Result
 import play.api.Configuration
-import shared.config.MockAppConfig
+import shared.config.MockSharedAppConfig
 import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import shared.models.domain.{Nino, TaxYear}
 import shared.models.errors._
 import shared.models.outcomes.ResponseWrapper
 import v2.retrieveUkSavingsAccountAnnualSummary.def1.model.RetrieveUkSavingsAccountAnnualSummaryControllerFixture
 import v2.retrieveUkSavingsAccountAnnualSummary.def1.model.request.Def1_RetrieveUkSavingsAccountAnnualSummaryRequestData
-import v2.retrieveUkSavingsAccountAnnualSummary.def1.model.response.{
-  Def1_RetrieveUkSavingsAccountAnnualSummaryResponse,
-  Def1_RetrieveUkSavingsAnnualIncomeItem
-}
+import v2.retrieveUkSavingsAccountAnnualSummary.def1.model.response.{Def1_RetrieveUkSavingsAccountAnnualSummaryResponse, Def1_RetrieveUkSavingsAnnualIncomeItem}
 import v2.retrieveUkSavingsAccountAnnualSummary.model.request.RetrieveUkSavingsAccountAnnualSummaryRequestData
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -40,7 +37,7 @@ class RetrieveUkSavingsAccountAnnualSummaryControllerSpec
     with ControllerTestRunner
     with MockRetrieveUkSavingsAnnualSummaryService
     with MockRetrieveUkSavingsAccountAnnualSummaryValidatorFactory
-    with MockAppConfig {
+    with MockSharedAppConfig {
 
   val nino: String                        = "AA123456A"
   val taxYear: String                     = "2019-20"
@@ -109,11 +106,11 @@ class RetrieveUkSavingsAccountAnnualSummaryControllerSpec
       idGenerator = mockIdGenerator
     )
 
-    MockedAppConfig.featureSwitchConfig.anyNumberOfTimes() returns Configuration(
+    MockedSharedAppConfig.featureSwitchConfig.anyNumberOfTimes() returns Configuration(
       "supporting-agents-access-control.enabled" -> true
     )
 
-    MockedAppConfig
+    MockedSharedAppConfig
       .endpointAllowsSupportingAgents(controller.endpointName)
       .anyNumberOfTimes() returns true
 

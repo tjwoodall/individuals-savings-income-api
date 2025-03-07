@@ -18,7 +18,7 @@ package v2.createAmendSavings
 
 import play.api.libs.json.JsValue
 import play.api.mvc.{Action, ControllerComponents}
-import shared.config.AppConfig
+import shared.config.SharedAppConfig
 import shared.controllers._
 import shared.routing.Version
 import shared.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
@@ -34,7 +34,7 @@ class CreateAmendSavingsController @Inject() (val authService: EnrolmentsAuthSer
                                               service: CreateAmendSavingsService,
                                               auditService: AuditService,
                                               cc: ControllerComponents,
-                                              val idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: AppConfig)
+                                              val idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: SharedAppConfig)
     extends AuthorisedController(cc)
     with Logging {
 

@@ -17,7 +17,7 @@
 package v2.retrieveSavings.def1.model.response
 
 import play.api.libs.json.{JsError, JsValue, Json}
-import shared.UnitSpec
+import shared.utils.UnitSpec
 
 class ForeignInterestItemSpec extends UnitSpec {
 

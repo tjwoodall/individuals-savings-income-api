@@ -16,21 +16,21 @@
 
 package shared.connectors.httpparsers
 
+import play.api.http.Status._
+import play.api.libs.json.{JsValue, Json, Reads}
 import shared.connectors.DownstreamOutcome
 import shared.models.errors._
 import shared.models.outcomes.ResponseWrapper
-import play.api.http.Status._
-import play.api.libs.json.{JsValue, Json, Reads}
-import shared.UnitSpec
+import shared.utils.UnitSpec
 import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 
 class StandardDownstreamHttpParserSpec extends UnitSpec {
 
   // WLOG if Reads tested elsewhere
-  case class SomeModel(data: String)
+  case class SomeDataObject(data: String)
 
-  object SomeModel {
-    implicit val reads: Reads[SomeModel] = Json.reads
+  object SomeDataObject {
+    implicit val reads: Reads[SomeDataObject] = Json.reads
   }
 
   val method = "POST"
@@ -45,47 +45,48 @@ class StandardDownstreamHttpParserSpec extends UnitSpec {
   val data                  = "someData"
   val expectedJson: JsValue = Json.obj("data" -> data)
 
-  val downstreamModel: SomeModel                     = SomeModel(data)
-  val downstreamResponse: ResponseWrapper[SomeModel] = ResponseWrapper(correlationId, downstreamModel)
+  val downstreamResponseData: SomeDataObject              = SomeDataObject(data)
+  val downstreamResponse: ResponseWrapper[SomeDataObject] = ResponseWrapper(correlationId, downstreamResponseData)
 
   "The generic HTTP parser" when {
-    "no status code is specified" must {
-      val httpReads: HttpReads[DownstreamOutcome[SomeModel]] = implicitly
+    "no status code is specified" should {
+      val httpReads: HttpReads[DownstreamOutcome[SomeDataObject]] = implicitly
 
-      "return a Right downstream response containing the model object if the response json corresponds to a model object" in {
+      "return a Right downstream response containing the data object" in {
         val httpResponse = HttpResponse(OK, expectedJson, Map("CorrelationId" -> List(correlationId)))
 
         httpReads.read(method, url, httpResponse) shouldBe Right(downstreamResponse)
       }
 
-      "return an outbound error if a model object cannot be read from the response json" in {
+      "return an outbound error if a data object cannot be read from the response json" in {
         val badFieldTypeJson: JsValue = Json.obj("incomeSourceId" -> 1234, "incomeSourceName" -> 1234)
         val httpResponse              = HttpResponse(OK, badFieldTypeJson.toString(), Map("CorrelationId" -> List(correlationId)))
         val expected                  = ResponseWrapper(correlationId, OutboundError(InternalError))
 
         httpReads.read(method, url, httpResponse) shouldBe Left(expected)
       }
-
-      handleErrorsCorrectly(httpReads)
-      handleInternalErrorsCorrectly(httpReads)
-      handleUnexpectedResponse(httpReads)
-      handleBvrsCorrectly(httpReads)
     }
 
-    "a success code is specified" must {
+    "a success code is specified" should {
       "use that status code for success" in {
-        implicit val successCode: SuccessCode                  = SuccessCode(PARTIAL_CONTENT)
-        val httpReads: HttpReads[DownstreamOutcome[SomeModel]] = implicitly
+        implicit val successCode: SuccessCode                       = SuccessCode(PARTIAL_CONTENT)
+        val httpReads: HttpReads[DownstreamOutcome[SomeDataObject]] = implicitly
 
         val httpResponse = HttpResponse(PARTIAL_CONTENT, expectedJson.toString(), Map("CorrelationId" -> List(correlationId)))
 
         httpReads.read(method, url, httpResponse) shouldBe Right(downstreamResponse)
       }
     }
+
+    handleErrorsCorrectly(httpReads)
+    handleInternalErrorsCorrectly(httpReads)
+    handleUnexpectedResponse(httpReads)
+    handleBvrsCorrectly(httpReads)
+    handleHipErrorsCorrectly(httpReads)
   }
 
   "The generic HTTP parser for empty response" when {
-    "no status code is specified" must {
+    "no status code is specified" should {
       val httpReads: HttpReads[DownstreamOutcome[Unit]] = implicitly
 
       "receiving a 204 response" should {
@@ -95,14 +96,9 @@ class StandardDownstreamHttpParserSpec extends UnitSpec {
           httpReads.read(method, url, httpResponse) shouldBe Right(ResponseWrapper(correlationId, ()))
         }
       }
-
-      handleErrorsCorrectly(httpReads)
-      handleInternalErrorsCorrectly(httpReads)
-      handleUnexpectedResponse(httpReads)
-      handleBvrsCorrectly(httpReads)
     }
 
-    "a success code is specified" must {
+    "a success code is specified" should {
       implicit val successCode: SuccessCode             = SuccessCode(PARTIAL_CONTENT)
       val httpReads: HttpReads[DownstreamOutcome[Unit]] = implicitly
 
@@ -112,6 +108,12 @@ class StandardDownstreamHttpParserSpec extends UnitSpec {
         httpReads.read(method, url, httpResponse) shouldBe Right(ResponseWrapper(correlationId, ()))
       }
     }
+
+    handleErrorsCorrectly(httpReads)
+    handleInternalErrorsCorrectly(httpReads)
+    handleUnexpectedResponse(httpReads)
+    handleBvrsCorrectly(httpReads)
+    handleHipErrorsCorrectly(httpReads)
   }
 
   val singleErrorJson: JsValue = Json.parse(
@@ -213,7 +215,8 @@ class StandardDownstreamHttpParserSpec extends UnitSpec {
 
   private def handleBvrsCorrectly[A](httpReads: HttpReads[DownstreamOutcome[A]]): Unit = {
 
-    val singleBvrJson = Json.parse("""
+    val singleBvrJson = Json.parse(
+      """
         |{
         |   "bvrfailureResponseElement": {
         |     "validationRuleFailures": [
@@ -226,9 +229,10 @@ class StandardDownstreamHttpParserSpec extends UnitSpec {
         |     ]
         |   }
         |}
-      """.stripMargin)
+      """.stripMargin
+    )
 
-    s"receiving a response with BVR errors" should {
+    "receiving a response with BVR errors" should {
       "return an outbound BUSINESS_ERROR error containing the BVR ids" in {
         val httpResponse = HttpResponse(BAD_REQUEST, singleBvrJson, Map("CorrelationId" -> List(correlationId)))
         val result       = httpReads.read(method, url, httpResponse)
@@ -244,6 +248,65 @@ class StandardDownstreamHttpParserSpec extends UnitSpec {
                   MtdError("BVR2", "", BAD_REQUEST)
                 )))
           )
+        )
+      }
+    }
+  }
+
+  val multipleTopLevelErrorCodesJson: JsValue = Json.parse(
+    """
+      |[
+      |    {
+      |        "errorCode": "1011",
+      |        "errorDescription": "Error 1 description"
+      |    },
+      |    {
+      |        "errorCode": "1214",
+      |        "errorDescription": "Error 2 description"
+      |    }
+      |]
+    """.stripMargin
+  )
+
+  val multipleErrorCodesInResponseJson: JsValue = Json.parse(
+    """
+      |{
+      |    "origin": "HIP",
+      |    "response": [
+      |        {
+      |            "errorCode": "1000",
+      |            "errorDescription": "Error 1 description"
+      |        },
+      |        {
+      |            "errorCode": "1215",
+      |            "errorDescription": "Error 2 description"
+      |        }
+      |    ]
+      |}
+    """.stripMargin
+  )
+
+  private def handleHipErrorsCorrectly[A](httpReads: HttpReads[DownstreamOutcome[A]]): Unit = {
+    "receiving a response with multiple HIP errors containing top level error codes" should {
+      "return a Left ResponseWrapper containing the extracted error codes" in {
+        val httpResponse = HttpResponse(
+          UNPROCESSABLE_ENTITY, multipleTopLevelErrorCodesJson, Map("CorrelationId" -> List(correlationId))
+        )
+
+        httpReads.read(method, url, httpResponse) shouldBe Left(
+          ResponseWrapper(correlationId, DownstreamErrors(List(DownstreamErrorCode("1011"), DownstreamErrorCode("1214"))))
+        )
+      }
+    }
+
+    "receiving a response with multiple HIP errors containing error codes in response array" should {
+      "return a Left ResponseWrapper containing the extracted error codes" in {
+        val httpResponse = HttpResponse(
+          BAD_REQUEST, multipleErrorCodesInResponseJson, Map("CorrelationId" -> List(correlationId))
+        )
+
+        httpReads.read(method, url, httpResponse) shouldBe Left(
+          ResponseWrapper(correlationId, DownstreamErrors(List(DownstreamErrorCode("1000"), DownstreamErrorCode("1215"))))
         )
       }
     }

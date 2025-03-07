@@ -18,7 +18,7 @@ package v2.listUkSavingsAccounts
 
 import config.MockSavingsConfig
 import models.domain.SavingsAccountId
-import shared.config.MockAppConfig
+import shared.config.MockSharedAppConfig
 import shared.connectors.{ConnectorSpec, DownstreamOutcome}
 import shared.models.domain.{Nino, TaxYear}
 import shared.models.outcomes.ResponseWrapper
@@ -28,7 +28,7 @@ import v2.listUkSavingsAccounts.model.response.{ListUkSavingsAccountsResponse, U
 
 import scala.concurrent.Future
 
-class ListUkSavingsAccountsConnectorSpec extends ConnectorSpec with MockAppConfig with MockSavingsConfig {
+class ListUkSavingsAccountsConnectorSpec extends ConnectorSpec with MockSharedAppConfig with MockSavingsConfig {
 
   val nino: String                       = "AA111111A"
   val taxYear: String                    = "2019"
@@ -55,7 +55,7 @@ class ListUkSavingsAccountsConnectorSpec extends ConnectorSpec with MockAppConfi
     def taxYear: TaxYear
 
     val connector: ListUkSavingsAccountsConnector =
-      new ListUkSavingsAccountsConnector(http = mockHttpClient, appConfig = mockAppConfig, savingsConfig = mockSavingsConfig)
+      new ListUkSavingsAccountsConnector(http = mockHttpClient, appConfig = mockSharedAppConfig, savingsConfig = mockSavingsConfig)
 
   }
 

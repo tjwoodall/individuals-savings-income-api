@@ -17,6 +17,7 @@
 package v2.listUkSavingsAccounts
 
 import models.domain.SavingsAccountId
+import models.errors.SavingsAccountIdFormatError
 import shared.controllers.EndpointLogContext
 import shared.models.domain.Nino
 import shared.models.errors._

@@ -20,7 +20,7 @@ import cats.data.Validated
 import cats.implicits.catsSyntaxTuple4Semigroupal
 import play.api.libs.json.JsValue
 import resolvers.ResolveSavingsAccountId
-import shared.config.AppConfig
+import shared.config.SharedAppConfig
 import shared.controllers.validators.Validator
 import shared.controllers.validators.resolvers.{ResolveNino, ResolveNonEmptyJsonObject, ResolveTaxYearMinimum}
 import shared.models.domain.TaxYear
@@ -34,7 +34,7 @@ import v2.createAmendUkSavingsAnnualSummary.def1.model.request.{
 import v2.createAmendUkSavingsAnnualSummary.model.request._
 
 class Def1_CreateAmendUkSavingsAnnualSummaryValidator(nino: String, taxYear: String, savingsAccountId: String, body: JsValue)(
-    appConfig: AppConfig,
+    appConfig: SharedAppConfig,
     savingsConfig: SavingsConfig)
     extends Validator[CreateAmendUkSavingsAnnualSummaryRequestData] {
   private lazy val minimumTaxYear = savingsConfig.ukSavingsAccountAnnualSummaryMinimumTaxYear

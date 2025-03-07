@@ -19,21 +19,16 @@ package v2.createAmendSavings
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
 import play.api.Configuration
-import shared.config.MockAppConfig
+import shared.config.MockSharedAppConfig
 import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
-import shared.models.audit.GenericAuditDetailFixture.nino
 import shared.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
 import shared.models.auth.UserDetails
 import shared.models.domain.{Nino, TaxYear}
 import shared.models.errors._
 import shared.models.outcomes.ResponseWrapper
+import shared.routing.{Version, Version2}
 import shared.services.MockMtdIdLookupService
-import v2.createAmendSavings.def1.model.request.{
-  AmendForeignInterestItem,
-  AmendSecurities,
-  Def1_CreateAmendSavingsRequestBody,
-  Def1_CreateAmendSavingsRequestData
-}
+import v2.createAmendSavings.def1.model.request.{AmendForeignInterestItem, AmendSecurities, Def1_CreateAmendSavingsRequestBody, Def1_CreateAmendSavingsRequestData}
 import v2.createAmendSavings.model.request.CreateAmendSavingsRequestData
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -45,7 +40,9 @@ class CreateAmendSavingsControllerSpec
     with MockCreateAmendSavingsService
     with MockMtdIdLookupService
     with MockCreateAmendSavingsValidatorFactory
-    with MockAppConfig {
+    with MockSharedAppConfig {
+
+  override val apiVersion: Version = Version2
 
   private val taxYear       = "2019-20"
   private val mtdId: String = "test-mtd-id"
@@ -112,7 +109,7 @@ class CreateAmendSavingsControllerSpec
   )
 
   private val requestData: CreateAmendSavingsRequestData = Def1_CreateAmendSavingsRequestData(
-    nino = Nino(nino),
+    nino = Nino(validNino),
     taxYear = TaxYear.fromMtd(taxYear),
     body = amendSavingsRequestBody
   )
@@ -158,17 +155,17 @@ class CreateAmendSavingsControllerSpec
       auditService = mockAuditService,
       cc = cc,
       idGenerator = mockIdGenerator
-    )(appConfig = mockAppConfig, ec = global)
+    )(appConfig = mockSharedAppConfig, ec = global)
 
-    MockedAppConfig.featureSwitchConfig.anyNumberOfTimes() returns Configuration(
+    MockedSharedAppConfig.featureSwitchConfig.anyNumberOfTimes() returns Configuration(
       "supporting-agents-access-control.enabled" -> true
     )
 
-    MockedAppConfig
+    MockedSharedAppConfig
       .endpointAllowsSupportingAgents(controller.endpointName)
       .anyNumberOfTimes() returns true
 
-    protected def callController(): Future[Result] = controller.createAmendSavings(nino, taxYear)(fakePostRequest(requestBodyJson))
+    protected def callController(): Future[Result] = controller.createAmendSavings(validNino, taxYear)(fakePostRequest(requestBodyJson))
 
     def event(auditResponse: AuditResponse, requestBody: Option[JsValue]): AuditEvent[GenericAuditDetail] =
       AuditEvent(
@@ -177,7 +174,7 @@ class CreateAmendSavingsControllerSpec
         detail = GenericAuditDetail(
           UserDetails(mtdId, "Individual", None),
           "2.0",
-          Map("nino" -> nino, "taxYear" -> taxYear),
+          Map("nino" -> validNino, "taxYear" -> taxYear),
           requestBody,
           correlationId,
           auditResponse

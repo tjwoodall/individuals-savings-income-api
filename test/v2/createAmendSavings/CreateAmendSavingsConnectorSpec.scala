@@ -60,7 +60,7 @@ class CreateAmendSavingsConnectorSpec extends ConnectorSpec {
 
     val connector: CreateAmendSavingsConnector = new CreateAmendSavingsConnector(
       http = mockHttpClient,
-      appConfig = mockAppConfig
+      appConfig = mockSharedAppConfig
     )
 
     val outcome = Right(ResponseWrapper(correlationId, ()))

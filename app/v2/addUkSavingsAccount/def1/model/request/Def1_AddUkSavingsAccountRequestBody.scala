@@ -17,6 +17,7 @@
 package v2.addUkSavingsAccount.def1.model.request
 
 import play.api.libs.json.{Json, OWrites, Reads}
+import shared.config.{ConfigFeatureSwitches, SharedAppConfig}
 import v2.addUkSavingsAccount.model.request.AddUkSavingsAccountRequestBody
 
 case class Def1_AddUkSavingsAccountRequestBody(accountName: String) extends AddUkSavingsAccountRequestBody
@@ -25,10 +26,14 @@ object Def1_AddUkSavingsAccountRequestBody {
 
   implicit val reads: Reads[Def1_AddUkSavingsAccountRequestBody] = Json.reads[Def1_AddUkSavingsAccountRequestBody]
 
-  implicit val writes: OWrites[Def1_AddUkSavingsAccountRequestBody] = (addUkSavingsRequestBody: Def1_AddUkSavingsAccountRequestBody) =>
-    Json.obj(
-      "incomeSourceType" -> "interest-from-uk-banks",
-      "incomeSourceName" -> addUkSavingsRequestBody.accountName
-    )
+  implicit def writes(implicit appConfig: SharedAppConfig): OWrites[Def1_AddUkSavingsAccountRequestBody] =
+    (addUkSavingsRequestBody: Def1_AddUkSavingsAccountRequestBody) => {
+      val incomeSourceType = if (ConfigFeatureSwitches().isEnabled("des_hip_migration_1393")) "09" else "interest-from-uk-banks"
+
+      Json.obj(
+        "incomeSourceType" -> incomeSourceType,
+        "incomeSourceName" -> addUkSavingsRequestBody.accountName
+      )
+    }
 
 }

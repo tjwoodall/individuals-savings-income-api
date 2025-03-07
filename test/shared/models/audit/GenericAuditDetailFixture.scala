@@ -21,7 +21,7 @@ import play.api.libs.json.{JsValue, Json}
 
 object GenericAuditDetailFixture {
 
-  val nino: String                         = "AA123456A"
+  val nino: String                         = "ZG903729C"
   val calculationId: String                = "calcId"
   val userType: String                     = "Agent"
   val agentReferenceNumber: Option[String] = Some("012345678")

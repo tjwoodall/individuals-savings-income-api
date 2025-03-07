@@ -17,6 +17,7 @@
 package v1.addUkSavingsAccount
 
 import cats.implicits._
+import models.errors.{RuleDuplicateAccountNameError, RuleMaximumSavingsAccountsLimitError}
 import shared.controllers.RequestContext
 import shared.models.errors._
 import shared.services.{BaseService, ServiceOutcome}
@@ -36,8 +37,8 @@ class AddUkSavingsAccountService @Inject() (connector: AddUkSavingsAccountConnec
     connector.addSavings(request).map(_.leftMap(mapDownstreamErrors(downstreamErrorMap)))
   }
 
-  private val downstreamErrorMap: Map[String, MtdError] =
-    Map(
+  private val downstreamErrorMap: Map[String, MtdError] = {
+    val desErrors = Map(
       "INVALID_IDVALUE"      -> NinoFormatError,
       "MAX_ACCOUNTS_REACHED" -> RuleMaximumSavingsAccountsLimitError,
       "ALREADY_EXISTS"       -> RuleDuplicateAccountNameError,
@@ -46,5 +47,15 @@ class AddUkSavingsAccountService @Inject() (connector: AddUkSavingsAccountConnec
       "SERVER_ERROR"         -> InternalError,
       "SERVICE_UNAVAILABLE"  -> InternalError
     )
+
+    val hipErrors = Map(
+      "1215" -> NinoFormatError,
+      "1011" -> RuleMaximumSavingsAccountsLimitError,
+      "1214" -> RuleDuplicateAccountNameError,
+      "1000" -> InternalError
+    )
+
+    desErrors ++ hipErrors
+  }
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,43 +17,50 @@
 package v1.addUkSavingsAccount.def1
 
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
+import models.errors.{AccountNameFormatError, RuleDuplicateAccountNameError, RuleMaximumSavingsAccountsLimitError}
 import play.api.http.Status._
 import play.api.libs.json.{JsObject, JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.{ACCEPT, AUTHORIZATION}
-import shared.models.errors.{AccountNameFormatError, _}
+import shared.models.errors._
 import shared.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
-import support.IntegrationBaseSpec
+import shared.support.IntegrationBaseSpec
 
-class Def1_AddUkSavingsAccountControllerISpec extends IntegrationBaseSpec {
+class Def1_AddUkSavingsAccountControllerHipISpec extends IntegrationBaseSpec {
 
   private trait Test {
 
-    val nino: String             = "AA123456A"
-    val savingsAccountId: String = "SAVKB2UVwUTBQGJ"
-    val taxYear: String          = "2020-21"
+    val nino: String                     = "AA123456A"
+    private val savingsAccountId: String = "SAVKB2UVwUTBQGJ"
+    val taxYear: String                  = "2020-21"
 
-    val requestBodyJson: JsValue = Json.parse("""
+    val requestBodyJson: JsValue = Json.parse(
+      """
         |{
         |   "accountName": "Shares savings account"
         |}
-        |""".stripMargin)
+      """.stripMargin
+    )
 
-    val desResponseJson: JsValue = Json.parse(s"""
-         |{
-         |   "incomeSourceId": "$savingsAccountId"
-         |}
-         |""".stripMargin)
+    val downstreamResponseJson: JsValue = Json.parse(
+      s"""
+        |{
+        |   "incomeSourceId": "$savingsAccountId"
+        |}
+      """.stripMargin
+    )
 
-    val responseJson: JsValue = Json.parse(s"""
-         |{
-         |   "savingsAccountId": "$savingsAccountId"
-         |}
-         |""".stripMargin)
+    val responseJson: JsValue = Json.parse(
+      s"""
+        |{
+        |   "savingsAccountId": "$savingsAccountId"
+        |}
+      """.stripMargin
+    )
 
-    def uri: String = s"/uk-accounts/$nino"
+    private def uri: String = s"/uk-accounts/$nino"
 
-    def ifsUri: String = s"/income-tax/income-sources/nino/$nino"
+    def downstreamUri: String = s"/itsd/income-sources/$nino"
 
     def setupStubs(): StubMapping
 
@@ -76,7 +83,7 @@ class Def1_AddUkSavingsAccountControllerISpec extends IntegrationBaseSpec {
           AuditStub.audit()
           AuthStub.authorised()
           MtdIdLookupStub.ninoFound(nino)
-          DownstreamStub.onSuccess(DownstreamStub.POST, ifsUri, OK, desResponseJson)
+          DownstreamStub.onSuccess(DownstreamStub.POST, downstreamUri, OK, downstreamResponseJson)
         }
 
         val response: WSResponse = await(request().post(requestBodyJson))
@@ -88,28 +95,31 @@ class Def1_AddUkSavingsAccountControllerISpec extends IntegrationBaseSpec {
 
     "return error according to spec" when {
 
-      val validRequestJson: JsValue = Json.parse("""
+      val validRequestJson: JsValue = Json.parse(
+        """
           |{
           |   "accountName": "Shares savings account"
           |}
-          |""".stripMargin)
+        """.stripMargin
+      )
 
       val emptyRequestJson: JsValue = JsObject.empty
 
-      val nonValidRequestBodyJson: JsValue = Json.parse("""
+      val nonValidRequestBodyJson: JsValue = Json.parse(
+        """
           |{
           |   "accountName": "Shares savings account!"
           |}
-          |""".stripMargin)
+        """.stripMargin
+      )
 
       "validation error" when {
         def validationErrorTest(requestNino: String,
                                 requestTaxYear: String,
                                 requestBody: JsValue,
                                 expectedStatus: Int,
-                                expectedBody: MtdError,
-                                scenario: Option[String]): Unit = {
-          s"validation fails with ${expectedBody.code} error ${scenario.getOrElse("")}" in new Test {
+                                expectedBody: MtdError): Unit = {
+          s"validation fails with ${expectedBody.code} error" in new Test {
 
             override val nino: String             = requestNino
             override val taxYear: String          = requestTaxYear
@@ -130,23 +140,25 @@ class Def1_AddUkSavingsAccountControllerISpec extends IntegrationBaseSpec {
         val accountNameError: MtdError = AccountNameFormatError.copy(
           paths = Some(List("/accountName"))
         )
+
         val input = List(
-          ("AA1123A", "2019-20", validRequestJson, BAD_REQUEST, NinoFormatError, None),
-          ("AA123456A", "2019-20", emptyRequestJson, BAD_REQUEST, RuleIncorrectOrEmptyBodyError, None),
-          ("AA123456A", "2019-20", nonValidRequestBodyJson, BAD_REQUEST, accountNameError, None)
+          ("AA1123A", "2019-20", validRequestJson, BAD_REQUEST, NinoFormatError),
+          ("AA123456A", "2019-20", emptyRequestJson, BAD_REQUEST, RuleIncorrectOrEmptyBodyError),
+          ("AA123456A", "2019-20", nonValidRequestBodyJson, BAD_REQUEST, accountNameError)
         )
+
         input.foreach(args => (validationErrorTest _).tupled(args))
       }
 
-      "ifs service error" when {
-        def serviceErrorTest(ifsStatus: Int, ifsCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
-          s"ifs returns an $ifsCode error and status $ifsStatus" in new Test {
+      "downstream service error" when {
+        def serviceErrorTest(downstreamStatus: Int, downstreamCode: String, expectedStatus: Int, expectedBody: MtdError): Unit = {
+          s"downstream returns a code $downstreamCode error and status $downstreamStatus" in new Test {
 
             override def setupStubs(): StubMapping = {
               AuditStub.audit()
               AuthStub.authorised()
               MtdIdLookupStub.ninoFound(nino)
-              DownstreamStub.onError(DownstreamStub.POST, ifsUri, ifsStatus, errorBody(ifsCode))
+              DownstreamStub.onError(DownstreamStub.POST, downstreamUri, downstreamStatus, errorBody(downstreamCode))
             }
 
             val response: WSResponse = await(request().post(requestBodyJson))
@@ -157,21 +169,21 @@ class Def1_AddUkSavingsAccountControllerISpec extends IntegrationBaseSpec {
 
         def errorBody(code: String): String =
           s"""
-             |{
-             |   "code": "$code",
-             |   "reason": "ifs message"
-             |}
-            """.stripMargin
+            |[
+            |    {
+            |        "errorCode": "$code",
+            |        "errorDescription": "error description"
+            |    }
+            |]
+          """.stripMargin
 
         val input = List(
-          (BAD_REQUEST, "INVALID_IDVALUE", BAD_REQUEST, NinoFormatError),
-          (BAD_REQUEST, "INVALID_IDTYPE", INTERNAL_SERVER_ERROR, InternalError),
-          (BAD_REQUEST, "INVALID_PAYLOAD", INTERNAL_SERVER_ERROR, InternalError),
-          (CONFLICT, "MAX_ACCOUNTS_REACHED", BAD_REQUEST, RuleMaximumSavingsAccountsLimitError),
-          (CONFLICT, "ALREADY_EXISTS", BAD_REQUEST, RuleDuplicateAccountNameError),
-          (SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, InternalError),
-          (INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, InternalError)
+          (BAD_REQUEST, "1215", BAD_REQUEST, NinoFormatError),
+          (BAD_REQUEST, "1000", INTERNAL_SERVER_ERROR, InternalError),
+          (UNPROCESSABLE_ENTITY, "1011", BAD_REQUEST, RuleMaximumSavingsAccountsLimitError),
+          (UNPROCESSABLE_ENTITY, "1214", BAD_REQUEST, RuleDuplicateAccountNameError)
         )
+
         input.foreach(args => (serviceErrorTest _).tupled(args))
       }
     }

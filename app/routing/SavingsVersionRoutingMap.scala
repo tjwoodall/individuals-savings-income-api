@@ -18,15 +18,12 @@ package routing
 
 import com.google.inject.Singleton
 import play.api.routing.Router
-import shared.config.AppConfig
 import shared.routing.{Version, Version1, Version2, VersionRoutingMap}
 
 import javax.inject.Inject
 
 @Singleton
-case class SavingsVersionRoutingMap @Inject() (
-                                                appConfig: AppConfig,
-                                                defaultRouter: Router,
+case class SavingsVersionRoutingMap @Inject() (defaultRouter: Router,
                                                 v1Router: v1.Routes,
                                                 v2Router: v2.Routes
                                               ) extends VersionRoutingMap {

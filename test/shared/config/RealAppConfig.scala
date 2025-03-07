@@ -18,7 +18,7 @@ package shared.config
 
 import com.typesafe.config.ConfigFactory
 import play.api.Configuration
-import shared.UnitSpec
+import shared.utils.UnitSpec
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 trait RealAppConfig {
@@ -34,11 +34,11 @@ trait RealAppConfig {
       .getOptional[Map[String, Boolean]]("api.supporting-agent-endpoints")
       .getOrElse(Map.empty)
 
-  protected lazy val realAppConfig: AppConfig = {
+  protected lazy val realAppConfig: SharedAppConfig = {
     val conf           = ConfigFactory.load()
     val configuration  = Configuration(conf)
     val servicesConfig = new ServicesConfig(configuration)
-    new AppConfig(servicesConfig, configuration)
+    new SharedAppConfig(servicesConfig, configuration)
   }
 
 }

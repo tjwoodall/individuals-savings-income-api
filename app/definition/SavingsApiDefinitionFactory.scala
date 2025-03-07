@@ -17,14 +17,14 @@
 package definition
 
 import play.api.Logger
-import shared.config.AppConfig
+import shared.config.SharedAppConfig
 import shared.definition.{APIDefinition, APIStatus, APIVersion, ApiDefinitionFactory, Definition}
 import shared.routing.{Version, Version1, Version2}
 
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class SavingsApiDefinitionFactory @Inject() (protected val appConfig: AppConfig) extends ApiDefinitionFactory {
+class SavingsApiDefinitionFactory @Inject() (protected val appConfig: SharedAppConfig) extends ApiDefinitionFactory {
 
   override lazy val logger: Logger = Logger(this.getClass)
 

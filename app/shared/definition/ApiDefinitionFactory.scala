@@ -17,7 +17,7 @@
 package shared.definition
 
 import cats.data.Validated.Invalid
-import shared.config.AppConfig
+import shared.config.SharedAppConfig
 import shared.routing.Version
 import shared.utils.Logging
 
@@ -25,13 +25,13 @@ trait ApiDefinitionFactory extends Logging {
 
   protected val mtdCategory = "INCOME_TAX_MTD"
 
-  protected val appConfig: AppConfig
-
+  protected val appConfig: SharedAppConfig
 
   val definition: Definition
 
   protected def buildAPIStatus(version: Version): APIStatus = {
     checkDeprecationConfigFor(version)
+
     APIStatus.parser
       .lift(appConfig.apiStatus(version))
       .getOrElse {
@@ -40,9 +40,10 @@ trait ApiDefinitionFactory extends Logging {
       }
   }
 
-  private def checkDeprecationConfigFor(version: Version): Unit = appConfig.deprecationFor(version) match {
-    case Invalid(error) => throw new Exception(error)
-    case _              => ()
-  }
+  private def checkDeprecationConfigFor(version: Version): Unit =
+    appConfig.deprecationFor(version) match {
+      case Invalid(error) => throw new Exception(error)
+      case _              => ()
+    }
 
 }

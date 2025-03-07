@@ -35,7 +35,6 @@ class MtdIdLookupServiceSpec extends ServiceSpec {
     "an mtdId is found for the NINO" should {
       "return the mtdId" in new Test {
         val mtdId = "someMtdId"
-
         MockedMtdIdLookupConnector.lookup(nino) returns Future.successful(Right(mtdId))
         val result: Outcome = await(target.lookup(nino))
 

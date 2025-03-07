@@ -18,18 +18,19 @@ package v1.retrieveUkSavingsAccountAnnualSummary.def1
 
 import mocks.MockCurrentDateTime
 import models.domain.SavingsAccountId
-import shared.UnitSpec
-import shared.config.MockAppConfig
 import shared.models.domain.{Nino, TaxYear}
 import shared.models.errors._
 import config.MockSavingsConfig
+import models.errors.SavingsAccountIdFormatError
+import shared.config.MockSharedAppConfig
+import shared.utils.UnitSpec
 import utils.CurrentDateTime
 import v1.retrieveUkSavingsAccountAnnualSummary.def1.model.request.Def1_RetrieveUkSavingsAccountAnnualSummaryRequestData
 
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
-class Def1_RetrieveUkSavingsAccountAnnualSummaryValidatorSpec extends UnitSpec with MockAppConfig with MockSavingsConfig {
+class Def1_RetrieveUkSavingsAccountAnnualSummaryValidatorSpec extends UnitSpec with MockSharedAppConfig with MockSavingsConfig {
 
   private implicit val correlationId: String = "1234"
   private val validNino                      = "AA123456A"
@@ -39,7 +40,7 @@ class Def1_RetrieveUkSavingsAccountAnnualSummaryValidatorSpec extends UnitSpec w
   private val parsedTaxYear                  = TaxYear.fromMtd(validTaxYear)
 
   private def validator(nino: String, taxYear: String, savingsAccountId: String) =
-    new Def1_RetrieveUkSavingsAccountAnnualSummaryValidator(nino, taxYear, savingsAccountId)(mockAppConfig, mockSavingsConfig)
+    new Def1_RetrieveUkSavingsAccountAnnualSummaryValidator(nino, taxYear, savingsAccountId)(mockSharedAppConfig, mockSavingsConfig)
 
   class Test extends MockCurrentDateTime {
 

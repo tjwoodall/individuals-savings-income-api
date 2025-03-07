@@ -17,7 +17,7 @@
 package config
 
 import play.api.Configuration
-import shared.config.{AppConfig, FeatureSwitches}
+import shared.config.{FeatureSwitches, SharedAppConfig}
 
 /** API-specific feature switches.
   */
@@ -27,5 +27,5 @@ case class SavingsFeatureSwitches(val featureSwitchConfig: Configuration) extend
 }
 
 object SavingsFeatureSwitches {
-  def apply()(implicit appConfig: AppConfig): SavingsFeatureSwitches = SavingsFeatureSwitches(appConfig.featureSwitchConfig)
+  def apply()(implicit appConfig: SharedAppConfig): SavingsFeatureSwitches = SavingsFeatureSwitches(appConfig.featureSwitchConfig)
 }

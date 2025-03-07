@@ -17,7 +17,7 @@
 package v1.addUkSavingsAccount.def1.model.response
 
 import play.api.libs.json.Json
-import shared.UnitSpec
+import shared.utils.UnitSpec
 
 class Def1_AddUkSavingsAccountResponseSpec extends UnitSpec {
 
