@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -65,29 +65,38 @@ class ListUkSavingsAccountsServiceSpec extends ServiceSpec {
 
       "map errors according to spec" when {
 
-        def serviceError(ifsErrorCode: String, error: MtdError): Unit =
-          s"a $ifsErrorCode error is returned from the service" in new Test {
+        def serviceError(downstreamErrorCode: String, error: MtdError): Unit =
+          s"a $downstreamErrorCode error is returned from the service" in new Test {
 
             MockListUkSavingsAccountsConnector
               .listUkSavingsAccounts(requestData)
-              .returns(Future.successful(Left(ResponseWrapper(correlationId, DownstreamErrors.single(DownstreamErrorCode(ifsErrorCode))))))
+              .returns(Future.successful(Left(ResponseWrapper(correlationId, DownstreamErrors.single(DownstreamErrorCode(downstreamErrorCode))))))
 
             await(service.listUkSavingsAccounts(requestData)) shouldBe Left(ErrorWrapper(correlationId, error))
           }
 
-        val input = List(
-          ("INVALID_ID_TYPE", InternalError),
-          ("INVALID_IDVALUE", NinoFormatError),
-          ("INVALID_INCOMESOURCETYPE", InternalError),
-          ("INVALID_TAXYEAR", InternalError),
-          ("INVALID_INCOMESOURCEID", SavingsAccountIdFormatError),
+        val ifsErrors = List(
+          ("INVALID_TAXABLE_ENTITY_ID", NinoFormatError),
+          ("INVALID_TAX_YEAR", InternalError),
+          ("INVALID_INCOME_SOURCE_TYPE", InternalError),
+          ("INVALID_CORRELATION_ID", InternalError),
+          ("INVALID_INCOME_SOURCE_ID", SavingsAccountIdFormatError),
           ("INVALID_ENDDATE", InternalError),
           ("NOT_FOUND", NotFoundError),
           ("SERVER_ERROR", InternalError),
           ("SERVICE_UNAVAILABLE", InternalError)
         )
 
-        input.foreach(args => (serviceError _).tupled(args))
+        val hipErrors = List(
+          ("1215", NinoFormatError),
+          ("1117", InternalError),
+          ("1122", InternalError),
+          ("1007", SavingsAccountIdFormatError),
+          ("1229", InternalError),
+          ("5010", NotFoundError)
+        )
+
+        (ifsErrors ++ hipErrors).foreach(args => (serviceError _).tupled(args))
       }
     }
   }

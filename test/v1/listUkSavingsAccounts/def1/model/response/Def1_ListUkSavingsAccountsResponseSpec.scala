@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,29 +21,7 @@ import shared.utils.UnitSpec
 
 class Def1_ListUkSavingsAccountsResponseSpec extends UnitSpec {
 
-  private val ukSavingsAccountsDesJs = Json.parse(
-    """
-      |[
-      |  {
-      |    "incomeSourceId": "000000000000001",
-      |    "incomeSourceName": "Bank Account 1",
-      |    "identifier": "AA111111A",
-      |    "incomeSourceType": "interest-from-uk-banks"
-      |  },
-      |  {
-      |    "incomeSourceId": "000000000000002",
-      |    "incomeSourceName": "Bank Account 2",
-      |    "identifier": "AA111111A",
-      |    "incomeSourceType": "interest-from-uk-banks"
-      |  },
-      |  {
-      |    "incomeSourceId": "000000000000003"
-      |  }
-      |]
-    """.stripMargin
-  )
-
-  private val ukSavingsAccountsIfsJs = Json.parse(
+  private val ukSavingsAccountsDownstreamJson = Json.parse(
     """
       |{
       |  "bbsi": [
@@ -67,7 +45,7 @@ class Def1_ListUkSavingsAccountsResponseSpec extends UnitSpec {
     """.stripMargin
   )
 
-  private val ukSavingsAccountsNotBbsiIfsJs = Json.parse(
+  private val ukSavingsAccountsNotBbsiDownstreamJson = Json.parse(
     """
       |{
       |  "not_bbsi": [
@@ -79,11 +57,10 @@ class Def1_ListUkSavingsAccountsResponseSpec extends UnitSpec {
     """.stripMargin
   )
 
-  private val ukSavingsAccountsMtdJs = Json.parse(
+  private val ukSavingsAccountsMtdJson = Json.parse(
     """
       |{
-      |  "savingsAccounts":
-      |  [
+      |  "savingsAccounts": [
       |    {
       |        "savingsAccountId": "000000000000001",
       |        "accountName": "Bank Account 1"
@@ -100,7 +77,13 @@ class Def1_ListUkSavingsAccountsResponseSpec extends UnitSpec {
     """.stripMargin
   )
 
-  private val emptyJson = Json.parse("""[]""")
+  private val emptyBbsiJson = Json.parse(
+    """
+      |{
+      |  "bbsi": []
+      |}
+    """.stripMargin
+  )
 
   private val listUkSavingsAccountResponse = Def1_ListUkSavingsAccountsResponse(
     Some(
@@ -112,37 +95,36 @@ class Def1_ListUkSavingsAccountsResponseSpec extends UnitSpec {
     )
   )
 
-  "ListUkSavingsAccountsResponse.reads" should {
-    "return a parsed ListUkSavingsAccountsResponse" when {
-      "given a valid JSON document from DES" in {
-        val result = ukSavingsAccountsDesJs.as[Def1_ListUkSavingsAccountsResponse[Def1_UkSavingsAccount]]
-        result shouldBe listUkSavingsAccountResponse
+  "Def1_ListUkSavingsAccountsResponse" when {
+    ".reads" should {
+      "return a parsed Def1_ListUkSavingsAccountsResponse" when {
+        "given a valid JSON document from downstream" in {
+          val result = ukSavingsAccountsDownstreamJson.as[Def1_ListUkSavingsAccountsResponse[Def1_UkSavingsAccount]]
+          result shouldBe listUkSavingsAccountResponse
+        }
       }
 
-      "given a valid JSON document from IFS" in {
-        val result = ukSavingsAccountsIfsJs.as[Def1_ListUkSavingsAccountsResponse[Def1_UkSavingsAccount]]
-        result shouldBe listUkSavingsAccountResponse
+      "return a JSON error" when {
+        "given a downstream response that does not include bbsi" in {
+          val result = ukSavingsAccountsNotBbsiDownstreamJson.validate[Def1_ListUkSavingsAccountsResponse[Def1_UkSavingsAccount]]
+          result shouldBe a[JsError]
+        }
       }
-    }
 
-    "return a JSON error" when {
-      "given an IFS response with an object not called bbsi" in {
-        val result = ukSavingsAccountsNotBbsiIfsJs.validate[Def1_ListUkSavingsAccountsResponse[Def1_UkSavingsAccount]]
-        result shouldBe a[JsError]
-      }
-    }
-
-    "return a valid list uk savings account response MTD json " when {
-      "given a valid UkSavingAccountListResponse" in {
-        val result = Json.toJson(listUkSavingsAccountResponse)
-        result shouldBe ukSavingsAccountsMtdJs
+      "return a valid empty Def1_ListUkSavingsAccountsResponse model" when {
+        "given a valid empty uk savings account list json from downstream" in {
+          val result = emptyBbsiJson.as[Def1_ListUkSavingsAccountsResponse[Def1_UkSavingsAccount]]
+          result shouldBe Def1_ListUkSavingsAccountsResponse(None)
+        }
       }
     }
 
-    "return a valid empty ListUkSavingsAccountsResponse model " when {
-      "given a valid empty uk savings account list json from DES" in {
-        val result = emptyJson.as[Def1_ListUkSavingsAccountsResponse[Def1_UkSavingsAccount]]
-        result shouldBe Def1_ListUkSavingsAccountsResponse(None)
+    ".writes" should {
+      "return a valid list uk savings account response MTD json" when {
+        "given a valid Def1_ListUkSavingsAccountsResponse" in {
+          val result = Json.toJson(listUkSavingsAccountResponse)
+          result shouldBe ukSavingsAccountsMtdJson
+        }
       }
     }
   }

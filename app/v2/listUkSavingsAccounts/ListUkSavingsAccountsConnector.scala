@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,11 +16,10 @@
 
 package v2.listUkSavingsAccounts
 
-import config.SavingsConfig
-import shared.config.SharedAppConfig
-import shared.connectors.DownstreamUri.{DesUri, IfsUri}
+import shared.config.{ConfigFeatureSwitches, SharedAppConfig}
+import shared.connectors.DownstreamUri.{HipUri, IfsUri}
 import shared.connectors.httpparsers.StandardDownstreamHttpParser.reads
-import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome}
+import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome, DownstreamUri}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import v2.listUkSavingsAccounts.model.request.ListUkSavingsAccountsRequestData
 import v2.listUkSavingsAccounts.model.response.{ListUkSavingsAccountsResponse, UkSavingsAccount}
@@ -29,7 +28,7 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class ListUkSavingsAccountsConnector @Inject() (val http: HttpClient, val appConfig: SharedAppConfig, val savingsConfig: SavingsConfig)
+class ListUkSavingsAccountsConnector @Inject() (val http: HttpClient, val appConfig: SharedAppConfig)
     extends BaseDownstreamConnector {
 
   def listUkSavingsAccounts(request: ListUkSavingsAccountsRequestData)(implicit
@@ -40,23 +39,20 @@ class ListUkSavingsAccountsConnector @Inject() (val http: HttpClient, val appCon
     import request._
     import schema._
 
-    val nino = request.nino.nino
+    val nino: String = request.nino.nino
+    val incomeSourceTypeParam: (String, String) = "incomeSourceType" -> "09"
 
-    if (savingsConfig.featureSwitches.isListUkSavingsDownstreamURLEnabled) {
-      val incomeSourceTypeParam = "incomeSourceType" -> "09"
-      get(
-        IfsUri[DownstreamResp](s"income-tax/income-sources/$nino"),
-        request.savingsAccountId
-          .fold(Seq(incomeSourceTypeParam))(savingsId => Seq(incomeSourceTypeParam, "incomeSourceId" -> savingsId.toString))
-      )
+    val downstreamUri: DownstreamUri[DownstreamResp] = if (ConfigFeatureSwitches().isEnabled("ifs_hip_migration_2085")) {
+      HipUri[DownstreamResp](s"itsd/income-sources/v2/$nino")
     } else {
-      val incomeSourceTypeParam = "incomeSourceType" -> "interest-from-uk-banks"
-      get(
-        DesUri[DownstreamResp](s"income-tax/income-sources/nino/$nino"),
-        request.savingsAccountId
-          .fold(Seq(incomeSourceTypeParam))(savingsId => Seq(incomeSourceTypeParam, "incomeSourceId" -> savingsId.toString))
-      )
+      IfsUri[DownstreamResp](s"income-tax/income-sources/$nino")
     }
+
+    get(
+      downstreamUri,
+      request.savingsAccountId
+        .fold(Seq(incomeSourceTypeParam))(savingsId => Seq(incomeSourceTypeParam, "incomeSourceId" -> savingsId.toString))
+    )
   }
 
 }

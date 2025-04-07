@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,16 +35,29 @@ class ListUkSavingsAccountsService @Inject() (connector: ListUkSavingsAccountsCo
       ec: ExecutionContext): Future[ServiceOutcome[ListUkSavingsAccountsResponse[UkSavingsAccount]]] =
     connector.listUkSavingsAccounts(request).map(_.leftMap(mapDownstreamErrors(downstreamErrorMap)))
 
-  private val downstreamErrorMap: Map[String, MtdError] = Map(
-    "INVALID_ID_TYPE"          -> InternalError,
-    "INVALID_IDVALUE"          -> NinoFormatError,
-    "INVALID_INCOMESOURCETYPE" -> InternalError,
-    "INVALID_TAXYEAR"          -> InternalError,
-    "INVALID_INCOMESOURCEID"   -> SavingsAccountIdFormatError,
-    "INVALID_ENDDATE"          -> InternalError,
-    "NOT_FOUND"                -> NotFoundError,
-    "SERVER_ERROR"             -> InternalError,
-    "SERVICE_UNAVAILABLE"      -> InternalError
-  )
+  private val downstreamErrorMap: Map[String, MtdError] = {
+    val ifsErrors = Map(
+      "INVALID_TAXABLE_ENTITY_ID"  -> NinoFormatError,
+      "INVALID_TAX_YEAR"           -> InternalError,
+      "INVALID_INCOME_SOURCE_TYPE" -> InternalError,
+      "INVALID_CORRELATION_ID"     -> InternalError,
+      "INVALID_INCOME_SOURCE_ID"   -> SavingsAccountIdFormatError,
+      "INVALID_ENDDATE"            -> InternalError,
+      "NOT_FOUND"                  -> NotFoundError,
+      "SERVER_ERROR"               -> InternalError,
+      "SERVICE_UNAVAILABLE"        -> InternalError
+    )
+
+    val hipErrors = Map(
+      "1215" -> NinoFormatError,
+      "1117" -> InternalError,
+      "1122" -> InternalError,
+      "1007" -> SavingsAccountIdFormatError,
+      "1229" -> InternalError,
+      "5010" -> NotFoundError
+    )
+
+    ifsErrors ++ hipErrors
+  }
 
 }

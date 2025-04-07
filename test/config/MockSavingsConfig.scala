@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,8 +20,6 @@ import play.api.Configuration
 import org.scalamock.handlers.{CallHandler, CallHandler0}
 import org.scalamock.scalatest.MockFactory
 
-import config.SavingsConfig
-
 trait MockSavingsConfig extends MockFactory {
 
   implicit val mockSavingsConfig: SavingsConfig = mock[SavingsConfig]
@@ -32,9 +30,6 @@ trait MockSavingsConfig extends MockFactory {
 
     def isDesIf_MigrationEnabled: CallHandler[Boolean] =
       (() => mockSavingsFeatureSwitches.isDesIf_MigrationEnabled).expects()
-
-    def isListUkSavingsDownstreamURLEnabled: CallHandler[Boolean] =
-      (() => mockSavingsFeatureSwitches.isListUkSavingsDownstreamURLEnabled).expects()
 
     def featureSwitchConfig: CallHandler0[Configuration]      = (() => mockSavingsConfig.featureSwitchConfig: Configuration).expects()
     def featureSwitches: CallHandler0[SavingsFeatureSwitches] = (() => mockSavingsConfig.featureSwitches: SavingsFeatureSwitches).expects()

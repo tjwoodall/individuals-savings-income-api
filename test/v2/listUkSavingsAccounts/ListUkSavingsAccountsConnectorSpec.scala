@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,11 +16,11 @@
 
 package v2.listUkSavingsAccounts
 
-import config.MockSavingsConfig
 import models.domain.SavingsAccountId
+import play.api.Configuration
 import shared.config.MockSharedAppConfig
 import shared.connectors.{ConnectorSpec, DownstreamOutcome}
-import shared.models.domain.{Nino, TaxYear}
+import shared.models.domain.Nino
 import shared.models.outcomes.ResponseWrapper
 import v2.listUkSavingsAccounts.def1.model.request.Def1_ListUkSavingsAccountsRequestData
 import v2.listUkSavingsAccounts.def1.model.response.{Def1_ListUkSavingsAccountsResponse, Def1_UkSavingsAccount}
@@ -28,10 +28,9 @@ import v2.listUkSavingsAccounts.model.response.{ListUkSavingsAccountsResponse, U
 
 import scala.concurrent.Future
 
-class ListUkSavingsAccountsConnectorSpec extends ConnectorSpec with MockSharedAppConfig with MockSavingsConfig {
+class ListUkSavingsAccountsConnectorSpec extends ConnectorSpec with MockSharedAppConfig {
 
   val nino: String                       = "AA111111A"
-  val taxYear: String                    = "2019"
   val savingsAccountId: SavingsAccountId = SavingsAccountId("SAVKB2UVwUTBQGJ")
 
   val request: Def1_ListUkSavingsAccountsRequestData                     = Def1_ListUkSavingsAccountsRequestData(Nino(nino), None)
@@ -50,102 +49,84 @@ class ListUkSavingsAccountsConnectorSpec extends ConnectorSpec with MockSharedAp
   trait Test {
     _: ConnectorTest =>
 
-    protected val nino: String = "AA111111A"
-
-    def taxYear: TaxYear
-
     val connector: ListUkSavingsAccountsConnector =
-      new ListUkSavingsAccountsConnector(http = mockHttpClient, appConfig = mockSharedAppConfig, savingsConfig = mockSavingsConfig)
+      new ListUkSavingsAccountsConnector(http = mockHttpClient, appConfig = mockSharedAppConfig)
 
   }
 
   "ListUkSavingsAccountsConnector" when {
     "listUkSavingsAccounts" must {
-      "return a valid response, list of uk savings accounts when isListUkSavingsDownstreamURLEnabled is false" +
-        "upon receiving SUCCESS response from the backend service" in new DesTest with Test {
-
-          MockedSavingsConfig.featureSwitches.returns(mockSavingsFeatureSwitches).anyNumberOfTimes()
-          MockedSavingsConfig.isListUkSavingsDownstreamURLEnabled.returns(false)
-
-          val outcome: Right[Nothing, ResponseWrapper[ListUkSavingsAccountsResponse[UkSavingsAccount]]] =
-            Right(ResponseWrapper(correlationId, validResponse))
-
-          override def taxYear: TaxYear = TaxYear("2021")
-
-          willGet(
-            url = s"$baseUrl/income-tax/income-sources/nino/${this.nino}",
-            parameters = Seq("incomeSourceType" -> "interest-from-uk-banks")
-          ).returns(Future.successful(outcome))
-
-          val result: DownstreamOutcome[ListUkSavingsAccountsResponse[UkSavingsAccount]] = await(connector.listUkSavingsAccounts(request))
-          result shouldBe outcome
-
-        }
-      "return a valid response, list of uk savings accounts when isListUkSavingsDownstreamURLEnabled is true " +
+      "return a valid response, list of uk savings accounts when feature switch is disabled (IFS enabled) " +
         "upon receiving SUCCESS response from the backend service" in new IfsTest with Test {
+        MockedSharedAppConfig.featureSwitchConfig returns Configuration("ifs_hip_migration_2085.enabled" -> false)
 
-          MockedSavingsConfig.featureSwitches.returns(mockSavingsFeatureSwitches).anyNumberOfTimes()
-          // MockedSavingsConfig.featureSwitchConfig returns Configuration("listUkSavingsDownstreamURL.enabled" -> true)
-          MockedSavingsConfig.isListUkSavingsDownstreamURLEnabled.returns(true)
+        val outcome: Right[Nothing, ResponseWrapper[ListUkSavingsAccountsResponse[UkSavingsAccount]]] =
+          Right(ResponseWrapper(correlationId, validResponse))
 
-          val outcome: Right[Nothing, ResponseWrapper[ListUkSavingsAccountsResponse[UkSavingsAccount]]] =
-            Right(ResponseWrapper(correlationId, validResponse))
+        willGet(
+          url = s"$baseUrl/income-tax/income-sources/$nino",
+          parameters = Seq("incomeSourceType" -> "09")
+        ).returns(Future.successful(outcome))
 
-          override def taxYear: TaxYear = TaxYear("2021")
+        val result: DownstreamOutcome[ListUkSavingsAccountsResponse[UkSavingsAccount]] = await(connector.listUkSavingsAccounts(request))
 
-          willGet(
-            url = s"$baseUrl/income-tax/income-sources/${this.nino}",
-            parameters = Seq("incomeSourceType" -> "09")
-          ).returns(Future.successful(outcome))
+        result shouldBe outcome
+      }
 
-          val result: DownstreamOutcome[ListUkSavingsAccountsResponse[UkSavingsAccount]] = await(connector.listUkSavingsAccounts(request))
-          result shouldBe outcome
+      "return a valid response, list of uk savings accounts when feature switch is enabled (HIP enabled) " +
+        "upon receiving SUCCESS response from the backend service" in new HipTest with Test {
+        MockedSharedAppConfig.featureSwitchConfig returns Configuration("ifs_hip_migration_2085.enabled" -> true)
 
-        }
+        val outcome: Right[Nothing, ResponseWrapper[ListUkSavingsAccountsResponse[UkSavingsAccount]]] =
+          Right(ResponseWrapper(correlationId, validResponse))
 
-      "return a valid response, list of a single uk savings account " +
-        "when incomeSourceId was sent as part of the request and isListUkSavingsDownstreamURLEnabled is false" +
-        "upon receiving SUCCESS response from the backend service " in new DesTest with Test {
+        willGet(
+          url = s"$baseUrl/itsd/income-sources/v2/$nino",
+          parameters = Seq("incomeSourceType" -> "09")
+        ).returns(Future.successful(outcome))
 
-          MockedSavingsConfig.featureSwitches.returns(mockSavingsFeatureSwitches).anyNumberOfTimes()
-          MockedSavingsConfig.isListUkSavingsDownstreamURLEnabled.returns(false)
+        val result: DownstreamOutcome[ListUkSavingsAccountsResponse[UkSavingsAccount]] = await(connector.listUkSavingsAccounts(request))
 
-          val outcome: Right[Nothing, ResponseWrapper[ListUkSavingsAccountsResponse[UkSavingsAccount]]] =
-            Right(ResponseWrapper(correlationId, validResponse))
-
-          override def taxYear: TaxYear = TaxYear("2021")
-
-          willGet(
-            url = s"$baseUrl/income-tax/income-sources/nino/${this.nino}",
-            parameters = Seq("incomeSourceType" -> "interest-from-uk-banks", "incomeSourceId" -> savingsAccountId.toString)
-          ).returns(Future.successful(outcome))
-
-          val result: DownstreamOutcome[ListUkSavingsAccountsResponse[UkSavingsAccount]] =
-            await(connector.listUkSavingsAccounts(requestWithSavingsAccountId))
-          result shouldBe outcome
-        }
+        result shouldBe outcome
+      }
 
       "return a valid response, list of a single uk savings account " +
-        "when incomeSourceId was sent as part of the request and isListUkSavingsDownstreamURLEnabled is true " +
-        "upon receiving SUCCESS response from the backend service " in new IfsTest with Test {
+        "when incomeSourceId was sent as part of the request and feature switch is disabled (IFS enabled) " +
+        "upon receiving SUCCESS response from the backend service" in new IfsTest with Test {
+        MockedSharedAppConfig.featureSwitchConfig returns Configuration("ifs_hip_migration_2085.enabled" -> false)
 
-          MockedSavingsConfig.featureSwitches.returns(mockSavingsFeatureSwitches).anyNumberOfTimes()
-          MockedSavingsConfig.isListUkSavingsDownstreamURLEnabled.returns(true)
+        val outcome: Right[Nothing, ResponseWrapper[ListUkSavingsAccountsResponse[UkSavingsAccount]]] =
+          Right(ResponseWrapper(correlationId, validResponse))
 
-          val outcome: Right[Nothing, ResponseWrapper[ListUkSavingsAccountsResponse[UkSavingsAccount]]] =
-            Right(ResponseWrapper(correlationId, validResponse))
+        willGet(
+          url = s"$baseUrl/income-tax/income-sources/$nino",
+          parameters = Seq("incomeSourceType" -> "09", "incomeSourceId" -> savingsAccountId.toString)
+        ).returns(Future.successful(outcome))
 
-          override def taxYear: TaxYear = TaxYear("2021")
+        val result: DownstreamOutcome[ListUkSavingsAccountsResponse[UkSavingsAccount]] =
+          await(connector.listUkSavingsAccounts(requestWithSavingsAccountId))
 
-          willGet(
-            url = s"$baseUrl/income-tax/income-sources/${this.nino}",
-            parameters = Seq("incomeSourceType" -> "09", "incomeSourceId" -> savingsAccountId.toString)
-          ).returns(Future.successful(outcome))
+        result shouldBe outcome
+      }
 
-          val result: DownstreamOutcome[ListUkSavingsAccountsResponse[UkSavingsAccount]] =
-            await(connector.listUkSavingsAccounts(requestWithSavingsAccountId))
-          result shouldBe outcome
-        }
+      "return a valid response, list of a single uk savings account " +
+        "when incomeSourceId was sent as part of the request and feature switch is enabled (HIP enabled) " +
+        "upon receiving SUCCESS response from the backend service" in new HipTest with Test {
+        MockedSharedAppConfig.featureSwitchConfig returns Configuration("ifs_hip_migration_2085.enabled" -> true)
+
+        val outcome: Right[Nothing, ResponseWrapper[ListUkSavingsAccountsResponse[UkSavingsAccount]]] =
+          Right(ResponseWrapper(correlationId, validResponse))
+
+        willGet(
+          url = s"$baseUrl/itsd/income-sources/v2/$nino",
+          parameters = Seq("incomeSourceType" -> "09", "incomeSourceId" -> savingsAccountId.toString)
+        ).returns(Future.successful(outcome))
+
+        val result: DownstreamOutcome[ListUkSavingsAccountsResponse[UkSavingsAccount]] =
+          await(connector.listUkSavingsAccounts(requestWithSavingsAccountId))
+
+        result shouldBe outcome
+      }
     }
   }
 

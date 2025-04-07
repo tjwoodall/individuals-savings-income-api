@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,8 +22,7 @@ import shared.config.{FeatureSwitches, SharedAppConfig}
 /** API-specific feature switches.
   */
 case class SavingsFeatureSwitches(val featureSwitchConfig: Configuration) extends FeatureSwitches {
-  def isDesIf_MigrationEnabled: Boolean            = isEnabled("desIf_Migration")
-  def isListUkSavingsDownstreamURLEnabled: Boolean = isEnabled("listUkSavingsDownstreamURL")
+  def isDesIf_MigrationEnabled: Boolean = isEnabled("desIf_Migration")
 }
 
 object SavingsFeatureSwitches {
