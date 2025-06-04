@@ -36,16 +36,16 @@ requestBody:
   content:
     application/json:
       schema:
-        $ref: './schemas/uk_savings_account_amend_request.json'
+        $ref: './schemas/ukSavingsAccount/amend_request.json'
       examples:
         full-amendment:
           description: Uk Savings Account Annual Summary Amendment
           value:
-            $ref: './examples/ukSavingsAccount/uk_savings_account_amend_request.json'
+            $ref: './examples/ukSavingsAccount/amend_request.json'
         deletion:
           description: Uk Savings Account Annual Summary Delete
           value:
-            $ref: './examples/ukSavingsAccount/uk_savings_account_delete_request.json'
+            $ref: './examples/ukSavingsAccount/delete_request.json'
 
 responses:
   "200":
@@ -53,6 +53,12 @@ responses:
     headers:
       X-CorrelationId:
         $ref: './common/headers.yaml#/components/parameters/correlationId'
+      Deprecation:
+        $ref: "./common/headers.yaml#/components/parameters/deprecationHeader"
+      Sunset:
+        $ref: "./common/headers.yaml#/components/parameters/sunsetHeader"
+      Link:
+        $ref: "./common/headers.yaml#/components/parameters/linkHeader"
 
   "400":
     description: Bad request

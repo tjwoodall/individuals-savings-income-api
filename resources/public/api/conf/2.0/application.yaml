@@ -60,5 +60,9 @@ paths:
     $ref: "./savings_uk_accounts.yaml"
   /individuals/savings-income/uk-accounts/{nino}/{taxYear}/{savingsAccountId}:
     $ref: "./savings_uk_accounts_id.yaml"
+  # {{#if (enabled 'update-uk-savings-account-name')}}
+  /individuals/savings-income/uk-accounts/{nino}/{savingsAccountId}:
+    $ref: "./savings_uk_accounts_name_update.yaml"
+  # {{/if}}
   /individuals/savings-income/other/{nino}/{taxYear}:
     $ref: "./savings.yaml"

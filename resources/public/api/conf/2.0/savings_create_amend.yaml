@@ -33,7 +33,7 @@ requestBody:
   content:
     application/json:
       schema:
-        $ref: './schemas/savings_amend_request.json'
+        $ref: './schemas/savingsIncome/savings_amend_request.json'
       examples:
         example-1:
           description: Full Savings Income Amendment
@@ -46,6 +46,12 @@ responses:
     headers:
       X-CorrelationId:
         $ref: './common/headers.yaml#/components/parameters/correlationId'
+      Deprecation:
+        $ref: "./common/headers.yaml#/components/parameters/deprecationHeader"
+      Sunset:
+        $ref: "./common/headers.yaml#/components/parameters/sunsetHeader"
+      Link:
+        $ref: "./common/headers.yaml#/components/parameters/linkHeader"
 
   "400":
     description: Bad request

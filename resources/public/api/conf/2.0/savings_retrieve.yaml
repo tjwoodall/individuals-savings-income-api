@@ -33,10 +33,16 @@ responses:
     headers:
       X-CorrelationId:
         $ref: './common/headers.yaml#/components/parameters/correlationId'
+      Deprecation:
+        $ref: "./common/headers.yaml#/components/parameters/deprecationHeader"
+      Sunset:
+        $ref: "./common/headers.yaml#/components/parameters/sunsetHeader"
+      Link:
+        $ref: "./common/headers.yaml#/components/parameters/linkHeader"
     content:
       application/json:
         schema:
-          $ref: './schemas/savings_retrieve_response.json'
+          $ref: './schemas/savingsIncome/savings_retrieve_response.json'
         examples:
           example-response:
             description: Example Response

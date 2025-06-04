@@ -33,12 +33,12 @@ requestBody:
   content:
     application/json:
       schema:
-        $ref: './schemas/uk_savings_account_add_request.json'
+        $ref: './schemas/ukSavingsAccount/add_request.json'
       examples:
         example-1:
           description: Request Example
           value:
-            $ref: './examples/ukSavingsAccount/uk_savings_account_add_request.json'
+            $ref: './examples/ukSavingsAccount/add_request.json'
 
 responses:
   "200":
@@ -46,15 +46,21 @@ responses:
     headers:
       X-CorrelationId:
         $ref: './common/headers.yaml#/components/parameters/correlationId'
+      Deprecation:
+        $ref: "./common/headers.yaml#/components/parameters/deprecationHeader"
+      Sunset:
+        $ref: "./common/headers.yaml#/components/parameters/sunsetHeader"
+      Link:
+        $ref: "./common/headers.yaml#/components/parameters/linkHeader"
     content:
       application/json:
         schema:
-          $ref: './schemas/uk_savings_account_add_response.json'
+          $ref: './schemas/ukSavingsAccount/add_response.json'
         examples:
           example-response:
             description: Example Response
             value:
-              $ref: './examples/ukSavingsAccount/uk_savings_account_add_response.json'
+              $ref: './examples/ukSavingsAccount/add_response.json'
 
   "400":
     description: Bad request

@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "title": 	"Add a UK Savings Account Response",
+  "title": "Add a UK Savings Account Response",
   "description": "Add a UK Savings Account Response",
   "type": "object",
   "properties": {
