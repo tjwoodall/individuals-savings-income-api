@@ -58,11 +58,11 @@ tags:
 paths:
   /individuals/savings-income/uk-accounts/{nino}:
     $ref: "./savings_uk_accounts.yaml"
-  /individuals/savings-income/uk-accounts/{nino}/{taxYear}/{savingsAccountId}:
-    $ref: "./savings_uk_accounts_id.yaml"
   # {{#if (enabled 'update-uk-savings-account-name')}}
-  /individuals/savings-income/uk-accounts/{nino}/{savingsAccountId}:
+  /individuals/savings-income/uk-accounts/{nino}/account-name/{savingsAccountId}:
     $ref: "./savings_uk_accounts_name_update.yaml"
   # {{/if}}
+  /individuals/savings-income/uk-accounts/{nino}/{taxYear}/{savingsAccountId}:
+    $ref: "./savings_uk_accounts_id.yaml"
   /individuals/savings-income/other/{nino}/{taxYear}:
     $ref: "./savings.yaml"

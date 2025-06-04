@@ -122,7 +122,7 @@ class UpdateUKSavingsAccountNameControllerISpec extends IntegrationBaseSpec {
     val nino: String             = "AA123456A"
     val savingsAccountId: String = "SAVKB2UVwUTBQGJ"
 
-    private def uri: String = s"/uk-accounts/$nino/$savingsAccountId"
+    private def uri: String = s"/uk-accounts/$nino/account-name/$savingsAccountId"
 
     def downstreamUri: String = s"/itsd/income-sources/$nino/non-business/$savingsAccountId"
 
@@ -133,7 +133,7 @@ class UpdateUKSavingsAccountNameControllerISpec extends IntegrationBaseSpec {
       buildRequest(uri)
         .withHttpHeaders(
           (ACCEPT, "application/vnd.hmrc.2.0+json"),
-          (AUTHORIZATION, "Bearer 123") // some bearer token
+          (AUTHORIZATION, "Bearer 123")
         )
     }
 
