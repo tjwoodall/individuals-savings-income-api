@@ -18,13 +18,14 @@ package v2.updateUKSavingsAccountName
 
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
+import org.scalatest.TestSuite
 import shared.connectors.DownstreamOutcome
 import uk.gov.hmrc.http.HeaderCarrier
 import v2.updateUKSavingsAccountName.model.request.UpdateUKSavingsAccountNameRequest
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait MockUpdateUKSavingsAccountNameConnector extends MockFactory {
+trait MockUpdateUKSavingsAccountNameConnector extends TestSuite with MockFactory {
 
   val mockUpdateUKSavingsAccountNameConnector: UpdateUKSavingsAccountNameConnector =
     mock[UpdateUKSavingsAccountNameConnector]

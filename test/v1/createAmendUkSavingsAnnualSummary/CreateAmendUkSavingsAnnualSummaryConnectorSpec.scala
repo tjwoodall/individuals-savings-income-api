@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,18 +16,16 @@
 
 package v1.createAmendUkSavingsAnnualSummary
 
+import config.MockSavingsConfig
 import models.domain.SavingsAccountId
 import play.api.libs.json.{JsObject, Json}
 import shared.connectors.{ConnectorSpec, DownstreamOutcome}
 import shared.models.domain.{Nino, TaxYear}
 import shared.models.outcomes.ResponseWrapper
-import config.MockSavingsConfig
-import v1.createAmendUkSavingsAnnualSummary.def1.model.request.{
-  Def1_CreateAmendUkSavingsAnnualSummaryRequestBody,
-  Def1_CreateAmendUkSavingsAnnualSummaryRequestData,
-  Def1_DownstreamCreateAmendUkSavingsAnnualSummaryRequestBody
-}
+import uk.gov.hmrc.http.StringContextOps
+import v1.createAmendUkSavingsAnnualSummary.def1.model.request._
 
+import java.net.URL
 import scala.concurrent.Future
 
 class CreateAmendUkSavingsAnnualSummaryConnectorSpec extends ConnectorSpec with MockSavingsConfig {
@@ -55,7 +53,7 @@ class CreateAmendUkSavingsAnnualSummaryConnectorSpec extends ConnectorSpec with 
         MockedSavingsConfig.featureSwitches.returns(mockSavingsFeatureSwitches).anyNumberOfTimes()
         MockedSavingsConfig.isDesIf_MigrationEnabled.returns(false)
         def taxYear: TaxYear = TaxYear.fromMtd("2019-20")
-        val url: String      = s"$baseUrl/income-tax/nino/$nino/income-source/savings/annual/${taxYear.asDownstream}"
+        val url: URL = url"$baseUrl/income-tax/nino/$nino/income-source/savings/annual/${taxYear.asDownstream}"
         willPost(url, downstreamRequestBody) returns Future.successful(outcome)
 
         val result: DownstreamOutcome[Unit] = await(connector.createOrAmendUKSavingsAccountSummary(requestData))
@@ -66,7 +64,7 @@ class CreateAmendUkSavingsAnnualSummaryConnectorSpec extends ConnectorSpec with 
         MockedSavingsConfig.featureSwitches.returns(mockSavingsFeatureSwitches).anyNumberOfTimes()
         MockedSavingsConfig.isDesIf_MigrationEnabled.returns(true)
         def taxYear: TaxYear = TaxYear.fromMtd("2019-20")
-        val url: String      = s"$baseUrl/income-tax/nino/$nino/income-source/savings/annual/${taxYear.asDownstream}"
+        val url: URL = url"$baseUrl/income-tax/nino/$nino/income-source/savings/annual/${taxYear.asDownstream}"
         willPost(url, downstreamRequestBody) returns Future.successful(outcome)
 
         val result: DownstreamOutcome[Unit] = await(connector.createOrAmendUKSavingsAccountSummary(requestData))
@@ -76,7 +74,7 @@ class CreateAmendUkSavingsAnnualSummaryConnectorSpec extends ConnectorSpec with 
       "createAmendUkSavingsAccountAnnualSummary for a Tax Year Specific tax year" must {
         "return a 200 status for a success scenario " in new TysIfsTest with Test {
           def taxYear: TaxYear = TaxYear.fromMtd("2023-24")
-          val url              = s"$baseUrl/income-tax/${taxYear.asTysDownstream}/$nino/income-source/savings/annual"
+          val url: URL = url"$baseUrl/income-tax/${taxYear.asTysDownstream}/$nino/income-source/savings/annual"
           willPost(url, downstreamRequestBody) returns Future.successful(outcome)
           val result: DownstreamOutcome[Unit] = await(connector.createOrAmendUKSavingsAccountSummary(requestData))
           result shouldBe outcome

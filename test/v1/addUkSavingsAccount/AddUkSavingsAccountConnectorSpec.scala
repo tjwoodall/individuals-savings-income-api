@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ import shared.connectors.ConnectorSpec
 import shared.mocks.MockHttpClient
 import shared.models.domain.Nino
 import shared.models.outcomes.ResponseWrapper
+import uk.gov.hmrc.http.StringContextOps
 import v1.addUkSavingsAccount.def1.model.request.{Def1_AddUkSavingsAccountRequestBody, Def1_AddUkSavingsAccountRequestData}
 import v1.addUkSavingsAccount.def1.model.response.Def1_AddUkSavingsAccountResponse
 
@@ -57,18 +58,18 @@ class AddUkSavingsAccountConnectorSpec extends ConnectorSpec {
       val outcome = Right(ResponseWrapper(correlationId, addUkSavingsAccountResponse))
 
       "return a 200 status for a success scenario when feature switch is disabled (DES enabled)" in new DesTest with Test {
-        MockedSharedAppConfig.featureSwitchConfig returns Configuration("des_hip_migration_1393.enabled" -> false)
+        MockedSharedAppConfig.featureSwitchConfig.anyNumberOfTimes().returns(Configuration("des_hip_migration_1393.enabled" -> false))
 
-        willPost(s"$baseUrl/income-tax/income-sources/nino/$nino", addUkSavingsAccountRequestBody)
+        willPost(url"$baseUrl/income-tax/income-sources/nino/$nino", addUkSavingsAccountRequestBody)
           .returns(Future.successful(outcome))
 
         await(connector.addSavings(addUkSavingsAccountRequest)) shouldBe outcome
       }
 
       "return a 200 status for a success scenario when feature switch is enabled (HIP enabled)" in new HipTest with Test {
-        MockedSharedAppConfig.featureSwitchConfig returns Configuration("des_hip_migration_1393.enabled" -> true)
+        MockedSharedAppConfig.featureSwitchConfig.anyNumberOfTimes().returns(Configuration("des_hip_migration_1393.enabled" -> true))
 
-        willPost(s"$baseUrl/itsd/income-sources/$nino", addUkSavingsAccountRequestBody)
+        willPost(url"$baseUrl/itsd/income-sources/$nino", addUkSavingsAccountRequestBody)
           .returns(Future.successful(outcome))
 
         await(connector.addSavings(addUkSavingsAccountRequest)) shouldBe outcome

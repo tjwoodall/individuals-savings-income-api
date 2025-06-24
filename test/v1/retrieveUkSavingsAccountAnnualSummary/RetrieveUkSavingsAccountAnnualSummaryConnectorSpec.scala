@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,11 +16,12 @@
 
 package v1.retrieveUkSavingsAccountAnnualSummary
 
+import config.MockSavingsConfig
 import models.domain.SavingsAccountId
 import shared.connectors.ConnectorSpec
 import shared.models.domain.{Nino, TaxYear}
 import shared.models.outcomes.ResponseWrapper
-import config.MockSavingsConfig
+import uk.gov.hmrc.http.StringContextOps
 import v1.retrieveUkSavingsAccountAnnualSummary.def1.model.request.Def1_RetrieveUkSavingsAccountAnnualSummaryRequestData
 import v1.retrieveUkSavingsAccountAnnualSummary.def1.model.response.{
   Def1_RetrieveUkSavingsAccountAnnualSummaryResponse,
@@ -73,7 +74,7 @@ class RetrieveUkSavingsAccountAnnualSummaryConnectorSpec extends ConnectorSpec w
         def taxYear: TaxYear = TaxYear.fromMtd("2019-20")
         private val outcome  = Right(ResponseWrapper(correlationId, response))
         willGet(
-          s"$baseUrl/income-tax/nino/$nino/income-source/savings/annual/2020?incomeSourceId=$incomeSourceId"
+          url"$baseUrl/income-tax/nino/$nino/income-source/savings/annual/2020?incomeSourceId=$incomeSourceId"
         ) returns Future.successful(outcome)
 
         await(connector.retrieveUkSavingsAccountAnnualSummary(request)) shouldBe outcome
@@ -86,7 +87,7 @@ class RetrieveUkSavingsAccountAnnualSummaryConnectorSpec extends ConnectorSpec w
         def taxYear: TaxYear = TaxYear.fromMtd("2019-20")
         private val outcome  = Right(ResponseWrapper(correlationId, response))
         willGet(
-          s"$baseUrl/income-tax/nino/$nino/income-source/savings/annual/2020?incomeSourceId=$incomeSourceId"
+          url"$baseUrl/income-tax/nino/$nino/income-source/savings/annual/2020?incomeSourceId=$incomeSourceId"
         ) returns Future.successful(outcome)
 
         await(connector.retrieveUkSavingsAccountAnnualSummary(request)) shouldBe outcome
@@ -100,7 +101,7 @@ class RetrieveUkSavingsAccountAnnualSummaryConnectorSpec extends ConnectorSpec w
         private val outcome = Right(ResponseWrapper(correlationId, response))
 
         willGet(
-          s"$baseUrl/income-tax/23-24/$nino/income-source/savings/annual?incomeSourceId=$incomeSourceId"
+          url"$baseUrl/income-tax/23-24/$nino/income-source/savings/annual?incomeSourceId=$incomeSourceId"
         ) returns Future.successful(outcome)
 
         await(connector.retrieveUkSavingsAccountAnnualSummary(request)) shouldBe outcome

@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ package v2.deleteSavings
 import shared.connectors.ConnectorSpec
 import shared.models.domain.{Nino, TaxYear}
 import shared.models.outcomes.ResponseWrapper
+import uk.gov.hmrc.http.StringContextOps
 import v2.deleteSavings.def1.model.request.Def1_DeleteSavingsRequestData
 import v2.deleteSavings.model.request.DeleteSavingsRequestData
 
@@ -33,7 +34,7 @@ class DeleteSavingsConnectorSpec extends ConnectorSpec {
         val outcome = Right(ResponseWrapper(correlationId, ()))
 
         willDelete(
-          url = s"$baseUrl/income-tax/income/savings/AA111111A/2021-22"
+          url = url"$baseUrl/income-tax/income/savings/AA111111A/2021-22"
         ).returns(Future.successful(outcome))
 
         await(connector.deleteSavings(request)) shouldBe outcome
@@ -46,7 +47,7 @@ class DeleteSavingsConnectorSpec extends ConnectorSpec {
         val outcome = Right(ResponseWrapper(correlationId, ()))
 
         willDelete(
-          url = s"$baseUrl/income-tax/income/savings/23-24/AA111111A"
+          url = url"$baseUrl/income-tax/income/savings/23-24/AA111111A"
         ).returns(Future.successful(outcome))
 
         await(connector.deleteSavings(request)) shouldBe outcome

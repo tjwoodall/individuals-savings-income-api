@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ package v2.createAmendSavings
 import shared.connectors.ConnectorSpec
 import shared.models.domain.{Nino, TaxYear}
 import shared.models.outcomes.ResponseWrapper
+import uk.gov.hmrc.http.StringContextOps
 import v2.createAmendSavings.def1.model.request.{Def1_CreateAmendSavingsRequestBody, Def1_CreateAmendSavingsRequestData}
 import v2.createAmendSavings.model.request.CreateAmendSavingsRequestData
 
@@ -30,7 +31,7 @@ class CreateAmendSavingsConnectorSpec extends ConnectorSpec {
     "createAmendSaving" must {
       "return a 204 status for a success scenario" in new IfsTest with Test {
 
-        willPut(url = s"$baseUrl/income-tax/income/savings/$nino/${taxYear.asMtd}", body = requestBody).returns(Future.successful(outcome))
+        willPut(url = url"$baseUrl/income-tax/income/savings/$nino/${taxYear.asMtd}", body = requestBody).returns(Future.successful(outcome))
 
         await(connector.createAmendSavings(request)) shouldBe outcome
       }
@@ -38,7 +39,7 @@ class CreateAmendSavingsConnectorSpec extends ConnectorSpec {
       "return a 204 status for a success scenario for Tax Year Specific (TYS)" in new TysIfsTest with Test {
         override def taxYear: TaxYear = TaxYear.fromMtd("2023-24")
 
-        willPut(url = s"$baseUrl/income-tax/income/savings/${taxYear.asTysDownstream}/$nino", body = requestBody).returns(Future.successful(outcome))
+        willPut(url = url"$baseUrl/income-tax/income/savings/${taxYear.asTysDownstream}/$nino", body = requestBody).returns(Future.successful(outcome))
 
         await(connector.createAmendSavings(request)) shouldBe outcome
       }

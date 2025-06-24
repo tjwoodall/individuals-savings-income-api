@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,14 +21,15 @@ import play.api.http.Status
 import shared.config.SharedAppConfig
 import shared.connectors.DownstreamUri.{DesUri, IfsUri, TaxYearSpecificIfsUri}
 import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome}
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
+import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.client.HttpClientV2
 import v2.createAmendUkSavingsAnnualSummary.model.request.CreateAmendUkSavingsAnnualSummaryRequestData
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class CreateAmendUkSavingsAnnualSummaryConnector @Inject() (val http: HttpClient, val appConfig: SharedAppConfig, savingsConfig: SavingsConfig)
+class CreateAmendUkSavingsAnnualSummaryConnector @Inject() (val http: HttpClientV2, val appConfig: SharedAppConfig, savingsConfig: SavingsConfig)
     extends BaseDownstreamConnector {
 
   def createOrAmendUKSavingsAccountSummary(requestData: CreateAmendUkSavingsAnnualSummaryRequestData)(implicit

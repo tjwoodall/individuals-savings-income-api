@@ -20,7 +20,8 @@ import shared.config.{ConfigFeatureSwitches, SharedAppConfig}
 import shared.connectors.DownstreamUri.{HipUri, IfsUri}
 import shared.connectors.httpparsers.StandardDownstreamHttpParser.reads
 import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome, DownstreamUri}
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
+import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.client.HttpClientV2
 import v1.listUkSavingsAccounts.model.request.ListUkSavingsAccountsRequestData
 import v1.listUkSavingsAccounts.model.response.{ListUkSavingsAccountsResponse, UkSavingsAccount}
 
@@ -28,7 +29,7 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class ListUkSavingsAccountsConnector @Inject() (val http: HttpClient, val appConfig: SharedAppConfig)
+class ListUkSavingsAccountsConnector @Inject() (val http: HttpClientV2, val appConfig: SharedAppConfig)
     extends BaseDownstreamConnector {
 
   def listUkSavingsAccounts(request: ListUkSavingsAccountsRequestData)(implicit

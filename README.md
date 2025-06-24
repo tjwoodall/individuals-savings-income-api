@@ -23,7 +23,7 @@ Start the service manager profile: `sm2 --start MTDFB_INDIVIDUALS_SAVINGS_INCOME
 
 Run unit tests: `sbt test`
 
-Run integration tests: `sbt it:test`
+Run integration tests: `sbt it/test`
 
 Note: if you run into `java.lang.OutOfMemoryError` errors, add a `.sbtopts` file to the root of the project with the
 following contents:

@@ -22,6 +22,7 @@ import shared.config.MockSharedAppConfig
 import shared.connectors.{ConnectorSpec, DownstreamOutcome}
 import shared.models.domain.Nino
 import shared.models.outcomes.ResponseWrapper
+import uk.gov.hmrc.http.StringContextOps
 import v2.listUkSavingsAccounts.def1.model.request.Def1_ListUkSavingsAccountsRequestData
 import v2.listUkSavingsAccounts.def1.model.response.{Def1_ListUkSavingsAccountsResponse, Def1_UkSavingsAccount}
 import v2.listUkSavingsAccounts.model.response.{ListUkSavingsAccountsResponse, UkSavingsAccount}
@@ -64,7 +65,7 @@ class ListUkSavingsAccountsConnectorSpec extends ConnectorSpec with MockSharedAp
           Right(ResponseWrapper(correlationId, validResponse))
 
         willGet(
-          url = s"$baseUrl/income-tax/income-sources/$nino",
+          url = url"$baseUrl/income-tax/income-sources/$nino",
           parameters = Seq("incomeSourceType" -> "09")
         ).returns(Future.successful(outcome))
 
@@ -81,7 +82,7 @@ class ListUkSavingsAccountsConnectorSpec extends ConnectorSpec with MockSharedAp
           Right(ResponseWrapper(correlationId, validResponse))
 
         willGet(
-          url = s"$baseUrl/itsd/income-sources/v2/$nino",
+          url = url"$baseUrl/itsd/income-sources/v2/$nino",
           parameters = Seq("incomeSourceType" -> "09")
         ).returns(Future.successful(outcome))
 
@@ -99,7 +100,7 @@ class ListUkSavingsAccountsConnectorSpec extends ConnectorSpec with MockSharedAp
           Right(ResponseWrapper(correlationId, validResponse))
 
         willGet(
-          url = s"$baseUrl/income-tax/income-sources/$nino",
+          url = url"$baseUrl/income-tax/income-sources/$nino",
           parameters = Seq("incomeSourceType" -> "09", "incomeSourceId" -> savingsAccountId.toString)
         ).returns(Future.successful(outcome))
 
@@ -118,7 +119,7 @@ class ListUkSavingsAccountsConnectorSpec extends ConnectorSpec with MockSharedAp
           Right(ResponseWrapper(correlationId, validResponse))
 
         willGet(
-          url = s"$baseUrl/itsd/income-sources/v2/$nino",
+          url = url"$baseUrl/itsd/income-sources/v2/$nino",
           parameters = Seq("incomeSourceType" -> "09", "incomeSourceId" -> savingsAccountId.toString)
         ).returns(Future.successful(outcome))
 

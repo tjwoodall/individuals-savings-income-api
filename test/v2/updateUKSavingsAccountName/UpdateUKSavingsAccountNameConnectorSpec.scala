@@ -16,11 +16,12 @@
 
 package v2.updateUKSavingsAccountName
 
-import shared.connectors.{ConnectorSpec, DownstreamOutcome}
 import models.domain.SavingsAccountId
+import shared.connectors.{ConnectorSpec, DownstreamOutcome}
 import shared.models.domain.Nino
 import shared.models.errors.{DownstreamErrorCode, DownstreamErrors}
 import shared.models.outcomes.ResponseWrapper
+import uk.gov.hmrc.http.StringContextOps
 import v2.updateUKSavingsAccountName.fixture.UpdateUKSavingsAccountNameFixtures.requestBodyModel
 import v2.updateUKSavingsAccountName.model.request.UpdateUKSavingsAccountNameRequest
 
@@ -37,7 +38,7 @@ class UpdateUKSavingsAccountNameConnectorSpec extends ConnectorSpec {
         val outcome: Right[Nothing, ResponseWrapper[Unit]] = Right(ResponseWrapper(correlationId, ()))
 
         willPut(
-          url = s"$baseUrl/itsd/income-sources/$nino/non-business/$savingsAccountId",
+          url = url"$baseUrl/itsd/income-sources/$nino/non-business/$savingsAccountId",
           body = requestBodyModel
         ).returns(Future.successful(outcome))
 
@@ -54,7 +55,7 @@ class UpdateUKSavingsAccountNameConnectorSpec extends ConnectorSpec {
           Left(ResponseWrapper(correlationId, downstreamErrorResponse))
 
         willPut(
-          url = s"$baseUrl/itsd/income-sources/$nino/non-business/$savingsAccountId",
+          url = url"$baseUrl/itsd/income-sources/$nino/non-business/$savingsAccountId",
           body = requestBodyModel
         ).returns(Future.successful(errorOutcome))
 

@@ -16,11 +16,12 @@
 
 package config
 
-import play.api.Configuration
 import org.scalamock.handlers.{CallHandler, CallHandler0}
 import org.scalamock.scalatest.MockFactory
+import org.scalatest.TestSuite
+import play.api.Configuration
 
-trait MockSavingsConfig extends MockFactory {
+trait MockSavingsConfig extends TestSuite with MockFactory {
 
   implicit val mockSavingsConfig: SavingsConfig = mock[SavingsConfig]
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,13 +18,14 @@ package v2.createAmendUkSavingsAnnualSummary
 
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
+import org.scalatest.TestSuite
 import shared.controllers.RequestContext
 import shared.services.ServiceOutcome
 import v2.createAmendUkSavingsAnnualSummary.model.request.CreateAmendUkSavingsAnnualSummaryRequestData
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait MockCreateAmendUkSavingsAnnualSummaryService extends MockFactory {
+trait MockCreateAmendUkSavingsAnnualSummaryService extends TestSuite with MockFactory {
 
   val mockCreateAmendUkSavingsAnnualSummaryService: CreateAmendUkSavingsAnnualSummaryService =
     mock[CreateAmendUkSavingsAnnualSummaryService]
