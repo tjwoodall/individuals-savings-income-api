@@ -19,7 +19,7 @@ package v1.createAmendUkSavingsAnnualSummary
 import config.SavingsConfig
 import play.api.http.Status
 import shared.config.SharedAppConfig
-import shared.connectors.DownstreamUri.{DesUri, IfsUri, TaxYearSpecificIfsUri}
+import shared.connectors.DownstreamUri.{DesUri, IfsUri}
 import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.client.HttpClientV2
@@ -45,7 +45,7 @@ class CreateAmendUkSavingsAnnualSummaryConnector @Inject() (val http: HttpClient
 
     val downstreamUri =
       if (taxYear.useTaxYearSpecificApi) {
-        TaxYearSpecificIfsUri[Unit](s"income-tax/${taxYear.asTysDownstream}/$nino/income-source/savings/annual")
+        IfsUri[Unit](s"income-tax/${taxYear.asTysDownstream}/$nino/income-source/savings/annual")
       } else if (savingsConfig.featureSwitches.isDesIf_MigrationEnabled) {
         IfsUri[Unit](path)
       } else {

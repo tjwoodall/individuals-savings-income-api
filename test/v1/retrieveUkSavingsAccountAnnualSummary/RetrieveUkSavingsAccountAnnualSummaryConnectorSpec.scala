@@ -95,7 +95,7 @@ class RetrieveUkSavingsAccountAnnualSummaryConnectorSpec extends ConnectorSpec w
     }
 
     "retrieveUkSavingsAccountAnnualSummary called for a TYS tax year" must {
-      "return a 200 status for a success scenario" in new TysIfsTest with Test {
+      "return a 200 status for a success scenario" in new IfsTest with Test {
         def taxYear: TaxYear = TaxYear.fromMtd("2023-24")
 
         private val outcome = Right(ResponseWrapper(correlationId, response))

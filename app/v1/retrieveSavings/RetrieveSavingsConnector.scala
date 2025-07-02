@@ -17,7 +17,7 @@
 package v1.retrieveSavings
 
 import shared.config.SharedAppConfig
-import shared.connectors.DownstreamUri.{IfsUri, TaxYearSpecificIfsUri}
+import shared.connectors.DownstreamUri.IfsUri
 import shared.connectors.httpparsers.StandardDownstreamHttpParser.reads
 import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome}
 import uk.gov.hmrc.http.HeaderCarrier
@@ -40,7 +40,7 @@ class RetrieveSavingsConnector @Inject() (val http: HttpClientV2, val appConfig:
     import schema._
 
     val downstreamUri = if (taxYear.useTaxYearSpecificApi) {
-      TaxYearSpecificIfsUri[DownstreamResp](s"income-tax/income/savings/${taxYear.asTysDownstream}/$nino")
+      IfsUri[DownstreamResp](s"income-tax/income/savings/${taxYear.asTysDownstream}/$nino")
     } else {
       IfsUri[DownstreamResp](s"income-tax/income/savings/$nino/${taxYear.asMtd}")
     }

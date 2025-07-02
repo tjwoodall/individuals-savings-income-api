@@ -17,7 +17,7 @@
 package v2.deleteSavings
 
 import shared.config.SharedAppConfig
-import shared.connectors.DownstreamUri.{IfsUri, TaxYearSpecificIfsUri}
+import shared.connectors.DownstreamUri.IfsUri
 import shared.connectors.httpparsers.StandardDownstreamHttpParser.readsEmpty
 import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome}
 import uk.gov.hmrc.http.HeaderCarrier
@@ -36,7 +36,7 @@ class DeleteSavingsConnector @Inject() (val http: HttpClientV2, val appConfig: S
     import request._
 
     val downstreamUri = if (taxYear.useTaxYearSpecificApi) {
-      TaxYearSpecificIfsUri[Unit](s"income-tax/income/savings/${taxYear.asTysDownstream}/$nino")
+      IfsUri[Unit](s"income-tax/income/savings/${taxYear.asTysDownstream}/$nino")
     } else {
       IfsUri[Unit](s"income-tax/income/savings/$nino/${taxYear.asMtd}")
     }

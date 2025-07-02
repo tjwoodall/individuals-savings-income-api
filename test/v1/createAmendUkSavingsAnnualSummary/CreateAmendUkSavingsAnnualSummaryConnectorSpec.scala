@@ -72,7 +72,7 @@ class CreateAmendUkSavingsAnnualSummaryConnectorSpec extends ConnectorSpec with 
       }
 
       "createAmendUkSavingsAccountAnnualSummary for a Tax Year Specific tax year" must {
-        "return a 200 status for a success scenario " in new TysIfsTest with Test {
+        "return a 200 status for a success scenario " in new IfsTest with Test {
           def taxYear: TaxYear = TaxYear.fromMtd("2023-24")
           val url: URL = url"$baseUrl/income-tax/${taxYear.asTysDownstream}/$nino/income-source/savings/annual"
           willPost(url, downstreamRequestBody) returns Future.successful(outcome)
