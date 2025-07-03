@@ -18,7 +18,7 @@ package v2.retrieveUkSavingsAccountAnnualSummary
 
 import config.SavingsConfig
 import shared.config.SharedAppConfig
-import shared.connectors.DownstreamUri.{DesUri, IfsUri, TaxYearSpecificIfsUri}
+import shared.connectors.DownstreamUri.{DesUri, IfsUri}
 import shared.connectors.httpparsers.StandardDownstreamHttpParser.reads
 import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome, DownstreamUri}
 import uk.gov.hmrc.http.HeaderCarrier
@@ -46,7 +46,7 @@ class RetrieveUkSavingsAccountAnnualSummaryConnector @Inject() (val http: HttpCl
 
     val downstreamUri: DownstreamUri[DownstreamResp] =
       if (request.taxYear.useTaxYearSpecificApi) {
-        TaxYearSpecificIfsUri(s"income-tax/${request.taxYear.asTysDownstream}/$nino/income-source/savings/annual?incomeSourceId=$incomeSourceId")
+        IfsUri(s"income-tax/${request.taxYear.asTysDownstream}/$nino/income-source/savings/annual?incomeSourceId=$incomeSourceId")
       } else {
         val path = s"income-tax/nino/$nino/income-source/savings/annual/${request.taxYear.asDownstream}?incomeSourceId=$incomeSourceId"
         if (savingsConfig.featureSwitches.isDesIf_MigrationEnabled) IfsUri(path) else DesUri(path)

@@ -17,7 +17,7 @@
 package v1.createAmendSavings
 
 import shared.config.SharedAppConfig
-import shared.connectors.DownstreamUri.{IfsUri, TaxYearSpecificIfsUri}
+import shared.connectors.DownstreamUri.IfsUri
 import shared.connectors.httpparsers.StandardDownstreamHttpParser._
 import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome}
 import uk.gov.hmrc.http.HeaderCarrier
@@ -39,7 +39,7 @@ class CreateAmendSavingsConnector @Inject() (val http: HttpClientV2, val appConf
 
     val downstreamUri =
       if (taxYear.useTaxYearSpecificApi) {
-        TaxYearSpecificIfsUri[Unit](s"income-tax/income/savings/${taxYear.asTysDownstream}/${nino.value}")
+        IfsUri[Unit](s"income-tax/income/savings/${taxYear.asTysDownstream}/${nino.value}")
       } else {
         IfsUri[Unit](s"income-tax/income/savings/${nino.value}/${taxYear.asMtd}")
       }
