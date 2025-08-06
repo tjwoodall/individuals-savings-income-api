@@ -1,0 +1,32 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "List All UK Savings Accounts Response",
+  "type": "object",
+  "properties": {
+    "savingsAccounts": {
+      "type": "array",
+      "description": "An array containing details of savings accounts for the provided National Insurance number.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "savingsAccountId": {
+            "type": "string",
+            "description": "The unique identifier of the savings account.",
+            "pattern": "^[A-Za-z0-9]{15}$",
+            "example": "SAVKB2UVwUTBQGJ"
+          },
+          "accountName": {
+            "type": "string",
+            "description": "Friendly account name.",
+            "pattern": "^[A-Za-z0-9 &'\\(\\)\\*,\\-\\./@£]{1,32}$",
+            "example": "Shares savings account"
+          }
+        },
+        "required": [
+          "savingsAccountId"
+        ]
+      }
+    }
+  },
+  "required": ["savingsAccounts"]
+}

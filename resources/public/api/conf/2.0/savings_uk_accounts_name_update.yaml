@@ -1,0 +1,114 @@
+put:
+  summary: "Update a UK Savings Account name [test only]"
+  description: |
+    This endpoint allows a developer to update UK savings account information.
+    A National Insurance number and savings account ID must be provided.
+    
+    ### Test data
+    Scenario simulation using Gov-Test-Scenario headers is only available in the sandbox environment.
+    
+    | Header Value (Gov-Test-Scenario) | Scenario                                       |
+    |----------------------------------|------------------------------------------------|
+    | N/A - DEFAULT                    | Simulates success response.                    |
+    | NOT_FOUND                        | Simulates the scenario where no data is found. |
+    | REQUEST_CANNOT_BE_FULFILLED      | Simulates the scenario where the request cannot be fulfilled for various reasons other than the ones triggering other errors.|
+    | STATEFUL                         | Performs a stateful update.                    |
+
+  tags:
+    - UK Savings Account
+
+  parameters:
+    - $ref: './common/pathParameters.yaml#/components/parameters/nino'
+    - $ref: './common/pathParameters.yaml#/components/parameters/savingsAccountId'
+    - $ref: './common/headers.yaml#/components/parameters/acceptHeader'
+    - $ref: './common/headers.yaml#/components/parameters/contentTypeJson'
+    - $ref: './common/headers.yaml#/components/parameters/authorizationWriteScopeHeader'
+    - $ref: './common/headers.yaml#/components/parameters/testScenarioHeader'
+
+  security:
+    - User-Restricted:
+        - write:self-assessment
+
+  requestBody:
+    content:
+      application/json:
+        schema:
+          $ref: './schemas/ukSavingsAccount/name_update_request.json'
+        examples:
+          example-1:
+            description: Request Example
+            value:
+              $ref: './examples/ukSavingsAccount/name_update_request.json'
+
+  responses:
+    "204":
+      description: Success (No Content)
+      headers:
+        X-CorrelationId:
+          $ref: './common/headers.yaml#/components/parameters/correlationId'
+        Deprecation:
+          $ref: "./common/headers.yaml#/components/parameters/deprecationHeader"
+        Sunset:
+          $ref: "./common/headers.yaml#/components/parameters/sunsetHeader"
+        Link:
+          $ref: "./common/headers.yaml#/components/parameters/linkHeader"
+
+    "400":
+      description: Bad request
+      headers:
+        X-CorrelationId:
+          $ref: './common/headers.yaml#/components/parameters/correlationId'
+      content:
+        application/json:
+          schema:
+            $ref: './schemas/error_response.yaml'
+          examples:
+            FORMAT_NINO:
+              $ref: './common/errors.yaml#/components/examples/formatNino'
+            FORMAT_SAVINGS_ACCOUNT_ID:
+              $ref: './common/errors.yaml#/components/examples/formatSavingsAccountId'
+            FORMAT_ACCOUNT_NAME:
+              $ref: './common/errors.yaml#/components/examples/formatAccountName'
+            RULE_INCORRECT_OR_EMPTY_BODY_SUBMITTED:
+              $ref: './common/errors.yaml#/components/examples/ruleIncorrectOrEmptyBody'
+            RULE_INCORRECT_GOV_TEST_SCENARIO:
+              $ref: './common/errors.yaml#/components/examples/ruleIncorrectGovTestScenario'
+
+    "403":
+      description: Forbidden
+      headers:
+        X-CorrelationId:
+          $ref: './common/headers.yaml#/components/parameters/correlationId'
+      content:
+        application/json:
+          schema:
+            $ref: './schemas/error_response.yaml'
+          examples:
+            CLIENT_OR_AGENT_NOT_AUTHORISED:
+              $ref: './common/errors.yaml#/components/examples/clientOrAgentNotAuthorised'
+
+    "404":
+      description: Not Found
+      headers:
+        X-CorrelationId:
+          $ref: './common/headers.yaml#/components/parameters/correlationId'
+      content:
+        application/json:
+          schema:
+            $ref: './schemas/error_response.yaml'
+          examples:
+            MATCHING_RESOURCE_NOT_FOUND:
+              $ref: './common/errors.yaml#/components/examples/notFound'
+
+    "422":
+      description: Unprocessable Entity
+      headers:
+        X-CorrelationId:
+          $ref: './common/headers.yaml#/components/parameters/correlationId'
+      content:
+        application/json:
+          schema:
+            $ref: './schemas/error_response.yaml'
+          examples:
+            RULE_REQUEST_CANNOT_BE_FULFILLED:
+              $ref: './common/errors.yaml#/components/examples/requestCannotBeFulfilled'

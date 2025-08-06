@@ -1,0 +1,17 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "Update a UK Savings Account name Request",
+  "description": "Update a UK Savings Account name Request",
+  "type": "object",
+  "properties": {
+    "accountName": {
+      "type": "string",
+      "description": "Friendly account name.",
+      "pattern": "^[A-Za-z0-9 &'\\(\\)\\*,\\-\\./@£]{1,32}$",
+      "example": "Shares savings account"
+    }
+  },
+  "required": [
+    "accountName"
+  ]
+}
