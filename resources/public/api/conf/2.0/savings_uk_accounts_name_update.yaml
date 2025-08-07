@@ -1,5 +1,5 @@
 put:
-  summary: Update a UK Savings Account name
+  summary: Update a UK Savings Account name{{#maybeTestOnly "2.0 savings-uk-accounts-name-update"}}{{/maybeTestOnly}}
   description: |
     This endpoint allows a developer to update UK savings account information.
     A National Insurance number and savings account ID must be provided.
