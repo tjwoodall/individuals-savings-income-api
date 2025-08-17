@@ -4,8 +4,6 @@ get:
   security:
     - User-Restricted:
         - read:self-assessment
-  parameters:
-    - $ref: './common/queryParameters.yaml#/components/parameters/savingsAccountId'
 
 post:
   $ref: "./savings_uk_accounts_add.yaml"
