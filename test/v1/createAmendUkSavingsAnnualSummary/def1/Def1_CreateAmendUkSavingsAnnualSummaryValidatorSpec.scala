@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,15 +18,14 @@ package v1.createAmendUkSavingsAnnualSummary.def1
 
 import models.domain.SavingsAccountId
 import play.api.libs.json.{JsValue, Json}
-import shared.models.domain.{Nino, TaxYear}
-import shared.models.errors._
-import config.MockSavingsConfig
 import shared.config.MockSharedAppConfig
+import shared.models.domain.{Nino, TaxYear}
+import shared.models.errors.*
 import shared.utils.UnitSpec
-import v1.createAmendUkSavingsAnnualSummary.def1.model.request._
+import v1.createAmendUkSavingsAnnualSummary.def1.model.request.*
 import v1.createAmendUkSavingsAnnualSummary.model.request.CreateAmendUkSavingsAnnualSummaryRequestData
 
-class Def1_CreateAmendUkSavingsAnnualSummaryValidatorSpec extends UnitSpec with MockSharedAppConfig with MockSavingsConfig {
+class Def1_CreateAmendUkSavingsAnnualSummaryValidatorSpec extends UnitSpec with MockSharedAppConfig {
 
   private implicit val correlationId: String = "1234"
 
@@ -98,19 +97,21 @@ class Def1_CreateAmendUkSavingsAnnualSummaryValidatorSpec extends UnitSpec with 
   private val parsedMtdBody         = validMtdRequestBodyJson.as[Def1_CreateAmendUkSavingsAnnualSummaryRequestBody]
 
   private def validator(nino: String, taxYear: String, savingsAccountId: String, body: JsValue) =
-    new Def1_CreateAmendUkSavingsAnnualSummaryValidator(nino, taxYear, savingsAccountId, body)(mockSharedAppConfig, mockSavingsConfig)
+    new Def1_CreateAmendUkSavingsAnnualSummaryValidator(nino, taxYear, savingsAccountId, body)(mockSharedAppConfig)
 
   "validator" should {
     "return the parsed domain object" when {
-      "a valid request is supplied" in {
-        val result = validator(validNino, validTaxYear, validSavingsAccountId, validMtdRequestBodyJson).validateAndWrapResult()
+      "a valid request is supplied" in new SetupConfig {
+        val result: Either[ErrorWrapper, CreateAmendUkSavingsAnnualSummaryRequestData] =
+          validator(validNino, validTaxYear, validSavingsAccountId, validMtdRequestBodyJson).validateAndWrapResult()
         result shouldBe Right(Def1_CreateAmendUkSavingsAnnualSummaryRequestData(parsedNino, parsedTaxYear, parsedSavngsAccountId, parsedMtdBody))
       }
     }
 
     "return NinoFormatError error" when {
-      "an invalid nino is supplied" in {
-        val result = validator("A12344A", validTaxYear, validSavingsAccountId, validMtdRequestBodyJson).validateAndWrapResult()
+      "an invalid nino is supplied" in new SetupConfig {
+        val result: Either[ErrorWrapper, CreateAmendUkSavingsAnnualSummaryRequestData] =
+          validator("A12344A", validTaxYear, validSavingsAccountId, validMtdRequestBodyJson).validateAndWrapResult()
         result shouldBe Left(
           ErrorWrapper(correlationId, NinoFormatError)
         )
@@ -118,8 +119,9 @@ class Def1_CreateAmendUkSavingsAnnualSummaryValidatorSpec extends UnitSpec with 
     }
 
     "return TaxYearFormatError error" when {
-      "an invalid tax year is supplied" in {
-        val result = validator(validNino, "201718", validSavingsAccountId, validMtdRequestBodyJson).validateAndWrapResult()
+      "an invalid tax year is supplied" in new SetupConfig {
+        val result: Either[ErrorWrapper, CreateAmendUkSavingsAnnualSummaryRequestData] =
+          validator(validNino, "201718", validSavingsAccountId, validMtdRequestBodyJson).validateAndWrapResult()
         result shouldBe Left(
           ErrorWrapper(correlationId, TaxYearFormatError)
         )
@@ -127,8 +129,9 @@ class Def1_CreateAmendUkSavingsAnnualSummaryValidatorSpec extends UnitSpec with 
     }
 
     "return RuleTaxYearNotSupportedError error" when {
-      "an out of range tax year is supplied" in {
-        val result = validator(validNino, "2016-17", validSavingsAccountId, validMtdRequestBodyJson).validateAndWrapResult()
+      "an out of range tax year is supplied" in new SetupConfig {
+        val result: Either[ErrorWrapper, CreateAmendUkSavingsAnnualSummaryRequestData] =
+          validator(validNino, "2016-17", validSavingsAccountId, validMtdRequestBodyJson).validateAndWrapResult()
         result shouldBe Left(
           ErrorWrapper(correlationId, RuleTaxYearNotSupportedError)
         )
@@ -136,8 +139,9 @@ class Def1_CreateAmendUkSavingsAnnualSummaryValidatorSpec extends UnitSpec with 
     }
 
     "return RuleTaxYearRangeInvalidError error" when {
-      "an invalid tax year range is supplied" in {
-        val result = validator(validNino, "2017-19", validSavingsAccountId, validMtdRequestBodyJson).validateAndWrapResult()
+      "an invalid tax year range is supplied" in new SetupConfig {
+        val result: Either[ErrorWrapper, CreateAmendUkSavingsAnnualSummaryRequestData] =
+          validator(validNino, "2017-19", validSavingsAccountId, validMtdRequestBodyJson).validateAndWrapResult()
         result shouldBe Left(
           ErrorWrapper(correlationId, RuleTaxYearRangeInvalidError)
         )
@@ -145,7 +149,7 @@ class Def1_CreateAmendUkSavingsAnnualSummaryValidatorSpec extends UnitSpec with 
     }
 
     "return RuleIncorrectOrEmptyBodyError error" when {
-      "an empty JSON mtdBody is submitted" in {
+      "an empty JSON mtdBody is submitted" in new SetupConfig {
         val result: Either[ErrorWrapper, CreateAmendUkSavingsAnnualSummaryRequestData] =
           validator(validNino, validTaxYear, validSavingsAccountId, emptyRequestBodyJson).validateAndWrapResult()
 
@@ -154,7 +158,7 @@ class Def1_CreateAmendUkSavingsAnnualSummaryValidatorSpec extends UnitSpec with 
         )
       }
 
-      "a non-empty JSON mtdBody is submitted without any expected fields" in {
+      "a non-empty JSON mtdBody is submitted without any expected fields" in new SetupConfig {
         val result: Either[ErrorWrapper, CreateAmendUkSavingsAnnualSummaryRequestData] =
           validator(validNino, validTaxYear, validSavingsAccountId, nonsenseRequestBodyJson).validateAndWrapResult()
 
@@ -163,7 +167,7 @@ class Def1_CreateAmendUkSavingsAnnualSummaryValidatorSpec extends UnitSpec with 
         )
       }
 
-      "the submitted request mtdBody is not in the correct format" in {
+      "the submitted request mtdBody is not in the correct format" in new SetupConfig {
         val result: Either[ErrorWrapper, CreateAmendUkSavingsAnnualSummaryRequestData] =
           validator(validNino, validTaxYear, validSavingsAccountId, nonValidRequestBodyJson).validateAndWrapResult()
 
@@ -178,7 +182,7 @@ class Def1_CreateAmendUkSavingsAnnualSummaryValidatorSpec extends UnitSpec with 
         )
       }
 
-      "the submitted request mtdBody has missing mandatory fields" in {
+      "the submitted request mtdBody has missing mandatory fields" in new SetupConfig {
         val result: Either[ErrorWrapper, CreateAmendUkSavingsAnnualSummaryRequestData] =
           validator(validNino, validTaxYear, validSavingsAccountId, missingMandatoryFieldsJson).validateAndWrapResult()
 
@@ -190,7 +194,7 @@ class Def1_CreateAmendUkSavingsAnnualSummaryValidatorSpec extends UnitSpec with 
         )
       }
 
-      "the submitted request mtdBody contains empty objects" in {
+      "the submitted request mtdBody contains empty objects" in new SetupConfig {
         val result: Either[ErrorWrapper, CreateAmendUkSavingsAnnualSummaryRequestData] =
           validator(validNino, validTaxYear, validSavingsAccountId, emptyArrayJson).validateAndWrapResult()
 
@@ -205,8 +209,9 @@ class Def1_CreateAmendUkSavingsAnnualSummaryValidatorSpec extends UnitSpec with 
     }
 
     "return multiple errors" when {
-      "multiple invalid parameters are provided" in {
-        val result = validator("not-a-nino", "2017-19", validSavingsAccountId, validMtdRequestBodyJson).validateAndWrapResult()
+      "multiple invalid parameters are provided" in new SetupConfig {
+        val result: Either[ErrorWrapper, CreateAmendUkSavingsAnnualSummaryRequestData] =
+          validator("not-a-nino", "2017-19", validSavingsAccountId, validMtdRequestBodyJson).validateAndWrapResult()
 
         result shouldBe Left(
           ErrorWrapper(
@@ -219,7 +224,7 @@ class Def1_CreateAmendUkSavingsAnnualSummaryValidatorSpec extends UnitSpec with 
     }
 
     "return ValueFormatError error" when {
-      "one field fails value validation" in {
+      "one field fails value validation" in new SetupConfig {
         val result: Either[ErrorWrapper, CreateAmendUkSavingsAnnualSummaryRequestData] =
           validator(validNino, validTaxYear, validSavingsAccountId, oneBadValueFieldJson).validateAndWrapResult()
 
@@ -235,7 +240,7 @@ class Def1_CreateAmendUkSavingsAnnualSummaryValidatorSpec extends UnitSpec with 
           ))
       }
 
-      "multiple fields fails value validation" in {
+      "multiple fields fails value validation" in new SetupConfig {
         val result: Either[ErrorWrapper, CreateAmendUkSavingsAnnualSummaryRequestData] =
           validator(validNino, validTaxYear, validSavingsAccountId, allBadValueFieldsJson).validateAndWrapResult()
 

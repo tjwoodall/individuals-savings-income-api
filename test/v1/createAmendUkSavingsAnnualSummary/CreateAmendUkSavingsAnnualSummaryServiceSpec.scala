@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ package v1.createAmendUkSavingsAnnualSummary
 import models.domain.SavingsAccountId
 import shared.controllers.EndpointLogContext
 import shared.models.domain.{Nino, TaxYear}
-import shared.models.errors._
+import shared.models.errors.*
 import shared.models.outcomes.ResponseWrapper
 import shared.services.ServiceSpec
 import v1.createAmendUkSavingsAnnualSummary.def1.model.request.{
@@ -100,7 +100,7 @@ class CreateAmendUkSavingsAnnualSummaryServiceSpec extends ServiceSpec {
           "TAX_YEAR_NOT_SUPPORTED"     -> RuleTaxYearNotSupportedError
         )
 
-        (errors ++ tysErrors).foreach(args => (serviceError _).tupled(args))
+        (errors ++ tysErrors).foreach(args => serviceError.tupled(args))
       }
     }
   }

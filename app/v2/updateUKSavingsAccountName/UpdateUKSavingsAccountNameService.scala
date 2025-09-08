@@ -16,10 +16,10 @@
 
 package v2.updateUKSavingsAccountName
 
-import cats.implicits._
+import cats.implicits.*
 import models.errors.SavingsAccountIdFormatError
 import shared.controllers.RequestContext
-import shared.models.errors._
+import shared.models.errors.*
 import shared.services.{BaseService, ServiceOutcome}
 import v2.updateUKSavingsAccountName.model.request.UpdateUKSavingsAccountNameRequest
 
@@ -27,7 +27,7 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class UpdateUKSavingsAccountNameService @Inject()(connector: UpdateUKSavingsAccountNameConnector) extends BaseService {
+class UpdateUKSavingsAccountNameService @Inject() (connector: UpdateUKSavingsAccountNameConnector) extends BaseService {
 
   def update(request: UpdateUKSavingsAccountNameRequest)(implicit ctx: RequestContext, ec: ExecutionContext): Future[ServiceOutcome[Unit]] =
     connector.update(request).map(_.leftMap(mapDownstreamErrors(downstreamErrorMap)))
@@ -38,4 +38,5 @@ class UpdateUKSavingsAccountNameService @Inject()(connector: UpdateUKSavingsAcco
     "1000" -> InternalError,
     "5010" -> NotFoundError
   )
+
 }

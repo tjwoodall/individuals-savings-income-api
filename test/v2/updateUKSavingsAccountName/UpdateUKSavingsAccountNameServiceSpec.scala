@@ -19,7 +19,7 @@ package v2.updateUKSavingsAccountName
 import models.domain.SavingsAccountId
 import models.errors.SavingsAccountIdFormatError
 import shared.models.domain.Nino
-import shared.models.errors._
+import shared.models.errors.*
 import shared.models.outcomes.ResponseWrapper
 import shared.services.{ServiceOutcome, ServiceSpec}
 import v2.updateUKSavingsAccountName.fixture.UpdateUKSavingsAccountNameFixtures.requestBodyModel
@@ -29,7 +29,7 @@ import scala.concurrent.Future
 
 class UpdateUKSavingsAccountNameServiceSpec extends ServiceSpec {
 
-  private val nino: Nino                 = Nino("AA123456A")
+  private val nino: Nino       = Nino("AA123456A")
   private val savingsAccountId = SavingsAccountId("SAVKB2UVwUTBQGJ")
 
   "UpdateUKSavingsAccountNameService" when {
@@ -64,10 +64,9 @@ class UpdateUKSavingsAccountNameServiceSpec extends ServiceSpec {
           ("1007", SavingsAccountIdFormatError),
           ("1000", InternalError),
           ("5010", NotFoundError)
-
         )
 
-        errors.foreach(args => (serviceError _).tupled(args))
+        errors.foreach(args => serviceError.tupled(args))
       }
     }
   }

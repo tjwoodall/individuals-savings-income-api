@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,16 +19,15 @@ package v2.createAmendUkSavingsAnnualSummary
 import play.api.libs.json.JsValue
 import shared.config.SharedAppConfig
 import shared.controllers.validators.Validator
-import config.SavingsConfig
 import v2.createAmendUkSavingsAnnualSummary.def1.Def1_CreateAmendUkSavingsAnnualSummaryValidator
-import v2.createAmendUkSavingsAnnualSummary.model.request._
+import v2.createAmendUkSavingsAnnualSummary.model.request.*
 
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class CreateAmendUkSavingsAnnualSummaryValidatorFactory @Inject() (appConfig: SharedAppConfig, savingsConfig: SavingsConfig) {
+class CreateAmendUkSavingsAnnualSummaryValidatorFactory @Inject() (appConfig: SharedAppConfig) {
 
   def validator(nino: String, taxYear: String, savingsAccountId: String, body: JsValue): Validator[CreateAmendUkSavingsAnnualSummaryRequestData] =
-    new Def1_CreateAmendUkSavingsAnnualSummaryValidator(nino, taxYear, savingsAccountId, body)(appConfig, savingsConfig)
+    new Def1_CreateAmendUkSavingsAnnualSummaryValidator(nino, taxYear, savingsAccountId, body)(appConfig)
 
 }

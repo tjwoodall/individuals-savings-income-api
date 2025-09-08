@@ -16,13 +16,13 @@
 
 package v1.listUkSavingsAccounts
 
-import cats.implicits._
+import cats.implicits.*
 import models.errors.SavingsAccountIdFormatError
 import shared.controllers.RequestContext
-import shared.models.errors._
+import shared.models.errors.*
 import shared.services.{BaseService, ServiceOutcome}
 import v1.listUkSavingsAccounts.model.request.ListUkSavingsAccountsRequestData
-import v1.listUkSavingsAccounts.model.response.{ListUkSavingsAccountsResponse, UkSavingsAccount}
+import v1.listUkSavingsAccounts.model.response.ListUkSavingsAccountsResponse
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -32,7 +32,7 @@ class ListUkSavingsAccountsService @Inject() (connector: ListUkSavingsAccountsCo
 
   def listUkSavingsAccounts(request: ListUkSavingsAccountsRequestData)(implicit
       ctx: RequestContext,
-      ec: ExecutionContext): Future[ServiceOutcome[ListUkSavingsAccountsResponse[UkSavingsAccount]]] =
+      ec: ExecutionContext): Future[ServiceOutcome[ListUkSavingsAccountsResponse]] =
     connector.listUkSavingsAccounts(request).map(_.leftMap(mapDownstreamErrors(downstreamErrorMap)))
 
   private val downstreamErrorMap: Map[String, MtdError] = {

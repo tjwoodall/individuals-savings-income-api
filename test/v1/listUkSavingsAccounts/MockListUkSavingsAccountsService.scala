@@ -22,7 +22,7 @@ import org.scalatest.TestSuite
 import shared.controllers.RequestContext
 import shared.services.ServiceOutcome
 import v1.listUkSavingsAccounts.model.request.ListUkSavingsAccountsRequestData
-import v1.listUkSavingsAccounts.model.response.{ListUkSavingsAccountsResponse, UkSavingsAccount}
+import v1.listUkSavingsAccounts.model.response.ListUkSavingsAccountsResponse
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -32,8 +32,7 @@ trait MockListUkSavingsAccountsService extends TestSuite with MockFactory {
 
   object MockListUkSavingsAccountsService {
 
-    def listUkSavingsAccounts(
-        requestData: ListUkSavingsAccountsRequestData): CallHandler[Future[ServiceOutcome[ListUkSavingsAccountsResponse[UkSavingsAccount]]]] = {
+    def listUkSavingsAccounts(requestData: ListUkSavingsAccountsRequestData): CallHandler[Future[ServiceOutcome[ListUkSavingsAccountsResponse]]] = {
       (mockListUkSavingsAccountsService
         .listUkSavingsAccounts(_: ListUkSavingsAccountsRequestData)(_: RequestContext, _: ExecutionContext))
         .expects(requestData, *, *)

@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,12 +19,11 @@ package v2.createAmendSavings
 import play.api.libs.json.{JsValue, Json}
 import shared.config.MockSharedAppConfig
 import shared.controllers.validators.Validator
-import config.MockSavingsConfig
 import shared.utils.UnitSpec
 import v2.createAmendSavings.def1.Def1_CreateAmendSavingsValidator
 import v2.createAmendSavings.model.request.CreateAmendSavingsRequestData
 
-class CreateAmendSavingsValidatorFactorySpec extends UnitSpec with MockSharedAppConfig with MockSavingsConfig {
+class CreateAmendSavingsValidatorFactorySpec extends UnitSpec with MockSharedAppConfig {
   private val validNino    = "AA123456A"
   private val validTaxYear = "2020-21"
 
@@ -50,7 +49,7 @@ class CreateAmendSavingsValidatorFactorySpec extends UnitSpec with MockSharedApp
 """.stripMargin
   )
 
-  private val validatorFactory = new CreateAmendSavingsValidatorFactory(mockSharedAppConfig, mockSavingsConfig)
+  private val validatorFactory = new CreateAmendSavingsValidatorFactory(mockSharedAppConfig)
 
   "validator()" when {
     "given any tax year" should {

@@ -25,7 +25,7 @@ import shared.models.outcomes.ResponseWrapper
 import uk.gov.hmrc.http.StringContextOps
 import v2.listUkSavingsAccounts.def1.model.request.Def1_ListUkSavingsAccountsRequestData
 import v2.listUkSavingsAccounts.def1.model.response.{Def1_ListUkSavingsAccountsResponse, Def1_UkSavingsAccount}
-import v2.listUkSavingsAccounts.model.response.{ListUkSavingsAccountsResponse, UkSavingsAccount}
+import v2.listUkSavingsAccounts.model.response.ListUkSavingsAccountsResponse
 
 import scala.concurrent.Future
 
@@ -48,7 +48,7 @@ class ListUkSavingsAccountsConnectorSpec extends ConnectorSpec with MockSharedAp
   )
 
   trait Test {
-    _: ConnectorTest =>
+    self: ConnectorTest =>
 
     val connector: ListUkSavingsAccountsConnector =
       new ListUkSavingsAccountsConnector(http = mockHttpClient, appConfig = mockSharedAppConfig)
@@ -59,75 +59,75 @@ class ListUkSavingsAccountsConnectorSpec extends ConnectorSpec with MockSharedAp
     "listUkSavingsAccounts" must {
       "return a valid response, list of uk savings accounts when feature switch is disabled (IFS enabled) " +
         "upon receiving SUCCESS response from the backend service" in new IfsTest with Test {
-        MockedSharedAppConfig.featureSwitchConfig returns Configuration("ifs_hip_migration_2085.enabled" -> false)
+          MockedSharedAppConfig.featureSwitchConfig returns Configuration("ifs_hip_migration_2085.enabled" -> false)
 
-        val outcome: Right[Nothing, ResponseWrapper[ListUkSavingsAccountsResponse[UkSavingsAccount]]] =
-          Right(ResponseWrapper(correlationId, validResponse))
+          val outcome: Right[Nothing, ResponseWrapper[ListUkSavingsAccountsResponse]] =
+            Right(ResponseWrapper(correlationId, validResponse))
 
-        willGet(
-          url = url"$baseUrl/income-tax/income-sources/$nino",
-          parameters = Seq("incomeSourceType" -> "09")
-        ).returns(Future.successful(outcome))
+          willGet(
+            url = url"$baseUrl/income-tax/income-sources/$nino",
+            parameters = Seq("incomeSourceType" -> "09")
+          ).returns(Future.successful(outcome))
 
-        val result: DownstreamOutcome[ListUkSavingsAccountsResponse[UkSavingsAccount]] = await(connector.listUkSavingsAccounts(request))
+          val result: DownstreamOutcome[ListUkSavingsAccountsResponse] = await(connector.listUkSavingsAccounts(request))
 
-        result shouldBe outcome
-      }
+          result shouldBe outcome
+        }
 
       "return a valid response, list of uk savings accounts when feature switch is enabled (HIP enabled) " +
         "upon receiving SUCCESS response from the backend service" in new HipTest with Test {
-        MockedSharedAppConfig.featureSwitchConfig returns Configuration("ifs_hip_migration_2085.enabled" -> true)
+          MockedSharedAppConfig.featureSwitchConfig returns Configuration("ifs_hip_migration_2085.enabled" -> true)
 
-        val outcome: Right[Nothing, ResponseWrapper[ListUkSavingsAccountsResponse[UkSavingsAccount]]] =
-          Right(ResponseWrapper(correlationId, validResponse))
+          val outcome: Right[Nothing, ResponseWrapper[ListUkSavingsAccountsResponse]] =
+            Right(ResponseWrapper(correlationId, validResponse))
 
-        willGet(
-          url = url"$baseUrl/itsd/income-sources/v2/$nino",
-          parameters = Seq("incomeSourceType" -> "09")
-        ).returns(Future.successful(outcome))
+          willGet(
+            url = url"$baseUrl/itsd/income-sources/v2/$nino",
+            parameters = Seq("incomeSourceType" -> "09")
+          ).returns(Future.successful(outcome))
 
-        val result: DownstreamOutcome[ListUkSavingsAccountsResponse[UkSavingsAccount]] = await(connector.listUkSavingsAccounts(request))
+          val result: DownstreamOutcome[ListUkSavingsAccountsResponse] = await(connector.listUkSavingsAccounts(request))
 
-        result shouldBe outcome
-      }
+          result shouldBe outcome
+        }
 
       "return a valid response, list of a single uk savings account " +
         "when incomeSourceId was sent as part of the request and feature switch is disabled (IFS enabled) " +
         "upon receiving SUCCESS response from the backend service" in new IfsTest with Test {
-        MockedSharedAppConfig.featureSwitchConfig returns Configuration("ifs_hip_migration_2085.enabled" -> false)
+          MockedSharedAppConfig.featureSwitchConfig returns Configuration("ifs_hip_migration_2085.enabled" -> false)
 
-        val outcome: Right[Nothing, ResponseWrapper[ListUkSavingsAccountsResponse[UkSavingsAccount]]] =
-          Right(ResponseWrapper(correlationId, validResponse))
+          val outcome: Right[Nothing, ResponseWrapper[ListUkSavingsAccountsResponse]] =
+            Right(ResponseWrapper(correlationId, validResponse))
 
-        willGet(
-          url = url"$baseUrl/income-tax/income-sources/$nino",
-          parameters = Seq("incomeSourceType" -> "09", "incomeSourceId" -> savingsAccountId.toString)
-        ).returns(Future.successful(outcome))
+          willGet(
+            url = url"$baseUrl/income-tax/income-sources/$nino",
+            parameters = Seq("incomeSourceType" -> "09", "incomeSourceId" -> savingsAccountId.toString)
+          ).returns(Future.successful(outcome))
 
-        val result: DownstreamOutcome[ListUkSavingsAccountsResponse[UkSavingsAccount]] =
-          await(connector.listUkSavingsAccounts(requestWithSavingsAccountId))
+          val result: DownstreamOutcome[ListUkSavingsAccountsResponse] =
+            await(connector.listUkSavingsAccounts(requestWithSavingsAccountId))
 
-        result shouldBe outcome
-      }
+          result shouldBe outcome
+        }
 
       "return a valid response, list of a single uk savings account " +
         "when incomeSourceId was sent as part of the request and feature switch is enabled (HIP enabled) " +
         "upon receiving SUCCESS response from the backend service" in new HipTest with Test {
-        MockedSharedAppConfig.featureSwitchConfig returns Configuration("ifs_hip_migration_2085.enabled" -> true)
+          MockedSharedAppConfig.featureSwitchConfig returns Configuration("ifs_hip_migration_2085.enabled" -> true)
 
-        val outcome: Right[Nothing, ResponseWrapper[ListUkSavingsAccountsResponse[UkSavingsAccount]]] =
-          Right(ResponseWrapper(correlationId, validResponse))
+          val outcome: Right[Nothing, ResponseWrapper[ListUkSavingsAccountsResponse]] =
+            Right(ResponseWrapper(correlationId, validResponse))
 
-        willGet(
-          url = url"$baseUrl/itsd/income-sources/v2/$nino",
-          parameters = Seq("incomeSourceType" -> "09", "incomeSourceId" -> savingsAccountId.toString)
-        ).returns(Future.successful(outcome))
+          willGet(
+            url = url"$baseUrl/itsd/income-sources/v2/$nino",
+            parameters = Seq("incomeSourceType" -> "09", "incomeSourceId" -> savingsAccountId.toString)
+          ).returns(Future.successful(outcome))
 
-        val result: DownstreamOutcome[ListUkSavingsAccountsResponse[UkSavingsAccount]] =
-          await(connector.listUkSavingsAccounts(requestWithSavingsAccountId))
+          val result: DownstreamOutcome[ListUkSavingsAccountsResponse] =
+            await(connector.listUkSavingsAccounts(requestWithSavingsAccountId))
 
-        result shouldBe outcome
-      }
+          result shouldBe outcome
+        }
     }
   }
 

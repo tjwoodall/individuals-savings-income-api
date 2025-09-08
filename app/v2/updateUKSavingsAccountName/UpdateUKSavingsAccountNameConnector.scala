@@ -19,7 +19,7 @@ package v2.updateUKSavingsAccountName
 import shared.config.SharedAppConfig
 import shared.connectors.DownstreamUri.HipUri
 import shared.connectors.httpparsers.StandardDownstreamHttpParser.readsEmpty
-import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome, DownstreamUri}
+import shared.connectors.*
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.client.HttpClientV2
 import v2.updateUKSavingsAccountName.model.request.UpdateUKSavingsAccountNameRequest
@@ -28,14 +28,13 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class UpdateUKSavingsAccountNameConnector @Inject() (val http: HttpClientV2, val appConfig: SharedAppConfig)
-  extends BaseDownstreamConnector {
+class UpdateUKSavingsAccountNameConnector @Inject() (val http: HttpClientV2, val appConfig: SharedAppConfig) extends BaseDownstreamConnector {
 
   def update(request: UpdateUKSavingsAccountNameRequest)(implicit
-                                                                           hc: HeaderCarrier,
-                                                                           ec: ExecutionContext,
-                                                                           correlationId: String): Future[DownstreamOutcome[Unit]] = {
-    import request._
+      hc: HeaderCarrier,
+      ec: ExecutionContext,
+      correlationId: String): Future[DownstreamOutcome[Unit]] = {
+    import request.*
 
     val downstreamUri: DownstreamUri[Unit] =
       HipUri(s"itsd/income-sources/$nino/non-business/$savingsAccountId")

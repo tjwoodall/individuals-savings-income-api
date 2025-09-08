@@ -19,22 +19,22 @@ package v2.updateUKSavingsAccountName
 import play.api.libs.json.JsValue
 import play.api.mvc.{Action, ControllerComponents}
 import shared.config.SharedAppConfig
-import shared.controllers._
+import shared.controllers.*
 import shared.routing.Version
-import shared.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
+import shared.services.*
 import shared.utils.IdGenerator
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class UpdateUKSavingsAccountNameController @Inject()(val authService: EnrolmentsAuthService,
-                                                     val lookupService: MtdIdLookupService,
-                                                     validatorFactory: UpdateUKSavingsAccountNameValidatorFactory,
-                                                     service: UpdateUKSavingsAccountNameService,
-                                                     auditService: AuditService,
-                                                     cc: ControllerComponents,
-                                                     val idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: SharedAppConfig)
+class UpdateUKSavingsAccountNameController @Inject() (val authService: EnrolmentsAuthService,
+                                                      val lookupService: MtdIdLookupService,
+                                                      validatorFactory: UpdateUKSavingsAccountNameValidatorFactory,
+                                                      service: UpdateUKSavingsAccountNameService,
+                                                      auditService: AuditService,
+                                                      cc: ControllerComponents,
+                                                      val idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: SharedAppConfig)
     extends AuthorisedController(cc) {
 
   val endpointName: String = "update-uk-savings-account-name"

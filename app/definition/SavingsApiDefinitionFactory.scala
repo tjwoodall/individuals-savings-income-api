@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,25 +16,22 @@
 
 package definition
 
-import play.api.Logger
 import shared.config.SharedAppConfig
-import shared.definition.{APIDefinition, APIStatus, APIVersion, ApiDefinitionFactory, Definition}
-import shared.routing.{Version, Version1, Version2}
+import shared.definition.*
+import shared.routing.{Version1, Version2}
 
 import javax.inject.{Inject, Singleton}
 
 @Singleton
 class SavingsApiDefinitionFactory @Inject() (protected val appConfig: SharedAppConfig) extends ApiDefinitionFactory {
 
-  override lazy val logger: Logger = Logger(this.getClass)
-
-  lazy val definition: Definition =
+  val definition: Definition =
     Definition(
       api = APIDefinition(
         name = "Individuals Savings Income (MTD)",
         description = "An API for providing individuals savings income data",
         context = appConfig.apiGatewayContext,
-        categories = Seq("INCOME_TAX_MTD"),
+        categories = Seq(mtdCategory),
         versions = Seq(
           APIVersion(
             version = Version1,
@@ -50,14 +47,5 @@ class SavingsApiDefinitionFactory @Inject() (protected val appConfig: SharedAppC
         requiresTrust = None
       )
     )
-
-  override def buildAPIStatus(version: Version): APIStatus = {
-    APIStatus.parser
-      .lift(appConfig.apiStatus(version))
-      .getOrElse {
-        logger.error(s"[ApiDefinition][buildApiStatus] no API Status found in config.  Reverting to Alpha")
-        APIStatus.ALPHA
-      }
-  }
 
 }

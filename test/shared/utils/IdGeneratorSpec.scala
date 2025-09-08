@@ -14,21 +14,19 @@
  * limitations under the License.
  */
 
-package mocks
+package shared.utils
 
-import org.scalamock.handlers.CallHandler
-import org.scalamock.scalatest.MockFactory
-import org.scalatest.TestSuite
-import utils.CurrentDateTime
+class IdGeneratorSpec extends UnitSpec {
 
-import java.time.LocalDate
+  val generator        = new IdGenerator
+  val correlationRegex = "^[A-Za-z0-9\\-]{36}$"
 
-trait MockCurrentDateTime extends TestSuite with MockFactory {
-
-  val mockCurrentDateTime: CurrentDateTime = mock[CurrentDateTime]
-
-  object MockCurrentDateTime {
-    def getLocalDate: CallHandler[LocalDate] = (() => mockCurrentDateTime.getLocalDate).expects()
+  "IdGenerator" should {
+    "generate a correlation id" when {
+      "getCorrelationId is called" in {
+        generator.generateCorrelationId.matches(correlationRegex) shouldBe true
+      }
+    }
   }
 
 }

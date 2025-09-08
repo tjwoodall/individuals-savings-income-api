@@ -16,25 +16,27 @@
 
 package v2.listUkSavingsAccounts.def1.model.response
 
-import play.api.libs.json._
+import play.api.libs.json.*
 import utils.JsonUtils
 import v2.listUkSavingsAccounts.model.response.ListUkSavingsAccountsResponse
 
-case class Def1_ListUkSavingsAccountsResponse[E](savingsAccounts: Option[Seq[E]]) extends ListUkSavingsAccountsResponse[E]
+case class Def1_ListUkSavingsAccountsResponse(savingsAccounts: Option[Seq[Def1_UkSavingsAccount]]) extends ListUkSavingsAccountsResponse
 
 object Def1_ListUkSavingsAccountsResponse extends JsonUtils {
 
-  implicit def writes[E: Writes]: OWrites[Def1_ListUkSavingsAccountsResponse[E]] = Json.writes[Def1_ListUkSavingsAccountsResponse[E]]
+  implicit val writes: OWrites[Def1_ListUkSavingsAccountsResponse] = Json.writes[Def1_ListUkSavingsAccountsResponse]
 
-  implicit def reads[E: Reads]: Reads[Def1_ListUkSavingsAccountsResponse[E]] = {
+  implicit val reads: Reads[Def1_ListUkSavingsAccountsResponse] = {
     case JsObject(fields) if fields.size == 1 && fields.contains("bbsi") =>
-      fields.get("bbsi").map(arr =>
-        arr.validate(JsPath
-          .readNullable[Seq[E]]
-          .mapEmptySeqToNone
-          .map(Def1_ListUkSavingsAccountsResponse(_))
-        )
-      ).getOrElse(JsError("Unexpected JSON format"))
+      fields
+        .get("bbsi")
+        .map(arr =>
+          arr.validate(
+            JsPath
+              .readNullable[Seq[Def1_UkSavingsAccount]]
+              .mapEmptySeqToNone
+              .map(Def1_ListUkSavingsAccountsResponse(_))))
+        .getOrElse(JsError("Unexpected JSON format"))
 
     case _ =>
       JsError("Unexpected JSON format")

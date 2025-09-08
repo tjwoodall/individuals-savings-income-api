@@ -74,7 +74,7 @@ class Def1_UkSavingsAccountSpec extends UnitSpec {
 
       "a valid uk savings account json with mandatory fields only from DES is supplied" in {
         validNoOptUkSavingsAccountFromDESJson.as[Def1_UkSavingsAccount] shouldBe
-          Def1_UkSavingsAccount("SAVKB2UVwUTBQGJ",None)
+          Def1_UkSavingsAccount("SAVKB2UVwUTBQGJ", None)
       }
     }
 
@@ -95,9 +95,9 @@ class Def1_UkSavingsAccountSpec extends UnitSpec {
         Json.toJson(Def1_UkSavingsAccount("SAVKB2UVwUTBQGJ", Some("Shares savings account"))) shouldBe
           validUkSavigsAccountFromMTDJson
       }
-      
+
       "a valid Def1_UkSavingsAccount model with mandatory fields only is supplier" in {
-        Json.toJson(Def1_UkSavingsAccount("SAVKB2UVwUTBQGJ",None)) shouldBe
+        Json.toJson(Def1_UkSavingsAccount("SAVKB2UVwUTBQGJ", None)) shouldBe
           validNoOptUkSavingsAccountFromMTDJson
       }
     }

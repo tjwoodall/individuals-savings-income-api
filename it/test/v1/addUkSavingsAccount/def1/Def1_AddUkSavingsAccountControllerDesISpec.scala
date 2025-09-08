@@ -17,13 +17,14 @@
 package v1.addUkSavingsAccount.def1
 
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
-import models.errors.{AccountNameFormatError, RuleDuplicateAccountNameError, RuleMaximumSavingsAccountsLimitError}
-import play.api.http.Status._
-import play.api.libs.json.{JsObject, JsValue, Json}
+import models.errors.*
+import play.api.http.Status.*
+import play.api.libs.json.*
+import play.api.libs.ws.WSBodyWritables.writeableOf_JsValue
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.{ACCEPT, AUTHORIZATION}
-import shared.models.errors._
-import shared.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
+import shared.models.errors.*
+import shared.services.*
 import shared.support.IntegrationBaseSpec
 
 class Def1_AddUkSavingsAccountControllerDesISpec extends IntegrationBaseSpec {
@@ -85,7 +86,7 @@ class Def1_AddUkSavingsAccountControllerDesISpec extends IntegrationBaseSpec {
 
         val response: WSResponse = await(request().post(requestBodyJson))
         response.status shouldBe OK
-        response.body[JsValue] shouldBe responseJson
+        response.json shouldBe Json.toJson(responseJson)
         response.header("Content-Type") shouldBe Some("application/json")
       }
     }
@@ -139,7 +140,7 @@ class Def1_AddUkSavingsAccountControllerDesISpec extends IntegrationBaseSpec {
           ("AA123456A", "2019-20", emptyRequestJson, BAD_REQUEST, RuleIncorrectOrEmptyBodyError, None),
           ("AA123456A", "2019-20", nonValidRequestBodyJson, BAD_REQUEST, accountNameError, None)
         )
-        input.foreach(args => (validationErrorTest _).tupled(args))
+        input.foreach(args => validationErrorTest.tupled(args))
       }
 
       "ifs service error" when {
@@ -176,7 +177,7 @@ class Def1_AddUkSavingsAccountControllerDesISpec extends IntegrationBaseSpec {
           (SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, InternalError),
           (INTERNAL_SERVER_ERROR, "SERVER_ERROR", INTERNAL_SERVER_ERROR, InternalError)
         )
-        input.foreach(args => (serviceErrorTest _).tupled(args))
+        input.foreach(args => serviceErrorTest.tupled(args))
       }
     }
   }

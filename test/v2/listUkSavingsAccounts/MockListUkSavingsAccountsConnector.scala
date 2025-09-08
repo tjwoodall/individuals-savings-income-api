@@ -22,7 +22,7 @@ import org.scalatest.TestSuite
 import shared.connectors.DownstreamOutcome
 import uk.gov.hmrc.http.HeaderCarrier
 import v2.listUkSavingsAccounts.model.request.ListUkSavingsAccountsRequestData
-import v2.listUkSavingsAccounts.model.response.{ListUkSavingsAccountsResponse, UkSavingsAccount}
+import v2.listUkSavingsAccounts.model.response.ListUkSavingsAccountsResponse
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -33,7 +33,7 @@ trait MockListUkSavingsAccountsConnector extends TestSuite with MockFactory {
   object MockListUkSavingsAccountsConnector {
 
     def listUkSavingsAccounts(
-        requestData: ListUkSavingsAccountsRequestData): CallHandler[Future[DownstreamOutcome[ListUkSavingsAccountsResponse[UkSavingsAccount]]]] = {
+        requestData: ListUkSavingsAccountsRequestData): CallHandler[Future[DownstreamOutcome[ListUkSavingsAccountsResponse]]] = {
       (mockListUkSavingsAccountsConnector
         .listUkSavingsAccounts(_: ListUkSavingsAccountsRequestData)(_: HeaderCarrier, _: ExecutionContext, _: String))
         .expects(requestData, *, *, *)

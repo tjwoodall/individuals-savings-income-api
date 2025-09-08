@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@
 package v2.addUkSavingsAccount.def1
 
 import cats.data.Validated
-import cats.implicits._
+import cats.implicits.*
 import play.api.libs.json.JsValue
 import resolvers.ResolveAccountName
 import shared.controllers.validators.Validator
@@ -33,10 +33,10 @@ class Def1_AddUkSavingsAccountValidator(nino: String, body: JsValue) extends Val
   def validate: Validated[Seq[MtdError], AddUkSavingsAccountRequestData] = (
     ResolveNino(nino),
     resolveJson(body)
-  ).mapN(Def1_AddUkSavingsAccountRequestData) andThen validateBusinessRules
+  ).mapN(Def1_AddUkSavingsAccountRequestData.apply) andThen validateBusinessRules
 
   private def validateBusinessRules(parsed: Def1_AddUkSavingsAccountRequestData): Validated[Seq[MtdError], Def1_AddUkSavingsAccountRequestData] = {
-    import parsed.body._
+    import parsed.body.*
     List((accountName, "/accountName")).traverse_ { case (value, path) => ResolveAccountName(value, path) }.map(_ => parsed)
 
   }

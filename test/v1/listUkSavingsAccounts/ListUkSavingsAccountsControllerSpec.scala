@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,13 +17,13 @@
 package v1.listUkSavingsAccounts
 
 import models.domain.SavingsAccountId
+import play.api.Configuration
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
-import play.api.Configuration
 import shared.config.MockSharedAppConfig
 import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import shared.models.domain.Nino
-import shared.models.errors.{ErrorWrapper, NinoFormatError, NotFoundError}
+import shared.models.errors.*
 import shared.models.outcomes.ResponseWrapper
 import v1.listUkSavingsAccounts.def1.model.request.Def1_ListUkSavingsAccountsRequestData
 import v1.listUkSavingsAccounts.def1.model.response.{Def1_ListUkSavingsAccountsResponse, Def1_UkSavingsAccount}
@@ -46,7 +46,7 @@ class ListUkSavingsAccountsControllerSpec
     savingsAccountId = Some(savingsAccountId)
   )
 
-  private val validListUkSavingsAccountResponse: Def1_ListUkSavingsAccountsResponse[Def1_UkSavingsAccount] = Def1_ListUkSavingsAccountsResponse(
+  private val validListUkSavingsAccountResponse: Def1_ListUkSavingsAccountsResponse = Def1_ListUkSavingsAccountsResponse(
     Some(
       Seq(
         Def1_UkSavingsAccount("000000000000001", Some("Bank Account 1")),
@@ -111,7 +111,7 @@ class ListUkSavingsAccountsControllerSpec
 
   trait Test extends ControllerTest {
 
-    val controller = new ListUkSavingsAccountsController(
+    val controller: ListUkSavingsAccountsController = new ListUkSavingsAccountsController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
       validatorFactory = mockListUkSavingsAccountValidator,
@@ -126,7 +126,8 @@ class ListUkSavingsAccountsControllerSpec
 
     MockedSharedAppConfig
       .endpointAllowsSupportingAgents(controller.endpointName)
-      .anyNumberOfTimes() returns true
+      .anyNumberOfTimes()
+      .returns(true)
 
     protected def callController(): Future[Result] = controller.listUkSavingsAccounts(nino, Some(savingsAccountId.toString))(fakeGetRequest)
   }

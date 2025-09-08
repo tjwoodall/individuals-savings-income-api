@@ -99,21 +99,21 @@ class Def1_ListUkSavingsAccountsResponseSpec extends UnitSpec {
     ".reads" should {
       "return a parsed Def1_ListUkSavingsAccountsResponse" when {
         "given a valid JSON document from downstream" in {
-          val result = ukSavingsAccountsDownstreamJson.as[Def1_ListUkSavingsAccountsResponse[Def1_UkSavingsAccount]]
+          val result = ukSavingsAccountsDownstreamJson.as[Def1_ListUkSavingsAccountsResponse]
           result shouldBe listUkSavingsAccountResponse
         }
       }
 
       "return a JSON error" when {
         "given a downstream response that does not include bbsi" in {
-          val result = ukSavingsAccountsNotBbsiDownstreamJson.validate[Def1_ListUkSavingsAccountsResponse[Def1_UkSavingsAccount]]
+          val result = ukSavingsAccountsNotBbsiDownstreamJson.validate[Def1_ListUkSavingsAccountsResponse]
           result shouldBe a[JsError]
         }
       }
 
       "return a valid empty Def1_ListUkSavingsAccountsResponse model" when {
         "given a valid empty uk savings account list json from downstream" in {
-          val result = emptyBbsiJson.as[Def1_ListUkSavingsAccountsResponse[Def1_UkSavingsAccount]]
+          val result = emptyBbsiJson.as[Def1_ListUkSavingsAccountsResponse]
           result shouldBe Def1_ListUkSavingsAccountsResponse(None)
         }
       }

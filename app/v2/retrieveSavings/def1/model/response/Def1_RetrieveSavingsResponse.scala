@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@
 package v2.retrieveSavings.def1.model.response
 
 import play.api.libs.functional.syntax.toFunctionalBuilderOps
-import play.api.libs.json.{JsPath, Json, OWrites, Reads}
+import play.api.libs.json.*
 import shared.models.domain.Timestamp
 import utils.JsonUtils
 import v2.retrieveSavings.model.response.RetrieveSavingsResponse
@@ -31,7 +31,7 @@ object Def1_RetrieveSavingsResponse extends JsonUtils {
     (JsPath \ "submittedOn").read[Timestamp] and
       (JsPath \ "securities").readNullable[Securities] and
       (JsPath \ "foreignInterest").readNullable[Seq[ForeignInterestItem]].mapEmptySeqToNone
-  )(Def1_RetrieveSavingsResponse.apply _)
+  )(Def1_RetrieveSavingsResponse.apply)
 
   implicit val writes: OWrites[Def1_RetrieveSavingsResponse] = Json.writes[Def1_RetrieveSavingsResponse]
 

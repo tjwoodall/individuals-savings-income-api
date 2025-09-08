@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ package v1.addUkSavingsAccount
 import models.errors.{RuleDuplicateAccountNameError, RuleMaximumSavingsAccountsLimitError}
 import shared.controllers.EndpointLogContext
 import shared.models.domain.Nino
-import shared.models.errors._
+import shared.models.errors.*
 import shared.models.outcomes.ResponseWrapper
 import shared.services.ServiceSpec
 import v1.addUkSavingsAccount.def1.model.request.{Def1_AddUkSavingsAccountRequestBody, Def1_AddUkSavingsAccountRequestData}
@@ -94,7 +94,7 @@ class AddUkSavingsAccountServiceSpec extends ServiceSpec {
           ("1000", InternalError)
         )
 
-        (desErrors ++ hipErrors).foreach(args => (serviceError _).tupled(args))
+        (desErrors ++ hipErrors).foreach(args => serviceError.tupled(args))
       }
     }
   }

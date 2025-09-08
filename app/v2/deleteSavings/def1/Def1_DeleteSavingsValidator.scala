@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,17 +23,15 @@ import shared.controllers.validators.Validator
 import shared.controllers.validators.resolvers.{ResolveNino, ResolveTaxYearMinimum}
 import shared.models.domain.TaxYear
 import shared.models.errors.MtdError
-import config.SavingsConfig
 import v2.deleteSavings.def1.model.request.Def1_DeleteSavingsRequestData
 import v2.deleteSavings.model.request.DeleteSavingsRequestData
 
-class Def1_DeleteSavingsValidator(nino: String, taxYear: String)(appConfig: SharedAppConfig, savingsConfig: SavingsConfig)
-    extends Validator[DeleteSavingsRequestData] {
+class Def1_DeleteSavingsValidator(nino: String, taxYear: String)(appConfig: SharedAppConfig) extends Validator[DeleteSavingsRequestData] {
 
-  private lazy val minimumTaxYear = savingsConfig.minimumPermittedTaxYear
-  private lazy val resolveTaxYear = ResolveTaxYearMinimum(TaxYear.fromDownstreamInt(minimumTaxYear))
+  private lazy val minimumTaxYear = appConfig.minimumPermittedTaxYear
+  private lazy val resolveTaxYear = ResolveTaxYearMinimum(TaxYear.ending(minimumTaxYear))
 
   def validate: Validated[Seq[MtdError], DeleteSavingsRequestData] = (ResolveNino(nino), resolveTaxYear(taxYear))
-    .mapN(Def1_DeleteSavingsRequestData)
+    .mapN(Def1_DeleteSavingsRequestData.apply)
 
 }

@@ -16,16 +16,15 @@
 
 package v2.updateUKSavingsAccountName.model.request
 
-import play.api.libs.json._
-
+import play.api.libs.json.*
 
 case class UpdateUKSavingsAccountNameRequestBody(accountName: String)
 
 object UpdateUKSavingsAccountNameRequestBody {
+
   implicit val format: OFormat[UpdateUKSavingsAccountNameRequestBody] = OFormat(
     (JsPath \ "accountName").read[String].map(UpdateUKSavingsAccountNameRequestBody.apply),
     (JsPath \ "incomeSourceName").write[String].contramap[UpdateUKSavingsAccountNameRequestBody](_.accountName)
   )
+
 }
-
-

@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,15 +18,15 @@ package v2.listUkSavingsAccounts
 
 import play.api.libs.json.Reads
 import shared.schema.DownstreamReadable
-import v2.listUkSavingsAccounts.def1.model.response.{Def1_ListUkSavingsAccountsResponse, Def1_UkSavingsAccount}
-import v2.listUkSavingsAccounts.model.response.{ListUkSavingsAccountsResponse, UkSavingsAccount}
+import v2.listUkSavingsAccounts.def1.model.response.Def1_ListUkSavingsAccountsResponse
+import v2.listUkSavingsAccounts.model.response.ListUkSavingsAccountsResponse
 
-sealed trait ListUkSavingsAccountsSchema extends DownstreamReadable[ListUkSavingsAccountsResponse[UkSavingsAccount]]
+sealed trait ListUkSavingsAccountsSchema extends DownstreamReadable[ListUkSavingsAccountsResponse]
 
 object ListUkSavingsAccountsSchema {
 
   case object Def1 extends ListUkSavingsAccountsSchema {
-    type DownstreamResp = Def1_ListUkSavingsAccountsResponse[Def1_UkSavingsAccount]
+    type DownstreamResp = Def1_ListUkSavingsAccountsResponse
     val connectorReads: Reads[DownstreamResp] = Def1_ListUkSavingsAccountsResponse.reads
   }
 

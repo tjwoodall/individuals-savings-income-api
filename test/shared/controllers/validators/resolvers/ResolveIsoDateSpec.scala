@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,7 +34,7 @@ class ResolveIsoDateSpec extends UnitSpec {
       "given a valid ISO date string" in {
         val expected = Valid(LocalDate.parse(validDate))
 
-        val result: Validated[Seq[MtdError], LocalDate] = ResolveIsoDate(validDate, StartDateFormatError)
+        val result: Validated[Seq[MtdError], LocalDate] = ResolveIsoDate(StartDateFormatError)(validDate)
         result shouldBe expected
       }
 

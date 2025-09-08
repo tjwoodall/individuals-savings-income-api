@@ -39,7 +39,8 @@ class CreateAmendSavingsConnectorSpec extends ConnectorSpec {
       "return a 204 status for a success scenario for Tax Year Specific (TYS)" in new IfsTest with Test {
         override def taxYear: TaxYear = TaxYear.fromMtd("2023-24")
 
-        willPut(url = url"$baseUrl/income-tax/income/savings/${taxYear.asTysDownstream}/$nino", body = requestBody).returns(Future.successful(outcome))
+        willPut(url = url"$baseUrl/income-tax/income/savings/${taxYear.asTysDownstream}/$nino", body = requestBody)
+          .returns(Future.successful(outcome))
 
         await(connector.createAmendSavings(request)) shouldBe outcome
       }
@@ -47,7 +48,7 @@ class CreateAmendSavingsConnectorSpec extends ConnectorSpec {
   }
 
   trait Test {
-    _: ConnectorTest =>
+    self: ConnectorTest =>
     def nino: String     = "AA111111A"
     def taxYear: TaxYear = TaxYear.fromMtd("2019-20")
 

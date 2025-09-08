@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,7 @@
 
 package shared.hateoas
 
-import cats.Functor
-import shared.config.{SharedAppConfig, MockSharedAppConfig}
+import shared.config.{MockSharedAppConfig, SharedAppConfig}
 import shared.hateoas.Method.GET
 import shared.utils.UnitSpec
 
@@ -27,10 +26,6 @@ class HateoasFactorySpec extends UnitSpec with MockSharedAppConfig {
   private val response       = Response("X")
 
   private case class Response(foo: String)
-
-  private case class ListResponse[A](items: Seq[A])
-
-  private case class NestedListResponse[A](field: String, items: Seq[A])
 
   private case class Data1(id: String) extends HateoasData
 
@@ -56,25 +51,6 @@ class HateoasFactorySpec extends UnitSpec with MockSharedAppConfig {
 
     "use the endpoint HateoasData specific links" in new Test {
       hateoasFactory.wrap(response, Data2("id")) shouldBe HateoasWrapper(response, Seq(Link("context/id", GET, "rel2")))
-    }
-  }
-
-  "wrapList" should {
-
-    implicit object ListResponseFunctor extends Functor[ListResponse] {
-      override def map[A, B](fa: ListResponse[A])(f: A => B): ListResponse[B] = ListResponse(fa.items.map(f))
-    }
-
-    implicit object LinksFactory extends HateoasListLinksFactory[ListResponse, Response, Data1] {
-      override def itemLinks(appConfig: SharedAppConfig, data: Data1, item: Response): Seq[Link] =
-        Seq(Link(s"${appConfig.apiGatewayContext}/${data.id}/${item.foo}", GET, "item"))
-
-      override def links(appConfig: SharedAppConfig, data: Data1): Seq[Link] = Seq(Link(s"${appConfig.apiGatewayContext}/${data.id}", GET, "rel"))
-    }
-
-    "work" in new Test {
-      hateoasFactory.wrapList(ListResponse(Seq(response)), Data1("id")) shouldBe
-        HateoasWrapper(ListResponse(Seq(HateoasWrapper(response, Seq(Link("context/id/X", GET, "item"))))), Seq(Link("context/id", GET, "rel")))
     }
   }
 

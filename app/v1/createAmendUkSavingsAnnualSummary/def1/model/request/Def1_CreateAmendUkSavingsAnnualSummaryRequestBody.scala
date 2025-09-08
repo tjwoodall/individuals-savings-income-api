@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,8 +17,8 @@
 package v1.createAmendUkSavingsAnnualSummary.def1.model.request
 
 import models.domain.SavingsAccountId
-import play.api.libs.functional.syntax.{toFunctionalBuilderOps, unlift}
-import play.api.libs.json.{JsPath, OWrites, Reads}
+import play.api.libs.functional.syntax.toFunctionalBuilderOps
+import play.api.libs.json.*
 import v1.createAmendUkSavingsAnnualSummary.model.request.CreateAmendUkSavingsAnnualSummaryRequestBody
 
 case class Def1_CreateAmendUkSavingsAnnualSummaryRequestBody(taxedUkInterest: Option[BigDecimal], untaxedUkInterest: Option[BigDecimal])
@@ -39,11 +39,11 @@ object Def1_CreateAmendUkSavingsAnnualSummaryRequestBody {
   implicit val reads: Reads[Def1_CreateAmendUkSavingsAnnualSummaryRequestBody] = (
     (JsPath \ "taxedUkInterest").readNullable[BigDecimal] and
       (JsPath \ "untaxedUkInterest").readNullable[BigDecimal]
-  )(Def1_CreateAmendUkSavingsAnnualSummaryRequestBody.apply _)
+  )(Def1_CreateAmendUkSavingsAnnualSummaryRequestBody.apply)
 
   implicit val writes: OWrites[Def1_CreateAmendUkSavingsAnnualSummaryRequestBody] = (
     (JsPath \ "taxedUkInterest").writeNullable[BigDecimal] and
       (JsPath \ "untaxedUkInterest").writeNullable[BigDecimal]
-  )(unlift(Def1_CreateAmendUkSavingsAnnualSummaryRequestBody.unapply))
+  )(w => Tuple.fromProductTyped(w))
 
 }

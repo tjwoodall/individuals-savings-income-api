@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,8 @@
 
 package v1.createAmendSavings.def1.model.request
 
-import play.api.libs.functional.syntax.{toFunctionalBuilderOps, unlift}
-import play.api.libs.json.{JsPath, OWrites, Reads}
+import play.api.libs.functional.syntax.toFunctionalBuilderOps
+import play.api.libs.json.*
 import utils.JsonUtils
 import v1.createAmendSavings.model.request.CreateAmendSavingsRequestBody
 
@@ -30,11 +30,11 @@ object Def1_CreateAmendSavingsRequestBody extends JsonUtils {
   implicit val reads: Reads[Def1_CreateAmendSavingsRequestBody] = (
     (JsPath \ "securities").readNullable[AmendSecurities] and
       (JsPath \ "foreignInterest").readNullable[Seq[AmendForeignInterestItem]].mapEmptySeqToNone
-  )(Def1_CreateAmendSavingsRequestBody.apply _)
+  )(Def1_CreateAmendSavingsRequestBody.apply)
 
   implicit val writes: OWrites[Def1_CreateAmendSavingsRequestBody] = (
     (JsPath \ "securities").writeNullable[AmendSecurities] and
       (JsPath \ "foreignInterest").writeNullable[Seq[AmendForeignInterestItem]]
-  )(unlift(Def1_CreateAmendSavingsRequestBody.unapply))
+  )(w => Tuple.fromProductTyped(w))
 
 }

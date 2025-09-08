@@ -20,7 +20,7 @@ import models.domain.SavingsAccountId
 import models.errors.SavingsAccountIdFormatError
 import shared.controllers.EndpointLogContext
 import shared.models.domain.Nino
-import shared.models.errors._
+import shared.models.errors.*
 import shared.models.outcomes.ResponseWrapper
 import shared.services.ServiceSpec
 import v1.listUkSavingsAccounts.def1.model.request.Def1_ListUkSavingsAccountsRequestData
@@ -96,7 +96,7 @@ class ListUkSavingsAccountsServiceSpec extends ServiceSpec {
           ("5010", NotFoundError)
         )
 
-        (ifsErrors ++ hipErrors).foreach(args => (serviceError _).tupled(args))
+        (ifsErrors ++ hipErrors).foreach(args => serviceError.tupled(args))
       }
     }
   }

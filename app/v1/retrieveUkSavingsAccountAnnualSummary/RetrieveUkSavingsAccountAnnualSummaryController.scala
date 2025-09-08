@@ -16,9 +16,9 @@
 
 package v1.retrieveUkSavingsAccountAnnualSummary
 
-import play.api.mvc.{Action, AnyContent, ControllerComponents}
+import play.api.mvc.*
 import shared.config.SharedAppConfig
-import shared.controllers.{AuthorisedController, EndpointLogContext, RequestContext, RequestHandler}
+import shared.controllers.*
 import shared.services.{EnrolmentsAuthService, MtdIdLookupService}
 import shared.utils.IdGenerator
 
@@ -26,12 +26,13 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class RetrieveUkSavingsAccountAnnualSummaryController @Inject() (val authService: EnrolmentsAuthService,
-                                                                 val lookupService: MtdIdLookupService,
-                                                                 validatorFactory: RetrieveUkSavingsAccountAnnualSummaryValidatorFactory,
-                                                                 service: RetrieveUkSavingsAccountAnnualSummaryService,
-                                                                 cc: ControllerComponents,
-                                                                 val idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: SharedAppConfig)
+class RetrieveUkSavingsAccountAnnualSummaryController @Inject() (
+    val authService: EnrolmentsAuthService,
+    val lookupService: MtdIdLookupService,
+    validatorFactory: RetrieveUkSavingsAccountAnnualSummaryValidatorFactory,
+    service: RetrieveUkSavingsAccountAnnualSummaryService,
+    cc: ControllerComponents,
+    val idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: SharedAppConfig)
     extends AuthorisedController(cc) {
 
   val endpointName: String = "retrieve-uk-savings-account-annual-summary"

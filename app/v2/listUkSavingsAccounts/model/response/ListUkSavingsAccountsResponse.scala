@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,28 +16,16 @@
 
 package v2.listUkSavingsAccounts.model.response
 
-import play.api.libs.json._
-import shared.utils.JsonWritesUtil
+import play.api.libs.json.*
 import shared.utils.JsonWritesUtil.writesFrom
-import v2.listUkSavingsAccounts.def1.model.response.{Def1_ListUkSavingsAccountsResponse, Def1_UkSavingsAccount}
+import v2.listUkSavingsAccounts.def1.model.response.Def1_ListUkSavingsAccountsResponse
 
-trait ListUkSavingsAccountsResponse[+E]
+trait ListUkSavingsAccountsResponse
 
-object ListUkSavingsAccountsResponse extends JsonWritesUtil {
+object ListUkSavingsAccountsResponse {
 
-  implicit def writes[E: Writes]: OWrites[ListUkSavingsAccountsResponse[E]] = writesFrom { case a: Def1_ListUkSavingsAccountsResponse[E] =>
-    Json.toJson(a).as[JsObject]
-  }
-
-}
-
-trait UkSavingsAccount
-
-object UkSavingsAccount {
-
-  implicit val writes: OWrites[UkSavingsAccount] = writesFrom { case a: Def1_UkSavingsAccount =>
-    Json.toJson(a).as[JsObject]
-
+  implicit val writes: OWrites[ListUkSavingsAccountsResponse] = writesFrom { case def1: Def1_ListUkSavingsAccountsResponse =>
+    implicitly[OWrites[Def1_ListUkSavingsAccountsResponse]].writes(def1)
   }
 
 }

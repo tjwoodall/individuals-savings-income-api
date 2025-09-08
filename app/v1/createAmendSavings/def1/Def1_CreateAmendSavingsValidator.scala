@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,21 +19,20 @@ package v1.createAmendSavings.def1
 import cats.data.Validated
 import cats.implicits.catsSyntaxTuple3Semigroupal
 import play.api.libs.json.JsValue
-import config.SavingsConfig
 import shared.config.SharedAppConfig
 import shared.controllers.validators.Validator
-import shared.controllers.validators.resolvers.{ResolveNino, ResolveNonEmptyJsonObject, ResolveTaxYearMinimum}
+import shared.controllers.validators.resolvers.*
 import shared.models.domain.TaxYear
 import shared.models.errors.MtdError
 import v1.createAmendSavings.def1.Def1_CreateAmendSavingsRulesValidator.validateBusinessRules
 import v1.createAmendSavings.def1.model.request.{Def1_CreateAmendSavingsRequestBody, Def1_CreateAmendSavingsRequestData}
 import v1.createAmendSavings.model.request.CreateAmendSavingsRequestData
 
-class Def1_CreateAmendSavingsValidator(nino: String, taxYear: String, body: JsValue)(appConfig: SharedAppConfig, savingsConfig: SavingsConfig)
+class Def1_CreateAmendSavingsValidator(nino: String, taxYear: String, body: JsValue)(appConfig: SharedAppConfig)
     extends Validator[CreateAmendSavingsRequestData] {
 
-  private lazy val minimumTaxYear = savingsConfig.minimumPermittedTaxYear
-  private lazy val resolveTaxYear = ResolveTaxYearMinimum(TaxYear.fromDownstreamInt(minimumTaxYear))
+  private lazy val minimumTaxYear = appConfig.minimumPermittedTaxYear
+  private lazy val resolveTaxYear = ResolveTaxYearMinimum(TaxYear.ending(minimumTaxYear))
   private val resolveJson         = new ResolveNonEmptyJsonObject[Def1_CreateAmendSavingsRequestBody]()
 
   def validate: Validated[Seq[MtdError], CreateAmendSavingsRequestData] =
@@ -41,6 +40,6 @@ class Def1_CreateAmendSavingsValidator(nino: String, taxYear: String, body: JsVa
       ResolveNino(nino),
       resolveTaxYear(taxYear),
       resolveJson(body)
-    ).mapN(Def1_CreateAmendSavingsRequestData) andThen validateBusinessRules
+    ).mapN(Def1_CreateAmendSavingsRequestData.apply) andThen validateBusinessRules
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,12 +19,11 @@ package v1.createAmendUkSavingsAnnualSummary
 import play.api.libs.json.{JsValue, Json}
 import shared.config.MockSharedAppConfig
 import shared.controllers.validators.Validator
-import config.MockSavingsConfig
 import shared.utils.UnitSpec
 import v1.createAmendUkSavingsAnnualSummary.def1.Def1_CreateAmendUkSavingsAnnualSummaryValidator
 import v1.createAmendUkSavingsAnnualSummary.model.request.CreateAmendUkSavingsAnnualSummaryRequestData
 
-class CreateAmendUkSavingsAnnualSummaryValidatorFactorySpec extends UnitSpec with MockSharedAppConfig with MockSavingsConfig {
+class CreateAmendUkSavingsAnnualSummaryValidatorFactorySpec extends UnitSpec with MockSharedAppConfig {
   private val validNino             = "AA123456A"
   private val validTaxYear          = "2020-21"
   private val validSavingsAccountId = "Abcdefgh1234567"
@@ -39,7 +38,7 @@ class CreateAmendUkSavingsAnnualSummaryValidatorFactorySpec extends UnitSpec wit
         """.stripMargin
   )
 
-  val validatorFactory = new CreateAmendUkSavingsAnnualSummaryValidatorFactory(mockSharedAppConfig, mockSavingsConfig)
+  val validatorFactory = new CreateAmendUkSavingsAnnualSummaryValidatorFactory(mockSharedAppConfig)
 
   "validator()" when {
     "given any tax year" should {

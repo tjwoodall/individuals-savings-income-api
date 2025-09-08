@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,16 +17,19 @@
 package v2.retrieveUkSavingsAccountAnnualSummary
 
 import models.domain.SavingsAccountId
-import play.api.mvc.Result
 import play.api.Configuration
+import play.api.mvc.Result
 import shared.config.MockSharedAppConfig
 import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import shared.models.domain.{Nino, TaxYear}
-import shared.models.errors._
+import shared.models.errors.*
 import shared.models.outcomes.ResponseWrapper
 import v2.retrieveUkSavingsAccountAnnualSummary.def1.model.RetrieveUkSavingsAccountAnnualSummaryControllerFixture
 import v2.retrieveUkSavingsAccountAnnualSummary.def1.model.request.Def1_RetrieveUkSavingsAccountAnnualSummaryRequestData
-import v2.retrieveUkSavingsAccountAnnualSummary.def1.model.response.{Def1_RetrieveUkSavingsAccountAnnualSummaryResponse, Def1_RetrieveUkSavingsAnnualIncomeItem}
+import v2.retrieveUkSavingsAccountAnnualSummary.def1.model.response.{
+  Def1_RetrieveUkSavingsAccountAnnualSummaryResponse,
+  Def1_RetrieveUkSavingsAnnualIncomeItem
+}
 import v2.retrieveUkSavingsAccountAnnualSummary.model.request.RetrieveUkSavingsAccountAnnualSummaryRequestData
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -97,7 +100,7 @@ class RetrieveUkSavingsAccountAnnualSummaryControllerSpec
 
   trait Test extends ControllerTest {
 
-    val controller = new RetrieveUkSavingsAccountAnnualSummaryController(
+    val controller: RetrieveUkSavingsAccountAnnualSummaryController = new RetrieveUkSavingsAccountAnnualSummaryController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
       validatorFactory = mockRetrieveUkSavingsAccountValidatorFactory,
@@ -112,7 +115,8 @@ class RetrieveUkSavingsAccountAnnualSummaryControllerSpec
 
     MockedSharedAppConfig
       .endpointAllowsSupportingAgents(controller.endpointName)
-      .anyNumberOfTimes() returns true
+      .anyNumberOfTimes()
+      .returns(true)
 
     protected def callController(): Future[Result] = controller.retrieveUkSavingAccount(nino, taxYear, savingsAccountId)(fakeRequest)
   }

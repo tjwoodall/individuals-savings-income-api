@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,22 +16,20 @@
 
 package v1.deleteSavings
 
-import config.MockSavingsConfig
 import shared.config.MockSharedAppConfig
 import shared.utils.UnitSpec
 import v1.deleteSavings.def1.Def1_DeleteSavingsValidator
 
-class DeleteSavingsValidatorFactorySpec extends UnitSpec with MockSharedAppConfig with MockSavingsConfig {
+class DeleteSavingsValidatorFactorySpec extends UnitSpec with MockSharedAppConfig {
   private val validNino    = "AA123456A"
   private val validTaxYear = "2020-21"
 
   private val invalidNino    = "not-a-nino"
   private val invalidTaxYear = "not-a-tax-year"
-  val validatorFactory       = new DeleteSavingsValidatorFactory(mockSharedAppConfig, mockSavingsConfig)
+  val validatorFactory       = new DeleteSavingsValidatorFactory(mockSharedAppConfig)
 
   "validator" should {
     "return the Def1 validator" when {
-
       "given any valid request" in {
         val result = validatorFactory.validator(validNino, validTaxYear)
         result shouldBe a[Def1_DeleteSavingsValidator]

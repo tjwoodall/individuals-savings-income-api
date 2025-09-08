@@ -54,7 +54,7 @@ trait MockHttpClient extends TestSuite with MockFactory {
           }
         })
         .returns(mockRequestBuilder)
-      (mockRequestBuilder.execute(_: HttpReads[T], _: ExecutionContext)).expects(*, *)
+      (mockRequestBuilder.execute[T](using _: HttpReads[T], _: ExecutionContext)).expects(*, *)
     }
 
     def post[T](url: URL,
@@ -75,12 +75,10 @@ trait MockHttpClient extends TestSuite with MockFactory {
         .returns(mockRequestBuilder)
 
       (mockRequestBuilder
-        .withBody(_: JsValue)(_: BodyWritable[JsValue], _: Tag[JsValue], _: ExecutionContext))
+        .withBody(_: JsValue)(using _: BodyWritable[JsValue], _: Tag[JsValue], _: ExecutionContext))
         .expects(body, *, *, *)
         .returns(mockRequestBuilder)
-      (mockRequestBuilder
-        .execute(_: HttpReads[T], _: ExecutionContext))
-        .expects(*, *)
+      (mockRequestBuilder.execute[T](using _: HttpReads[T], _: ExecutionContext)).expects(*, *)
     }
 
     def put[T](url: URL,
@@ -101,11 +99,11 @@ trait MockHttpClient extends TestSuite with MockFactory {
         .returns(mockRequestBuilder)
 
       (mockRequestBuilder
-        .withBody(_: JsValue)(_: BodyWritable[JsValue], _: Tag[JsValue], _: ExecutionContext))
+        .withBody(_: JsValue)(using _: BodyWritable[JsValue], _: Tag[JsValue], _: ExecutionContext))
         .expects(body, *, *, *)
         .returns(mockRequestBuilder)
       (mockRequestBuilder
-        .execute(_: HttpReads[T], _: ExecutionContext))
+        .execute[T](using _: HttpReads[T], _: ExecutionContext))
         .expects(*, *)
     }
 
@@ -124,8 +122,7 @@ trait MockHttpClient extends TestSuite with MockFactory {
           }
         })
         .returns(mockRequestBuilder)
-
-      (mockRequestBuilder.execute(_: HttpReads[T], _: ExecutionContext)).expects(*, *)
+      (mockRequestBuilder.execute[T](using _: HttpReads[T], _: ExecutionContext)).expects(*, *)
     }
 
     private def assertHeaders(actualHeaders: Seq[(String, String)],

@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,8 @@
 
 package v2.retrieveSavings.def1.model.response
 
-import play.api.libs.functional.syntax._
-import play.api.libs.json.{JsPath, Json, OWrites, Reads}
+import play.api.libs.functional.syntax.*
+import play.api.libs.json.*
 
 case class ForeignInterestItem(countryCode: String,
                                amountBeforeTax: Option[BigDecimal],
@@ -35,7 +35,7 @@ object ForeignInterestItem {
       (JsPath \ "specialWithholdingTax").readNullable[BigDecimal] and
       (JsPath \ "foreignTaxCreditRelief").readNullable[Boolean] and
       (JsPath \ "taxableAmount").read[BigDecimal]
-  )(ForeignInterestItem.apply _)
+  )(ForeignInterestItem.apply)
 
   implicit val writes: OWrites[ForeignInterestItem] = Json.writes[ForeignInterestItem]
 }

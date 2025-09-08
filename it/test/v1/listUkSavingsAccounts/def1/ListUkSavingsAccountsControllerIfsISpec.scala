@@ -18,12 +18,11 @@ package v1.listUkSavingsAccounts.def1
 
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import models.errors.SavingsAccountIdFormatError
-import play.api.http.HeaderNames.ACCEPT
 import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
-import play.api.test.Helpers._
-import shared.models.errors._
-import shared.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
+import play.api.test.Helpers.*
+import shared.models.errors.*
+import shared.services.*
 import shared.support.IntegrationBaseSpec
 
 class ListUkSavingsAccountsControllerIfsISpec extends IntegrationBaseSpec {
@@ -99,7 +98,7 @@ class ListUkSavingsAccountsControllerIfsISpec extends IntegrationBaseSpec {
     def request: WSRequest = {
       setupStubs()
       buildRequest(uri)
-        .addQueryStringParameters(queryParams: _*)
+        .addQueryStringParameters(queryParams*)
         .withHttpHeaders(
           (ACCEPT, "application/vnd.hmrc.1.0+json"),
           (AUTHORIZATION, "Bearer 123") // some bearer token
@@ -152,7 +151,7 @@ class ListUkSavingsAccountsControllerIfsISpec extends IntegrationBaseSpec {
           ("AA1123A", "SAVKB2UVwUTBQGJ", BAD_REQUEST, NinoFormatError),
           ("AA123456A", "SAVKB2UVwUTBQG", BAD_REQUEST, SavingsAccountIdFormatError)
         )
-        input.foreach(args => (validationErrorTest _).tupled(args))
+        input.foreach(args => validationErrorTest.tupled(args))
       }
 
       "downstream service error" when {
@@ -163,7 +162,12 @@ class ListUkSavingsAccountsControllerIfsISpec extends IntegrationBaseSpec {
               AuditStub.audit()
               AuthStub.authorised()
               MtdIdLookupStub.ninoFound(nino)
-              DownstreamStub.onError(DownstreamStub.GET, downstreamUri, Map("incomeSourceId" -> savingsAccountId), downstreamStatus, errorBody(downstreamCode))
+              DownstreamStub.onError(
+                DownstreamStub.GET,
+                downstreamUri,
+                Map("incomeSourceId" -> savingsAccountId),
+                downstreamStatus,
+                errorBody(downstreamCode))
             }
 
             val response: WSResponse = await(request.get())
@@ -193,7 +197,7 @@ class ListUkSavingsAccountsControllerIfsISpec extends IntegrationBaseSpec {
           (SERVICE_UNAVAILABLE, "SERVICE_UNAVAILABLE", INTERNAL_SERVER_ERROR, InternalError)
         )
 
-        input.foreach(args => (serviceErrorTest _).tupled(args))
+        input.foreach(args => serviceErrorTest.tupled(args))
       }
     }
   }

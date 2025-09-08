@@ -18,12 +18,13 @@ package v2.updateUKSavingsAccountName
 
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import models.errors.{AccountNameFormatError, SavingsAccountIdFormatError}
-import play.api.http.Status._
-import play.api.libs.json.{JsObject, JsValue, Json}
+import play.api.libs.json.*
+import play.api.libs.ws.DefaultBodyReadables.readableAsString
+import play.api.libs.ws.WSBodyWritables.writeableOf_JsValue
 import play.api.libs.ws.{WSRequest, WSResponse}
-import play.api.test.Helpers.{ACCEPT, AUTHORIZATION, NO_CONTENT}
-import shared.models.errors._
-import shared.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
+import play.api.test.Helpers.*
+import shared.models.errors.*
+import shared.services.*
 import shared.support.IntegrationBaseSpec
 import v2.updateUKSavingsAccountName.fixture.UpdateUKSavingsAccountNameFixtures.{nonValidRequestBodyJson, validRequestJson}
 
@@ -75,7 +76,7 @@ class UpdateUKSavingsAccountNameControllerISpec extends IntegrationBaseSpec {
           ("AA123456A", "ABCDE1234567890", nonValidRequestBodyJson, BAD_REQUEST, AccountNameFormatError.withPath("/accountName"))
         )
 
-        input.foreach(args => (validationErrorTest _).tupled(args))
+        input.foreach(args => validationErrorTest.tupled(args))
       }
 
       "downstream service error" when {
@@ -112,7 +113,7 @@ class UpdateUKSavingsAccountNameControllerISpec extends IntegrationBaseSpec {
           (NOT_FOUND, "5010", NOT_FOUND, NotFoundError)
         )
 
-        input.foreach(args => (serviceErrorTest _).tupled(args))
+        input.foreach(args => serviceErrorTest.tupled(args))
       }
     }
   }

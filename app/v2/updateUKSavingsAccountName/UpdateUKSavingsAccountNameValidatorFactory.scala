@@ -27,5 +27,5 @@ class UpdateUKSavingsAccountNameValidatorFactory {
 
   def validator(nino: String, savingsAccountId: String, body: JsValue): Validator[UpdateUKSavingsAccountNameRequest] =
     new UpdateUKSavingsAccountNameValidator(nino, savingsAccountId, body)
-}
 
+}

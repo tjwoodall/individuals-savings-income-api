@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,19 +16,19 @@
 
 package v2.createAmendSavings
 
+import play.api.Configuration
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
-import play.api.Configuration
 import shared.config.MockSharedAppConfig
 import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
-import shared.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
+import shared.models.audit.*
 import shared.models.auth.UserDetails
 import shared.models.domain.{Nino, TaxYear}
-import shared.models.errors._
+import shared.models.errors.*
 import shared.models.outcomes.ResponseWrapper
 import shared.routing.{Version, Version2}
 import shared.services.MockMtdIdLookupService
-import v2.createAmendSavings.def1.model.request.{AmendForeignInterestItem, AmendSecurities, Def1_CreateAmendSavingsRequestBody, Def1_CreateAmendSavingsRequestData}
+import v2.createAmendSavings.def1.model.request.*
 import v2.createAmendSavings.model.request.CreateAmendSavingsRequestData
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -147,7 +147,7 @@ class CreateAmendSavingsControllerSpec
 
   trait Test extends ControllerTest with AuditEventChecking[GenericAuditDetail] {
 
-    val controller = new CreateAmendSavingsController(
+    val controller: CreateAmendSavingsController = new CreateAmendSavingsController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
       validatorFactory = mockCreateAmendSavingsValidatorFactory,
@@ -163,7 +163,8 @@ class CreateAmendSavingsControllerSpec
 
     MockedSharedAppConfig
       .endpointAllowsSupportingAgents(controller.endpointName)
-      .anyNumberOfTimes() returns true
+      .anyNumberOfTimes()
+      .returns(true)
 
     protected def callController(): Future[Result] = controller.createAmendSavings(validNino, taxYear)(fakePostRequest(requestBodyJson))
 

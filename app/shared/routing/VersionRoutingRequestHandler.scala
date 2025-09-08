@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,14 +16,14 @@
 
 package shared.routing
 
-import play.api.http.{DefaultHttpRequestHandler, HttpConfiguration, HttpErrorHandler, HttpFilters}
-import play.api.mvc.{DefaultActionBuilder, Handler, RequestHeader, Results}
+import play.api.http.*
+import play.api.mvc.*
 import play.api.routing.Router
 import play.core.DefaultWebCommands
 import shared.config.SharedAppConfig
 import shared.models.errors.{InvalidAcceptHeaderError, UnsupportedVersionError}
 
-import javax.inject.{Inject, Singleton}
+import javax.inject.*
 
 @Singleton
 class VersionRoutingRequestHandler @Inject() (versionRoutingMap: VersionRoutingMap,
@@ -35,7 +35,7 @@ class VersionRoutingRequestHandler @Inject() (versionRoutingMap: VersionRoutingM
     extends DefaultHttpRequestHandler(
       webCommands = new DefaultWebCommands,
       optDevContext = None,
-      router = () => versionRoutingMap.defaultRouter,
+      router = (() => versionRoutingMap.defaultRouter): Provider[Router],
       errorHandler = errorHandler,
       configuration = httpConfiguration,
       filters = filters.filters

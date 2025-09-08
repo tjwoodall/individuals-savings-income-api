@@ -35,11 +35,6 @@ trait MockSavingsConfig extends TestSuite with MockFactory {
     def featureSwitchConfig: CallHandler0[Configuration]      = (() => mockSavingsConfig.featureSwitchConfig: Configuration).expects()
     def featureSwitches: CallHandler0[SavingsFeatureSwitches] = (() => mockSavingsConfig.featureSwitches: SavingsFeatureSwitches).expects()
 
-    def minimumPermittedTaxYear: CallHandler[Int] = (() => mockSavingsConfig.minimumPermittedTaxYear).expects()
-
-    def ukSavingsAccountAnnualSummaryMinimumTaxYear: CallHandler[Int] =
-      (() => mockSavingsConfig.ukSavingsAccountAnnualSummaryMinimumTaxYear).expects()
-
   }
 
 }

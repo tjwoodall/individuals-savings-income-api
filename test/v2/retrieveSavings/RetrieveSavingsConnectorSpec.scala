@@ -17,7 +17,7 @@
 package v2.retrieveSavings
 
 import shared.connectors.{ConnectorSpec, DownstreamOutcome}
-import shared.models.domain.{Nino, TaxYear, Timestamp}
+import shared.models.domain.*
 import shared.models.outcomes.ResponseWrapper
 import uk.gov.hmrc.http.StringContextOps
 import v2.retrieveSavings.def1.model.request.Def1_RetrieveSavingsRequestData
@@ -62,7 +62,7 @@ class RetrieveSavingsConnectorSpec extends ConnectorSpec {
   }
 
   trait Test {
-    _: ConnectorTest =>
+    self: ConnectorTest =>
 
     protected val nino: String = "AA111111A"
     def taxYear: TaxYear

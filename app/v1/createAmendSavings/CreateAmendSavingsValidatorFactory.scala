@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,16 +19,15 @@ package v1.createAmendSavings
 import play.api.libs.json.JsValue
 import shared.config.SharedAppConfig
 import shared.controllers.validators.Validator
-import config.SavingsConfig
 import v1.createAmendSavings.def1.Def1_CreateAmendSavingsValidator
 import v1.createAmendSavings.model.request.CreateAmendSavingsRequestData
 
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class CreateAmendSavingsValidatorFactory @Inject() (appConfig: SharedAppConfig, savingsConfig: SavingsConfig) {
+class CreateAmendSavingsValidatorFactory @Inject() (appConfig: SharedAppConfig) {
 
   def validator(nino: String, taxYear: String, body: JsValue): Validator[CreateAmendSavingsRequestData] =
-    new Def1_CreateAmendSavingsValidator(nino, taxYear, body)(appConfig, savingsConfig)
+    new Def1_CreateAmendSavingsValidator(nino, taxYear, body)(appConfig)
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,7 +33,7 @@ class Def1_ListUkSavingsAccountsValidator(nino: String, savingsAccountId: Option
     (
       ResolveNino(nino),
       resolveOptionalSavingsAccountId(savingsAccountId)
-    ).mapN(Def1_ListUkSavingsAccountsRequestData)
+    ).mapN(Def1_ListUkSavingsAccountsRequestData.apply)
 
   private def resolveOptionalSavingsAccountId(maybeId: Option[String]): Validated[Seq[MtdError], Option[SavingsAccountId]] = {
     val regex = "^[A-Za-z0-9]{15}$"
