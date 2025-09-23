@@ -33,7 +33,7 @@ class Def1_CreateAmendSavingsRequestBodySpec extends UnitSpec {
       |   "foreignInterest": [
       |      {
       |         "amountBeforeTax": 1232.22,
-      |         "countryCode": "GER",
+      |         "countryCode": "DEU",
       |         "taxTakenOff": 22.22,
       |         "specialWithholdingTax": 22.22,
       |         "taxableAmount": 2321.22,
@@ -54,7 +54,7 @@ class Def1_CreateAmendSavingsRequestBodySpec extends UnitSpec {
   val foreignInterestItemModel: AmendForeignInterestItem =
     AmendForeignInterestItem(
       amountBeforeTax = Some(1232.22),
-      countryCode = "GER",
+      countryCode = "DEU",
       taxTakenOff = Some(22.22),
       specialWithholdingTax = Some(22.22),
       taxableAmount = 2321.22,
@@ -79,7 +79,7 @@ class Def1_CreateAmendSavingsRequestBodySpec extends UnitSpec {
       |   "foreignInterest": [
       |      {
       |         "amountBeforeTax": 1232.22,
-      |         "countryCode": "GER",
+      |         "countryCode": "DEU",
       |         "taxTakenOff": 22.22,
       |         "specialWithholdingTax": 22.22,
       |         "taxableAmount": 2321.22,
@@ -104,7 +104,7 @@ class Def1_CreateAmendSavingsRequestBodySpec extends UnitSpec {
       |   "foreignInterest": [
       |      {
       |         "amountBeforeTax": 1232.22,
-      |         "countryCode": "GER",
+      |         "countryCode": "DEU",
       |         "taxTakenOff": 22.22,
       |         "specialWithholdingTax": 22.22,
       |         "taxableAmount": 2321.22,
