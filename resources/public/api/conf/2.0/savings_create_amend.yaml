@@ -37,8 +37,7 @@ requestBody:
       examples:
         example-1:
           description: Full Savings Income Amendment
-          value:
-            $ref: './examples/savingsIncome/amend_savings_request.json'
+          externalValue: './examples/savingsIncome/amend_savings_request.json'
 
 responses:
   "200":

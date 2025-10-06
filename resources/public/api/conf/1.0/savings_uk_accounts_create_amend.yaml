@@ -39,12 +39,10 @@ requestBody:
       examples:
         full-amendment:
           description: Uk Savings Account Annual Summary Amendment
-          value:
-            $ref: './examples/ukSavingsAccount/uk_savings_account_amend_request.json'
+          externalValue: './examples/ukSavingsAccount/uk_savings_account_amend_request.json'
         deletion:
           description: Uk Savings Account Annual Summary Delete
-          value:
-            $ref: './examples/ukSavingsAccount/uk_savings_account_delete_request.json'
+          externalValue: './examples/ukSavingsAccount/uk_savings_account_delete_request.json'
 
 responses:
   "200":
