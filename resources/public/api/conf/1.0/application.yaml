@@ -64,7 +64,7 @@ tags:
 paths:
   /individuals/savings-income/uk-accounts/{nino}:
     $ref: "./savings_uk_accounts.yaml"
-  /individuals/savings-income/uk-accounts/{nino}/{taxYear}/{savingsAccountId}:
+  /individuals/savings-income/uk-accounts/{nino}/{taxYear}/{savingsId}:
     $ref: "./savings_uk_accounts_id.yaml"
   /individuals/savings-income/other/{nino}/{taxYear}:
     $ref: "./savings.yaml"
