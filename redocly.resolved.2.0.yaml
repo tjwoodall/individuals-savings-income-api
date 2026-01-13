@@ -1,0 +1,1957 @@
+openapi: 3.0.3
+info:
+  version: '2.0'
+  title: Individuals Savings Income (MTD)
+  description: |
+    # Send fraud prevention data
+    HMRC monitors transactions to help protect your customers' confidential data from criminals and fraudsters. 
+
+    <div class="govuk-warning-text warning-icon-fix">
+      <span class="govuk-warning-text__icon warning-icon-ui-fix" aria-hidden="true">!</span>
+      <strong class="govuk-warning-text__text">
+        <span class="govuk-warning-text__assistive">Warning</span>
+        You are required by law to submit header data for this API. This includes all associated APIs and endpoints.
+      </strong>
+    </div>
+
+    [Check the data you need to send](/guides/fraud-prevention/). You can also use the [Test API](/api-documentation/docs/api/service/txm-fph-validator-api/1.0) during initial development and as part of your quality assurance checks.
+
+    # Mapping APIs to Self Assessment tax return forms
+    Some parameters in this API map to box numbers in one or more Self Assessment tax return forms. To learn more and to download this mapping information as a CSV file, go to [income-tax-mtd-changelog/mapping](https://github.com/hmrc/income-tax-mtd-changelog?tab=readme-ov-file#mapping-apis-to-self-assessment-tax-return-forms) on GitHub.
+
+    # Changelog
+    You can find the changelog in the [income-tax-mtd-changelog](https://github.com/hmrc/income-tax-mtd-changelog/#readme) on GitHub.
+
+    # Support
+
+    * Direct reports of bugs or errors in Production or Sandbox code, 
+    or queries about HMRC business functionality (such as how a specific field is used by HMRC or why it is needed) to the [Software Development Support Team (SDST)](https://developer.service.hmrc.gov.uk/developer/support).
+    * Send queries or feedback related to the design of the APIs (including recommended changes) using
+    the [income-tax-mtd-changelog](https://github.com/hmrc/income-tax-mtd-changelog/issues) GitHub page.
+    * <a href="/contact/report-technical-problem?newTab=true&service=api-documentation-frontend" target="_blank">Is this page not working properly? (opens in new tab)</a>
+servers:
+  - url: https://test-api.service.hmrc.gov.uk
+    description: Sandbox
+  - url: https://api.service.hmrc.gov.uk
+    description: Production
+tags:
+  - name: UK Savings Account
+    description: Resources relating to an individual’s UK savings account
+  - name: Savings Income
+    description: Resources relating to an individual's savings income
+paths:
+  /individuals/savings-income/uk-accounts/{nino}:
+    get:
+      summary: List All UK Savings Accounts
+      security:
+        - User-Restricted:
+            - read:self-assessment
+      parameters:
+        - $ref: ./common/queryParameters.yaml#/components/parameters/savingsAccountId
+      description: |
+        This endpoint allows a developer to retrieve a list of all UK savings accounts that were previously added for an individual.
+        A National Insurance number must be provided.
+
+        ### Test data
+        Scenario simulation using Gov-Test-Scenario headers is only available in the sandbox environment.
+
+        | Header Value (Gov-Test-Scenario) | Scenario                                       |
+        |----------------------------------|------------------------------------------------|
+        | N/A - DEFAULT                    | Simulates success response.                    |
+        | NOT_FOUND                        | Simulates the scenario where no data is found. |   
+        | STATEFUL                         | Performs a stateful list.                      |
+        | REQUEST_CANNOT_BE_FULFILLED      | Simulates the scenario where the request cannot be fulfilled for various reasons other than the ones triggering other errors.|
+      tags:
+        - UK Savings Account
+      responses:
+        '200':
+          description: Success
+          headers:
+            X-CorrelationId:
+              in: header
+              type: string
+              description: |
+                Unique ID for operation tracking
+                String, 36 characters.
+              schema: &ref_0
+                type: string
+                example: c75f40a6-a3df-4429-a697-471eeec46435
+              required: true
+            Deprecation:
+              name: Deprecation
+              in: header
+              description: |
+                The deprecation date/time for this endpoint.
+              schema: &ref_3
+                type: string
+                example: Sun, 01 Jan 2023 23:59:59 GMT
+              required: false
+            Sunset:
+              name: Sunset
+              in: header
+              description: |
+                The earliest date/time this endpoint will become unavailable after deprecation.
+              schema: &ref_4
+                type: string
+                example: Sun, 02 Jul 2023 23:59:59 GMT
+              required: false
+            Link:
+              name: Link
+              in: header
+              description: |
+                URL of the documentation for the API.
+              schema: &ref_5
+                type: string
+                example: https://developer.service.hmrc.gov.uk/api-documentation/docs/api/service/individuals-savings-income-api
+              required: false
+          content:
+            application/json:
+              schema:
+                $schema: http://json-schema.org/draft-04/schema#
+                description: List All UK Savings Accounts Response
+                type: object
+                properties:
+                  savingsAccounts:
+                    type: array
+                    description: An array containing details of savings accounts for the provided National Insurance number.
+                    items:
+                      type: object
+                      properties:
+                        savingsAccountId:
+                          type: string
+                          description: The unique identifier of the savings account.
+                          pattern: ^[A-Za-z0-9]{15}$
+                          example: SAVKB2UVwUTBQGJ
+                        accountName:
+                          type: string
+                          description: Friendly account name.
+                          pattern: ^[A-Za-z0-9 &'\(\)\*,\-\./@£]{1,32}$
+                          example: Shares savings account
+                      required:
+                        - savingsAccountId
+                required:
+                  - savingsAccounts
+              examples:
+                example-response:
+                  description: Example Response
+                  value:
+                    savingsAccounts:
+                      - savingsAccountId: '000000000000001'
+                        accountName: Bank Account 1
+                      - savingsAccountId: '000000000000002'
+                        accountName: Bank Account 2
+                      - savingsAccountId: '000000000000003'
+        '400':
+          description: Bad request
+          headers:
+            X-CorrelationId:
+              in: header
+              type: string
+              description: |
+                Unique ID for operation tracking
+                String, 36 characters.
+              schema: *ref_0
+              required: true
+          content:
+            application/json:
+              schema:
+                description: Error Response
+                type: object
+                properties: &ref_1
+                  code:
+                    description: The error code
+                    type: string
+                  message:
+                    description: The error message
+                    type: string
+                required: &ref_2
+                  - code
+              examples:
+                FORMAT_NINO:
+                  description: The format of the supplied NINO field is not valid.
+                  value: &ref_6
+                    code: FORMAT_NINO
+                    message: The provided NINO is invalid
+                FORMAT_SAVINGS_ACCOUNT_ID:
+                  description: The format of the supplied savings account ID is not valid
+                  value: &ref_16
+                    code: FORMAT_SAVINGS_ACCOUNT_ID
+                    message: The format of the supplied savings account ID is not valid
+                RULE_INCORRECT_GOV_TEST_SCENARIO:
+                  description: The request did not match any available Sandbox data. Check that the supplied Gov-Test-Scenario is correct for this endpoint version. This error will only be returned in the Sandbox environment.
+                  value: &ref_7
+                    code: RULE_INCORRECT_GOV_TEST_SCENARIO
+                    message: The supplied Gov-Test-Scenario is not valid
+        '403':
+          description: Forbidden
+          headers:
+            X-CorrelationId:
+              in: header
+              type: string
+              description: |
+                Unique ID for operation tracking
+                String, 36 characters.
+              schema: *ref_0
+              required: true
+          content:
+            application/json:
+              schema:
+                description: Error Response
+                type: object
+                properties: *ref_1
+                required: *ref_2
+              examples:
+                CLIENT_OR_AGENT_NOT_AUTHORISED:
+                  description: |
+                    The client or agent is not authorised. This is because: the client is not subscribed to MTD, 
+                    the agent is not subscribed to Agent Services, or the client has not authorised the agent to act on their behalf.
+                  value: &ref_8
+                    code: CLIENT_OR_AGENT_NOT_AUTHORISED
+                    message: The client and/or agent is not authorised
+        '404':
+          description: Not Found
+          headers:
+            X-CorrelationId:
+              in: header
+              type: string
+              description: |
+                Unique ID for operation tracking
+                String, 36 characters.
+              schema: *ref_0
+              required: true
+          content:
+            application/json:
+              schema:
+                description: Error Response
+                type: object
+                properties: *ref_1
+                required: *ref_2
+              examples:
+                MATCHING_RESOURCE_NOT_FOUND:
+                  description: The supplied income source could not be found.
+                  value: &ref_9
+                    code: MATCHING_RESOURCE_NOT_FOUND
+                    message: Matching resource not found
+        '422':
+          description: Unprocessable Entity
+          headers:
+            X-CorrelationId:
+              in: header
+              type: string
+              description: |
+                Unique ID for operation tracking
+                String, 36 characters.
+              schema: *ref_0
+              required: true
+          content:
+            application/json:
+              schema:
+                description: Error Response
+                type: object
+                properties: *ref_1
+                required: *ref_2
+              examples:
+                RULE_REQUEST_CANNOT_BE_FULFILLED:
+                  description: The request cannot be fulfilled. More specific information is provided in the error message.
+                  value: &ref_10
+                    code: RULE_REQUEST_CANNOT_BE_FULFILLED
+                    message: Custom (will vary in production depending on the actual error)
+    post:
+      summary: Add a UK Savings Account
+      security:
+        - User-Restricted:
+            - write:self-assessment
+      description: |
+        This endpoint allows a developer to add a UK savings account.
+        Interest income data can then be recorded against that savings account using the Amend a UK savings account annual summary endpoint.
+        A National Insurance number must be provided.
+
+        ### Test data
+        Scenario simulation using Gov-Test-Scenario headers is only available in the sandbox environment.
+
+        | Header Value (Gov-Test-Scenario) | Scenario                                       |
+        |----------------------------------|------------------------------------------------|
+        | N/A - DEFAULT                    | Simulates success response.                    |
+        | MAXIMUM_SAVINGS_ACCOUNTS_LIMIT   | Simulates the scenario where the maximum number of 1000 savings accounts is exceeded. |
+        | DUPLICATE_ACCOUNT_NAME           | Simulates the scenario where a duplicate account name was supplied for the NINO.      |  
+        | STATEFUL                         | Performs a stateful create.                                                           |
+        | REQUEST_CANNOT_BE_FULFILLED      | Simulates the scenario where the request cannot be fulfilled for various reasons other than the ones triggering other errors.|
+      tags:
+        - UK Savings Account
+      parameters:
+        - name: nino
+          in: path
+          description: |
+            National Insurance number, in the format `AA999999A`
+          schema: &ref_11
+            type: string
+            example: TC663795B
+          required: true
+        - name: Accept
+          in: header
+          description: |
+            Specifies the response format and the version of the API to be used.
+          schema: &ref_12
+            type: string
+            enum:
+              - application/vnd.hmrc.2.0+json
+          required: true
+        - name: Content-Type
+          in: header
+          description: |
+            Specifies the format of the request body, which must be JSON.
+          schema: &ref_13
+            type: string
+            enum:
+              - application/json
+          required: true
+        - name: Authorization
+          in: header
+          description: |
+            An OAuth 2.0 Bearer Token with the *write:self-assessment* scope.
+          schema: &ref_14
+            type: string
+            example: Bearer bb7fed3fe10dd235a2ccda3d50fb
+          required: true
+        - name: Gov-Test-Scenario
+          in: header
+          description: |
+            Only in sandbox environment. See Test Data table for all header values.
+          schema: &ref_15
+            type: string
+          required: false
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $schema: http://json-schema.org/draft-04/schema#
+              title: Add a Uk Savings Account Request
+              description: Add a Uk Savings Account Request
+              type: object
+              properties:
+                accountName:
+                  type: string
+                  description: Friendly account name.
+                  pattern: ^[A-Za-z0-9 &'\(\)\*,\-\./@£]{1,32}$
+                  example: Shares savings account
+              required:
+                - accountName
+            examples:
+              example-1:
+                description: Request Example
+                value:
+                  accountName: Shares savings account
+      responses:
+        '200':
+          description: Success
+          headers:
+            X-CorrelationId:
+              in: header
+              type: string
+              description: |
+                Unique ID for operation tracking
+                String, 36 characters.
+              schema: *ref_0
+              required: true
+            Deprecation:
+              name: Deprecation
+              in: header
+              description: |
+                The deprecation date/time for this endpoint.
+              schema: *ref_3
+              required: false
+            Sunset:
+              name: Sunset
+              in: header
+              description: |
+                The earliest date/time this endpoint will become unavailable after deprecation.
+              schema: *ref_4
+              required: false
+            Link:
+              name: Link
+              in: header
+              description: |
+                URL of the documentation for the API.
+              schema: *ref_5
+              required: false
+          content:
+            application/json:
+              schema:
+                $schema: http://json-schema.org/draft-04/schema#
+                title: Add a UK Savings Account Response
+                description: Add a UK Savings Account Response
+                type: object
+                properties:
+                  savingsAccountId:
+                    type: string
+                    description: 'The unique identifier of the savings account. Must conform to the regular expression: ^[A-Za-z0-9]{15}$'
+                    example: SAVKB2UVwUTBQGJ
+                required:
+                  - savingsAccountId
+              examples:
+                example-response:
+                  description: Example Response
+                  value:
+                    savingsAccountId: SAVKB2UVwUTBQGJ
+        '400':
+          description: Bad request
+          headers:
+            X-CorrelationId:
+              in: header
+              type: string
+              description: |
+                Unique ID for operation tracking
+                String, 36 characters.
+              schema: *ref_0
+              required: true
+          content:
+            application/json:
+              schema:
+                description: Error Response
+                type: object
+                properties: *ref_1
+                required: *ref_2
+              examples:
+                FORMAT_NINO:
+                  description: The format of the supplied NINO field is not valid.
+                  value: *ref_6
+                FORMAT_ACCOUNT_NAME:
+                  description: The format of the supplied account name field is not valid.
+                  value: &ref_17
+                    code: FORMAT_ACCOUNT_NAME
+                    message: The provided account name is invalid
+                RULE_INCORRECT_OR_EMPTY_BODY_SUBMITTED:
+                  description: An empty or non-matching body was submitted.
+                  value: &ref_18
+                    code: RULE_INCORRECT_OR_EMPTY_BODY_SUBMITTED
+                    message: An empty or non-matching body was submitted
+                RULE_MAXIMUM_SAVINGS_ACCOUNTS_LIMIT:
+                  description: The maximum number of 1000 savings accounts exceeded.
+                  value:
+                    code: RULE_MAXIMUM_SAVINGS_ACCOUNTS_LIMIT
+                    message: The 1000 savings account limit exceeded
+                RULE_DUPLICATE_ACCOUNT_NAME:
+                  description: A duplicate account name was supplied for that National Insurance Number.
+                  value: &ref_20
+                    code: RULE_DUPLICATE_ACCOUNT_NAME
+                    message: Duplicate account name given for supplied NINO
+                RULE_INCORRECT_GOV_TEST_SCENARIO:
+                  description: The request did not match any available Sandbox data. Check that the supplied Gov-Test-Scenario is correct for this endpoint version. This error will only be returned in the Sandbox environment.
+                  value: *ref_7
+        '403':
+          description: Forbidden
+          headers:
+            X-CorrelationId:
+              in: header
+              type: string
+              description: |
+                Unique ID for operation tracking
+                String, 36 characters.
+              schema: *ref_0
+              required: true
+          content:
+            application/json:
+              schema:
+                description: Error Response
+                type: object
+                properties: *ref_1
+                required: *ref_2
+              examples:
+                CLIENT_OR_AGENT_NOT_AUTHORISED:
+                  description: |
+                    The client or agent is not authorised. This is because: the client is not subscribed to MTD, 
+                    the agent is not subscribed to Agent Services, or the client has not authorised the agent to act on their behalf.
+                  value: *ref_8
+        '404':
+          description: Not Found
+          headers:
+            X-CorrelationId:
+              in: header
+              type: string
+              description: |
+                Unique ID for operation tracking
+                String, 36 characters.
+              schema: *ref_0
+              required: true
+          content:
+            application/json:
+              schema:
+                description: Error Response
+                type: object
+                properties: *ref_1
+                required: *ref_2
+              examples:
+                MATCHING_RESOURCE_NOT_FOUND:
+                  description: The supplied income source could not be found.
+                  value: *ref_9
+        '422':
+          description: Unprocessable Entity
+          headers:
+            X-CorrelationId:
+              in: header
+              type: string
+              description: |
+                Unique ID for operation tracking
+                String, 36 characters.
+              schema: *ref_0
+              required: true
+          content:
+            application/json:
+              schema:
+                description: Error Response
+                type: object
+                properties: *ref_1
+                required: *ref_2
+              examples:
+                RULE_REQUEST_CANNOT_BE_FULFILLED:
+                  description: The request cannot be fulfilled. More specific information is provided in the error message.
+                  value: *ref_10
+  /individuals/savings-income/uk-accounts/{nino}/account-name/{savingsId}:
+    put:
+      summary: Update a UK Savings Account name
+      description: |
+        This endpoint allows a developer to update UK savings account information.
+        A National Insurance number and savings account ID must be provided.
+
+        ### Test data
+        Scenario simulation using Gov-Test-Scenario headers is only available in the sandbox environment.
+
+        | Header Value (Gov-Test-Scenario) | Scenario                                       |
+        |----------------------------------|------------------------------------------------|
+        | N/A - DEFAULT                    | Simulates success response.                    |
+        | NOT_FOUND                        | Simulates the scenario where no data is found. |
+        | REQUEST_CANNOT_BE_FULFILLED      | Simulates the scenario where the request cannot be fulfilled for various reasons other than the ones triggering other errors.|
+        | STATEFUL                         | Performs a stateful update.                    |
+      tags:
+        - UK Savings Account
+      parameters:
+        - name: nino
+          in: path
+          description: |
+            National Insurance number, in the format `AA999999A`
+          schema: *ref_11
+          required: true
+        - name: savingsAccountId
+          in: path
+          description: |
+            The unique identifier of the savings account.
+          schema: &ref_19
+            type: string
+            pattern: ^[A-Za-z0-9]{15}$
+            example: SAVKB2UVwUTBQGJ
+          required: true
+        - name: Accept
+          in: header
+          description: |
+            Specifies the response format and the version of the API to be used.
+          schema: *ref_12
+          required: true
+        - name: Content-Type
+          in: header
+          description: |
+            Specifies the format of the request body, which must be JSON.
+          schema: *ref_13
+          required: true
+        - name: Authorization
+          in: header
+          description: |
+            An OAuth 2.0 Bearer Token with the *write:self-assessment* scope.
+          schema: *ref_14
+          required: true
+        - name: Gov-Test-Scenario
+          in: header
+          description: |
+            Only in sandbox environment. See Test Data table for all header values.
+          schema: *ref_15
+          required: false
+      security:
+        - User-Restricted:
+            - write:self-assessment
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $schema: http://json-schema.org/draft-04/schema#
+              title: Update a UK Savings Account name Request
+              description: Update a UK Savings Account name Request
+              type: object
+              properties:
+                accountName:
+                  type: string
+                  description: Friendly account name.
+                  pattern: ^[A-Za-z0-9 &'\(\)\*,\-\./@£]{1,32}$
+                  example: Shares savings account
+              required:
+                - accountName
+            examples:
+              example-1:
+                description: Request Example
+                value:
+                  accountName: Shares savings account
+      responses:
+        '204':
+          description: Success (No Content)
+          headers:
+            X-CorrelationId:
+              in: header
+              type: string
+              description: |
+                Unique ID for operation tracking
+                String, 36 characters.
+              schema: *ref_0
+              required: true
+            Deprecation:
+              name: Deprecation
+              in: header
+              description: |
+                The deprecation date/time for this endpoint.
+              schema: *ref_3
+              required: false
+            Sunset:
+              name: Sunset
+              in: header
+              description: |
+                The earliest date/time this endpoint will become unavailable after deprecation.
+              schema: *ref_4
+              required: false
+            Link:
+              name: Link
+              in: header
+              description: |
+                URL of the documentation for the API.
+              schema: *ref_5
+              required: false
+        '400':
+          description: Bad request
+          headers:
+            X-CorrelationId:
+              in: header
+              type: string
+              description: |
+                Unique ID for operation tracking
+                String, 36 characters.
+              schema: *ref_0
+              required: true
+          content:
+            application/json:
+              schema:
+                description: Error Response
+                type: object
+                properties: *ref_1
+                required: *ref_2
+              examples:
+                FORMAT_NINO:
+                  description: The format of the supplied NINO field is not valid.
+                  value: *ref_6
+                FORMAT_SAVINGS_ACCOUNT_ID:
+                  description: The format of the supplied savings account ID is not valid
+                  value: *ref_16
+                FORMAT_ACCOUNT_NAME:
+                  description: The format of the supplied account name field is not valid.
+                  value: *ref_17
+                RULE_INCORRECT_OR_EMPTY_BODY_SUBMITTED:
+                  description: An empty or non-matching body was submitted.
+                  value: *ref_18
+                RULE_INCORRECT_GOV_TEST_SCENARIO:
+                  description: The request did not match any available Sandbox data. Check that the supplied Gov-Test-Scenario is correct for this endpoint version. This error will only be returned in the Sandbox environment.
+                  value: *ref_7
+        '403':
+          description: Forbidden
+          headers:
+            X-CorrelationId:
+              in: header
+              type: string
+              description: |
+                Unique ID for operation tracking
+                String, 36 characters.
+              schema: *ref_0
+              required: true
+          content:
+            application/json:
+              schema:
+                description: Error Response
+                type: object
+                properties: *ref_1
+                required: *ref_2
+              examples:
+                CLIENT_OR_AGENT_NOT_AUTHORISED:
+                  description: |
+                    The client or agent is not authorised. This is because: the client is not subscribed to MTD, 
+                    the agent is not subscribed to Agent Services, or the client has not authorised the agent to act on their behalf.
+                  value: *ref_8
+        '404':
+          description: Not Found
+          headers:
+            X-CorrelationId:
+              in: header
+              type: string
+              description: |
+                Unique ID for operation tracking
+                String, 36 characters.
+              schema: *ref_0
+              required: true
+          content:
+            application/json:
+              schema:
+                description: Error Response
+                type: object
+                properties: *ref_1
+                required: *ref_2
+              examples:
+                MATCHING_RESOURCE_NOT_FOUND:
+                  description: The supplied income source could not be found.
+                  value: *ref_9
+        '422':
+          description: Unprocessable Entity
+          headers:
+            X-CorrelationId:
+              in: header
+              type: string
+              description: |
+                Unique ID for operation tracking
+                String, 36 characters.
+              schema: *ref_0
+              required: true
+          content:
+            application/json:
+              schema:
+                description: Error Response
+                type: object
+                properties: *ref_1
+                required: *ref_2
+              examples:
+                RULE_REQUEST_CANNOT_BE_FULFILLED:
+                  description: The request cannot be fulfilled. More specific information is provided in the error message.
+                  value: *ref_10
+  /individuals/savings-income/uk-accounts/{nino}/{taxYear}/{savingsId}:
+    get:
+      summary: Retrieve UK Savings Account Annual Summary
+      security:
+        - User-Restricted:
+            - read:self-assessment
+      description: |
+        This endpoint enables you to retrieve a UK savings account annual summary for a tax year.
+        Use it to get the annual savings interest for a previously added savings account.
+
+        ### Test data
+        Scenario simulation using Gov-Test-Scenario headers is only available in the sandbox environment.
+
+        | Header Value (Gov-Test-Scenario) | Scenario                                       |
+        | -------------------------------- | ---------------------------------------------- |
+        | N/A - DEFAULT                    | Simulates success response.                    |
+        | NOT_FOUND                        | Simulates the scenario where no data is found. |
+        | STATEFUL                         | Performs a stateful retrieve. <br/><br/> Use the savingsAccountId of a savings account created with Add a UK Savings Account, otherwise a MATCHING_RESOURCE_NOT_FOUND error will be returned.                 |
+        | REQUEST_CANNOT_BE_FULFILLED      | Simulates the scenario where the request cannot be fulfilled for various reasons other than the ones triggering other errors.|
+      tags:
+        - UK Savings Account
+      parameters:
+        - name: nino
+          in: path
+          description: |
+            National Insurance number, in the format `AA999999A`
+          schema: *ref_11
+          required: true
+        - name: taxYear
+          in: path
+          description: |
+            The tax year the data applies to. The start year and end year must not span two tax years.
+            No gaps are allowed, for example, 2020-22 is not valid. The minimum tax year is 2019-20.
+          schema:
+            type: string
+            example: 2021-22
+          required: true
+        - name: savingsAccountId
+          in: path
+          description: |
+            The unique identifier of the savings account.
+          schema: *ref_19
+          required: true
+        - name: Accept
+          in: header
+          description: |
+            Specifies the response format and the version of the API to be used.
+          schema: *ref_12
+          required: true
+        - name: Authorization
+          in: header
+          description: |
+            An OAuth 2.0 Bearer Token with the *read:self-assessment* scope.
+          schema: &ref_24
+            type: string
+            example: Bearer bb7fed3fe10dd235a2ccda3d50fb
+          required: true
+        - name: Gov-Test-Scenario
+          in: header
+          description: |
+            Only in sandbox environment. See Test Data table for all header values.
+          schema: *ref_15
+          required: false
+      responses:
+        '200':
+          description: Success
+          headers:
+            X-CorrelationId:
+              in: header
+              type: string
+              description: |
+                Unique ID for operation tracking
+                String, 36 characters.
+              schema: *ref_0
+              required: true
+            Deprecation:
+              name: Deprecation
+              in: header
+              description: |
+                The deprecation date/time for this endpoint.
+              schema: *ref_3
+              required: false
+            Sunset:
+              name: Sunset
+              in: header
+              description: |
+                The earliest date/time this endpoint will become unavailable after deprecation.
+              schema: *ref_4
+              required: false
+            Link:
+              name: Link
+              in: header
+              description: |
+                URL of the documentation for the API.
+              schema: *ref_5
+              required: false
+          content:
+            application/json:
+              schema:
+                $schema: http://json-schema.org/draft-04/schema#
+                title: Retrieve UK Savings Account Annual Summary Response
+                description: Retrieve UK Savings Account Annual Summary Response
+                type: object
+                properties:
+                  taxedUkInterest:
+                    type: number
+                    description: 'Total net taxed interest for the specified savings account. The value must be between 0 and 99999999999.99 up to 2 decimal places. Note: If taxedUkInterest is not provided, then any existing values will be removed.'
+                    example: '1230.55'
+                    multipleOf: 0.01
+                    minimum: 0
+                    maximum: 99999999999.99
+                  untaxedUkInterest:
+                    type: number
+                    description: 'Total untaxed interest for the specified savings account. The value must be between 0 and 99999999999.99 up to 2 decimal places. Note: If untaxedUkInterest is not provided, then any existing values will be removed.'
+                    example: '1230.55'
+                    multipleOf: 0.01
+                    minimum: 0
+                    maximum: 99999999999.99
+              examples:
+                example-response:
+                  description: Example Response
+                  value:
+                    taxedUkInterest: 93556675358.99
+                    untaxedUkInterest: 34514974058.99
+        '400':
+          description: Bad request
+          headers:
+            X-CorrelationId:
+              in: header
+              type: string
+              description: |
+                Unique ID for operation tracking
+                String, 36 characters.
+              schema: *ref_0
+              required: true
+          content:
+            application/json:
+              schema:
+                description: Error Response
+                type: object
+                properties: *ref_1
+                required: *ref_2
+              examples:
+                FORMAT_NINO:
+                  description: The format of the supplied NINO field is not valid.
+                  value: *ref_6
+                FORMAT_TAX_YEAR:
+                  description: The format of the supplied tax year field is not valid.
+                  value: &ref_21
+                    code: FORMAT_TAX_YEAR
+                    message: The provided tax year is invalid
+                FORMAT_SAVINGS_ACCOUNT_ID:
+                  description: The format of the supplied savings account ID is not valid
+                  value: *ref_16
+                RULE_TAX_YEAR_RANGE_INVALID:
+                  description: Tax year range invalid. A tax year range of one year is required.
+                  value: &ref_22
+                    code: RULE_TAX_YEAR_RANGE_INVALID
+                    message: Tax year range invalid. A tax year range of one year is required
+                RULE_TAX_YEAR_NOT_SUPPORTED:
+                  description: |
+                    The specified tax year is not supported.
+                    Either the tax year specified is before the minimum tax year value, or it is after the maximum tax year value.
+                  value: &ref_23
+                    code: RULE_TAX_YEAR_NOT_SUPPORTED
+                    message: The tax year specified does not lie within the supported range
+                RULE_DUPLICATE_ACCOUNT_NAME:
+                  description: A duplicate account name was supplied for that National Insurance Number.
+                  value: *ref_20
+                RULE_INCORRECT_GOV_TEST_SCENARIO:
+                  description: The request did not match any available Sandbox data. Check that the supplied Gov-Test-Scenario is correct for this endpoint version. This error will only be returned in the Sandbox environment.
+                  value: *ref_7
+        '403':
+          description: Forbidden
+          headers:
+            X-CorrelationId:
+              in: header
+              type: string
+              description: |
+                Unique ID for operation tracking
+                String, 36 characters.
+              schema: *ref_0
+              required: true
+          content:
+            application/json:
+              schema:
+                description: Error Response
+                type: object
+                properties: *ref_1
+                required: *ref_2
+              examples:
+                CLIENT_OR_AGENT_NOT_AUTHORISED:
+                  description: |
+                    The client or agent is not authorised. This is because: the client is not subscribed to MTD, 
+                    the agent is not subscribed to Agent Services, or the client has not authorised the agent to act on their behalf.
+                  value: *ref_8
+        '404':
+          description: Not Found
+          headers:
+            X-CorrelationId:
+              in: header
+              type: string
+              description: |
+                Unique ID for operation tracking
+                String, 36 characters.
+              schema: *ref_0
+              required: true
+          content:
+            application/json:
+              schema:
+                description: Error Response
+                type: object
+                properties: *ref_1
+                required: *ref_2
+              examples:
+                MATCHING_RESOURCE_NOT_FOUND:
+                  description: The supplied income source could not be found.
+                  value: *ref_9
+        '422':
+          description: Unprocessable Entity
+          headers:
+            X-CorrelationId:
+              in: header
+              type: string
+              description: |
+                Unique ID for operation tracking
+                String, 36 characters.
+              schema: *ref_0
+              required: true
+          content:
+            application/json:
+              schema:
+                description: Error Response
+                type: object
+                properties: *ref_1
+                required: *ref_2
+              examples:
+                RULE_REQUEST_CANNOT_BE_FULFILLED:
+                  description: The request cannot be fulfilled. More specific information is provided in the error message.
+                  value: *ref_10
+    put:
+      summary: Create and Amend a UK Savings Account Annual Summary
+      security:
+        - User-Restricted:
+            - write:self-assessment
+      description: |
+        This endpoint enables you to create and amend a UK savings account annual summary for a tax year.
+        This enables supplying savings interest for a previously added savings account.
+        A National Insurance number, Savings Account ID, and tax year must be provided.
+        To delete a previously submitted value, submit a value of 0.00.
+
+        ### Test data
+        Scenario simulation using Gov-Test-Scenario headers is only available in the sandbox environment.
+
+        | Header Value (Gov-Test-Scenario) | Scenario                                                                                                                                                                                              |
+        |----------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+        | N/A - DEFAULT                    | Simulates success response.                                                                                                                                                                           |
+        | NOT_FOUND                        | Simulates the scenario where no data is found.                                                                                                                                                        |
+        | STATEFUL                         | Performs a stateful create or update.  <br/><br/> Use the savingsAccountId of a savings account created with Add a UK Savings Account, otherwise a MATCHING_RESOURCE_NOT_FOUND error will be returned.|
+        | REQUEST_CANNOT_BE_FULFILLED      | Simulates the scenario where the request cannot be fulfilled for various reasons other than the ones triggering other errors.                                                                         |
+        | OUTSIDE_AMENDMENT_WINDOW         | Simulates the scenario where request cannot be completed as it is outside the amendment window.                                                                                                       |
+      tags:
+        - UK Savings Account
+      parameters:
+        - name: nino
+          in: path
+          description: |
+            National Insurance number, in the format `AA999999A`
+          schema: *ref_11
+          required: true
+        - name: taxYear
+          in: path
+          description: |
+            The tax year the data applies to. The start year and end year must not span two tax years.
+            No gaps are allowed, for example, 2020-22 is not valid. The minimum tax year is 2017-18.
+          schema:
+            type: string
+            example: 2021-22
+          required: true
+        - name: savingsAccountId
+          in: path
+          description: |
+            The unique identifier of the savings account.
+          schema: *ref_19
+          required: true
+        - name: Accept
+          in: header
+          description: |
+            Specifies the response format and the version of the API to be used.
+          schema: *ref_12
+          required: true
+        - name: Content-Type
+          in: header
+          description: |
+            Specifies the format of the request body, which must be JSON.
+          schema: *ref_13
+          required: true
+        - name: Authorization
+          in: header
+          description: |
+            An OAuth 2.0 Bearer Token with the *write:self-assessment* scope.
+          schema: *ref_14
+          required: true
+        - name: Gov-Test-Scenario
+          in: header
+          description: |
+            Only in sandbox environment. See Test Data table for all header values.
+          schema: *ref_15
+          required: false
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $schema: http://json-schema.org/draft-04/schema#
+              title: Amend a Uk Savings Account Request
+              description: Amend a Uk Savings Account Request
+              type: object
+              properties:
+                taxedUkInterest:
+                  type: number
+                  description: 'Total net taxed interest for the specified savings account. The value must be between 0 and 99999999999.99 up to 2 decimal places. Note: If taxedUkInterest is not provided, then any existing values will be removed.'
+                  example: '1230.55'
+                  multipleOf: 0.01
+                  minimum: 0
+                  maximum: 99999999999.99
+                untaxedUkInterest:
+                  type: number
+                  description: 'Total untaxed interest for the specified savings account. The value must be between 0 and 99999999999.99 up to 2 decimal places. Note: If untaxedUkInterest is not provided, then any existing values will be removed.'
+                  example: '1230.55'
+                  multipleOf: 0.01
+                  minimum: 0
+                  maximum: 99999999999.99
+            examples:
+              full-amendment:
+                description: Uk Savings Account Annual Summary Amendment
+                value:
+                  taxedUkInterest: 31554452289.99
+                  untaxedUkInterest: 91523009816
+              deletion:
+                description: Uk Savings Account Annual Summary Delete
+                value:
+                  taxedUkInterest: 0
+                  untaxedUkInterest: 0
+      responses:
+        '200':
+          description: Success
+          headers:
+            X-CorrelationId:
+              in: header
+              type: string
+              description: |
+                Unique ID for operation tracking
+                String, 36 characters.
+              schema: *ref_0
+              required: true
+            Deprecation:
+              name: Deprecation
+              in: header
+              description: |
+                The deprecation date/time for this endpoint.
+              schema: *ref_3
+              required: false
+            Sunset:
+              name: Sunset
+              in: header
+              description: |
+                The earliest date/time this endpoint will become unavailable after deprecation.
+              schema: *ref_4
+              required: false
+            Link:
+              name: Link
+              in: header
+              description: |
+                URL of the documentation for the API.
+              schema: *ref_5
+              required: false
+        '400':
+          description: Bad request
+          headers:
+            X-CorrelationId:
+              in: header
+              type: string
+              description: |
+                Unique ID for operation tracking
+                String, 36 characters.
+              schema: *ref_0
+              required: true
+          content:
+            application/json:
+              schema:
+                description: Error Response
+                type: object
+                properties: *ref_1
+                required: *ref_2
+              examples:
+                FORMAT_NINO:
+                  description: The format of the supplied NINO field is not valid.
+                  value: *ref_6
+                FORMAT_TAX_YEAR:
+                  description: The format of the supplied tax year field is not valid.
+                  value: *ref_21
+                FORMAT_SAVINGS_ACCOUNT_ID:
+                  description: The format of the supplied savings account ID is not valid
+                  value: *ref_16
+                FORMAT_VALUE:
+                  description: One or more values have been added with the incorrect format.
+                  value: &ref_29
+                    code: FORMAT_VALUE
+                    message: The value must be between 0.00 and 99999999999.99
+                RULE_TAX_YEAR_RANGE_INVALID:
+                  description: Tax year range invalid. A tax year range of one year is required.
+                  value: *ref_22
+                RULE_TAX_YEAR_NOT_SUPPORTED:
+                  description: |
+                    The specified tax year is not supported.
+                    Either the tax year specified is before the minimum tax year value, or it is after the maximum tax year value.
+                  value: *ref_23
+                RULE_INCORRECT_OR_EMPTY_BODY_SUBMITTED:
+                  description: An empty or non-matching body was submitted.
+                  value: *ref_18
+                RULE_OUTSIDE_AMENDMENT_WINDOW:
+                  description: The request cannot be completed as you are outside the amendment window.
+                  value: &ref_30
+                    code: RULE_OUTSIDE_AMENDMENT_WINDOW
+                    message: You are outside the amendment window
+                RULE_INCORRECT_GOV_TEST_SCENARIO:
+                  description: The request did not match any available Sandbox data. Check that the supplied Gov-Test-Scenario is correct for this endpoint version. This error will only be returned in the Sandbox environment.
+                  value: *ref_7
+        '403':
+          description: Forbidden
+          headers:
+            X-CorrelationId:
+              in: header
+              type: string
+              description: |
+                Unique ID for operation tracking
+                String, 36 characters.
+              schema: *ref_0
+              required: true
+          content:
+            application/json:
+              schema:
+                description: Error Response
+                type: object
+                properties: *ref_1
+                required: *ref_2
+              examples:
+                CLIENT_OR_AGENT_NOT_AUTHORISED:
+                  description: |
+                    The client or agent is not authorised. This is because: the client is not subscribed to MTD, 
+                    the agent is not subscribed to Agent Services, or the client has not authorised the agent to act on their behalf.
+                  value: *ref_8
+        '404':
+          description: Not Found
+          headers:
+            X-CorrelationId:
+              in: header
+              type: string
+              description: |
+                Unique ID for operation tracking
+                String, 36 characters.
+              schema: *ref_0
+              required: true
+          content:
+            application/json:
+              schema:
+                description: Error Response
+                type: object
+                properties: *ref_1
+                required: *ref_2
+              examples:
+                MATCHING_RESOURCE_NOT_FOUND:
+                  description: The supplied income source could not be found.
+                  value: *ref_9
+        '422':
+          description: Unprocessable Entity
+          headers:
+            X-CorrelationId:
+              in: header
+              type: string
+              description: |
+                Unique ID for operation tracking
+                String, 36 characters.
+              schema: *ref_0
+              required: true
+          content:
+            application/json:
+              schema:
+                description: Error Response
+                type: object
+                properties: *ref_1
+                required: *ref_2
+              examples:
+                RULE_REQUEST_CANNOT_BE_FULFILLED:
+                  description: The request cannot be fulfilled. More specific information is provided in the error message.
+                  value: *ref_10
+  /individuals/savings-income/other/{nino}/{taxYear}:
+    get:
+      summary: Retrieve Savings Income
+      security:
+        - User-Restricted:
+            - read:self-assessment
+      description: |
+        This endpoint allows a developer to retrieve savings income for securities and foreign interest.
+        A National Insurance number and tax year must be provided.
+
+        ### Test data
+        Scenario simulation using Gov-Test-Scenario headers is only available in the sandbox environment.
+
+        | Header Value (Gov-Test-Scenario) | Scenario                                       |
+        |----------------------------------|------------------------------------------------|
+        | N/A - DEFAULT                    | Simulates success response.                    |
+        | NOT_FOUND                        | Simulates the scenario where no data is found. |
+        | STATEFUL                         | Performs a stateful retrieve.                  |
+        | REQUEST_CANNOT_BE_FULFILLED      | Simulates the scenario where the request cannot be fulfilled for various reasons other than the ones triggering other errors.|
+      tags:
+        - Savings Income
+      parameters:
+        - name: nino
+          in: path
+          description: |
+            National Insurance number, in the format `AA999999A`
+          schema: *ref_11
+          required: true
+        - name: taxYear
+          in: path
+          description: |
+            The tax year the data applies to, for example, 2021-22. 
+            The start year and end year must not span two tax years. The minimum tax year is 2021-22. No gaps are allowed, for example, 2020-22 is not valid.
+            (The minimum tax year in Sandbox is 2019-20.)
+          schema: &ref_25
+            type: string
+            example: 2021-22
+          required: true
+        - name: Accept
+          in: header
+          description: |
+            Specifies the response format and the version of the API to be used.
+          schema: *ref_12
+          required: true
+        - name: Authorization
+          in: header
+          description: |
+            An OAuth 2.0 Bearer Token with the *read:self-assessment* scope.
+          schema: *ref_24
+          required: true
+        - name: Gov-Test-Scenario
+          in: header
+          description: |
+            Only in sandbox environment. See Test Data table for all header values.
+          schema: *ref_15
+          required: false
+      responses:
+        '200':
+          description: Success
+          headers:
+            X-CorrelationId:
+              in: header
+              type: string
+              description: |
+                Unique ID for operation tracking
+                String, 36 characters.
+              schema: *ref_0
+              required: true
+            Deprecation:
+              name: Deprecation
+              in: header
+              description: |
+                The deprecation date/time for this endpoint.
+              schema: *ref_3
+              required: false
+            Sunset:
+              name: Sunset
+              in: header
+              description: |
+                The earliest date/time this endpoint will become unavailable after deprecation.
+              schema: *ref_4
+              required: false
+            Link:
+              name: Link
+              in: header
+              description: |
+                URL of the documentation for the API.
+              schema: *ref_5
+              required: false
+          content:
+            application/json:
+              schema:
+                $schema: http://json-schema.org/draft-04/schema#
+                title: Retrieve Savings Income Request
+                description: Retrieve Savings Income Request
+                type: object
+                properties:
+                  submittedOn:
+                    type: string
+                    description: The date the savings income was added. It must be provided in the format YYYY-MM-DDThh:mm:ssZ
+                    example: '2021-04-06T09:37:17Z'
+                  securities:
+                    type: object
+                    description: The container that holds the key value for securities
+                    properties: &ref_26
+                      taxTakenOff:
+                        type: number
+                        description: The amount of tax deducted from Gilt Edge interest. The value must be between 0 and 99999999999.99 up to 2 decimal places.
+                        example: '5000.99'
+                        multipleOf: 0.01
+                        minimum: 0
+                        maximum: 99999999999.99
+                      grossAmount:
+                        type: number
+                        description: The gross amount of Gilt Edge interest, securities, and accrued income profits including tax deducted. The value must be between 0 and 99999999999.99 up to 2 decimal places.
+                        example: '5000.99'
+                        multipleOf: 0.01
+                        minimum: 0
+                        maximum: 99999999999.99
+                      netAmount:
+                        type: number
+                        description: The amount of Gilt Edge interest after tax has been deducted. The value must be between 0 and 99999999999.99 up to 2 decimal places.
+                        example: '5000.99'
+                        multipleOf: 0.01
+                        minimum: 0
+                        maximum: 99999999999.99
+                    required: &ref_27
+                      - grossAmount
+                  foreignInterest:
+                    type: array
+                    items: &ref_28
+                      type: object
+                      description: Financial details about foreign interest income
+                      properties:
+                        countryCode:
+                          type: string
+                          description: A three-letter code that represents a country name. The value must in a ISO 3166-1 Alpha-3 format.
+                          example: FRA
+                        amountBeforeTax:
+                          type: number
+                          description: The total amount of income, in UK pounds, before any foreign tax has been deducted. The value must be between 0 and 99999999999.99 up to 2 decimal places.
+                          example: '5000.99'
+                          multipleOf: 0.01
+                          minimum: 0
+                          maximum: 99999999999.99
+                        taxTakenOff:
+                          type: number
+                          description: The total amount of foreign tax taken off your income. The value must be between 0 and 99999999999.99 up to 2 decimal places.
+                          example: '5000.99'
+                          multipleOf: 0.01
+                          minimum: 0
+                          maximum: 99999999999.99
+                        specialWithholdingTax:
+                          type: number
+                          description: The total amount of Special Withholding Tax (SWT) (in UK pounds) and any UK tax deducted from the foreign income. The value must be between 0 and 99999999999.99 up to 2 decimal places.
+                          example: '5000.99'
+                          multipleOf: 0.01
+                          minimum: 0
+                          maximum: 99999999999.99
+                        foreignTaxCreditRelief:
+                          type: boolean
+                          description: A boolean indicating whether foreign tax credit relief has been claimed. The value must be true or false
+                          example: 'false'
+                        taxableAmount:
+                          type: number
+                          description: The total taxable amount on dividends. The value must be between 0 and 99999999999.99 up to 2 decimal places.
+                          example: '5000.99'
+                          multipleOf: 0.01
+                          minimum: 0
+                          maximum: 99999999999.99
+                      required:
+                        - countryCode
+                        - taxableAmount
+                required:
+                  - submittedOn
+              examples:
+                example-response:
+                  description: Example Response
+                  value:
+                    submittedOn: '2021-04-06T09:37:17.000Z'
+                    securities:
+                      taxTakenOff: 100.12
+                      grossAmount: 1455.23
+                      netAmount: 1355.11
+                    foreignInterest:
+                      - countryCode: DEU
+                        amountBeforeTax: 1232.67
+                        taxTakenOff: 12.45
+                        specialWithholdingTax: 14.78
+                        foreignTaxCreditRelief: true
+                        taxableAmount: 1032.67
+        '400':
+          description: Bad request
+          headers:
+            X-CorrelationId:
+              in: header
+              type: string
+              description: |
+                Unique ID for operation tracking
+                String, 36 characters.
+              schema: *ref_0
+              required: true
+          content:
+            application/json:
+              schema:
+                description: Error Response
+                type: object
+                properties: *ref_1
+                required: *ref_2
+              examples:
+                FORMAT_NINO:
+                  description: The format of the supplied NINO field is not valid.
+                  value: *ref_6
+                FORMAT_TAX_YEAR:
+                  description: The format of the supplied tax year field is not valid.
+                  value: *ref_21
+                RULE_TAX_YEAR_RANGE_INVALID:
+                  description: Tax year range invalid. A tax year range of one year is required.
+                  value: *ref_22
+                RULE_TAX_YEAR_NOT_SUPPORTED:
+                  description: |
+                    The specified tax year is not supported.
+                    Either the tax year specified is before the minimum tax year value, or it is after the maximum tax year value.
+                  value: *ref_23
+                RULE_INCORRECT_GOV_TEST_SCENARIO:
+                  description: The request did not match any available Sandbox data. Check that the supplied Gov-Test-Scenario is correct for this endpoint version. This error will only be returned in the Sandbox environment.
+                  value: *ref_7
+        '403':
+          description: Forbidden
+          headers:
+            X-CorrelationId:
+              in: header
+              type: string
+              description: |
+                Unique ID for operation tracking
+                String, 36 characters.
+              schema: *ref_0
+              required: true
+          content:
+            application/json:
+              schema:
+                description: Error Response
+                type: object
+                properties: *ref_1
+                required: *ref_2
+              examples:
+                CLIENT_OR_AGENT_NOT_AUTHORISED:
+                  description: |
+                    The client or agent is not authorised. This is because: the client is not subscribed to MTD, 
+                    the agent is not subscribed to Agent Services, or the client has not authorised the agent to act on their behalf.
+                  value: *ref_8
+        '404':
+          description: Not Found
+          headers:
+            X-CorrelationId:
+              in: header
+              type: string
+              description: |
+                Unique ID for operation tracking
+                String, 36 characters.
+              schema: *ref_0
+              required: true
+          content:
+            application/json:
+              schema:
+                description: Error Response
+                type: object
+                properties: *ref_1
+                required: *ref_2
+              examples:
+                MATCHING_RESOURCE_NOT_FOUND:
+                  description: The supplied income source could not be found.
+                  value: *ref_9
+        '422':
+          description: Unprocessable Entity
+          headers:
+            X-CorrelationId:
+              in: header
+              type: string
+              description: |
+                Unique ID for operation tracking
+                String, 36 characters.
+              schema: *ref_0
+              required: true
+          content:
+            application/json:
+              schema:
+                description: Error Response
+                type: object
+                properties: *ref_1
+                required: *ref_2
+              examples:
+                RULE_REQUEST_CANNOT_BE_FULFILLED:
+                  description: The request cannot be fulfilled. More specific information is provided in the error message.
+                  value: *ref_10
+    put:
+      summary: Create and Amend Savings Income
+      security:
+        - User-Restricted:
+            - write:self-assessment
+      description: |
+        This endpoint allows a developer to provide or amend savings income for securities and foreign interest.
+        A National Insurance number and tax year must be provided.
+
+        ### Test data
+        Scenario simulation using Gov-Test-Scenario headers is only available in the sandbox environment.
+
+
+        | Header Value (Gov-Test-Scenario) | Scenario                                                                                                                      |
+        |----------------------------------|-------------------------------------------------------------------------------------------------------------------------------|
+        | N/A - DEFAULT                    | Simulates success response.                                                                                                   |
+        | STATEFUL                         | Performs a stateful create or update.                                                                                         |
+        | REQUEST_CANNOT_BE_FULFILLED      | Simulates the scenario where the request cannot be fulfilled for various reasons other than the ones triggering other errors. |
+        | OUTSIDE_AMENDMENT_WINDOW         | Simulates the scenario where request cannot be completed as it is outside the amendment window.                               |
+      tags:
+        - Savings Income
+      parameters:
+        - name: nino
+          in: path
+          description: |
+            National Insurance number, in the format `AA999999A`
+          schema: *ref_11
+          required: true
+        - name: taxYear
+          in: path
+          description: |
+            The tax year the data applies to, for example, 2021-22. 
+            The start year and end year must not span two tax years. The minimum tax year is 2021-22. No gaps are allowed, for example, 2020-22 is not valid.
+            (The minimum tax year in Sandbox is 2019-20.)
+          schema: *ref_25
+          required: true
+        - name: Accept
+          in: header
+          description: |
+            Specifies the response format and the version of the API to be used.
+          schema: *ref_12
+          required: true
+        - name: Content-Type
+          in: header
+          description: |
+            Specifies the format of the request body, which must be JSON.
+          schema: *ref_13
+          required: true
+        - name: Authorization
+          in: header
+          description: |
+            An OAuth 2.0 Bearer Token with the *write:self-assessment* scope.
+          schema: *ref_14
+          required: true
+        - name: Gov-Test-Scenario
+          in: header
+          description: |
+            Only in sandbox environment. See Test Data table for all header values.
+          schema: *ref_15
+          required: false
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $schema: http://json-schema.org/draft-04/schema#
+              title: Create And Amend Savings Income Request
+              description: Create And Amend Savings Income Request
+              type: object
+              properties:
+                securities:
+                  type: object
+                  description: The container that holds the key value for securities
+                  properties: *ref_26
+                  required: *ref_27
+                foreignInterest:
+                  type: array
+                  items: *ref_28
+            examples:
+              example-1:
+                description: Full Savings Income Amendment
+                value:
+                  securities:
+                    taxTakenOff: 100.12
+                    grossAmount: 1455.23
+                    netAmount: 1355.11
+                  foreignInterest:
+                    - amountBeforeTax: 1232.67
+                      countryCode: DEU
+                      taxTakenOff: 12.45
+                      specialWithholdingTax: 14.78
+                      taxableAmount: 1032.67
+                      foreignTaxCreditRelief: true
+                    - amountBeforeTax: 2232.37
+                      countryCode: FRA
+                      taxTakenOff: 22.29
+                      specialWithholdingTax: 22.06
+                      taxableAmount: 1321.24
+                      foreignTaxCreditRelief: true
+      responses:
+        '200':
+          description: Success
+          headers:
+            X-CorrelationId:
+              in: header
+              type: string
+              description: |
+                Unique ID for operation tracking
+                String, 36 characters.
+              schema: *ref_0
+              required: true
+            Deprecation:
+              name: Deprecation
+              in: header
+              description: |
+                The deprecation date/time for this endpoint.
+              schema: *ref_3
+              required: false
+            Sunset:
+              name: Sunset
+              in: header
+              description: |
+                The earliest date/time this endpoint will become unavailable after deprecation.
+              schema: *ref_4
+              required: false
+            Link:
+              name: Link
+              in: header
+              description: |
+                URL of the documentation for the API.
+              schema: *ref_5
+              required: false
+        '400':
+          description: Bad request
+          headers:
+            X-CorrelationId:
+              in: header
+              type: string
+              description: |
+                Unique ID for operation tracking
+                String, 36 characters.
+              schema: *ref_0
+              required: true
+          content:
+            application/json:
+              schema:
+                description: Error Response
+                type: object
+                properties: *ref_1
+                required: *ref_2
+              examples:
+                FORMAT_NINO:
+                  description: The format of the supplied NINO field is not valid.
+                  value: *ref_6
+                FORMAT_TAX_YEAR:
+                  description: The format of the supplied tax year field is not valid.
+                  value: *ref_21
+                FORMAT_COUNTRY_CODE:
+                  description: The format of the supplied country code is not valid.
+                  value:
+                    code: FORMAT_COUNTRY_CODE
+                    message: The format of the country code is invalid
+                FORMAT_VALUE:
+                  description: One or more values have been added with the incorrect format.
+                  value: *ref_29
+                RULE_TAX_YEAR_RANGE_INVALID:
+                  description: Tax year range invalid. A tax year range of one year is required.
+                  value: *ref_22
+                RULE_TAX_YEAR_NOT_SUPPORTED:
+                  description: |
+                    The specified tax year is not supported.
+                    Either the tax year specified is before the minimum tax year value, or it is after the maximum tax year value.
+                  value: *ref_23
+                RULE_INCORRECT_OR_EMPTY_BODY_SUBMITTED:
+                  description: An empty or non-matching body was submitted.
+                  value: *ref_18
+                RULE_COUNTRY_CODE:
+                  description: Not a valid ISO 3166-1 alpha-3 country code.
+                  value:
+                    code: RULE_COUNTRY_CODE
+                    message: The country code is not a valid ISO 3166-1 alpha-3 country code
+                RULE_OUTSIDE_AMENDMENT_WINDOW:
+                  description: The request cannot be completed as you are outside the amendment window.
+                  value: *ref_30
+                RULE_INCORRECT_GOV_TEST_SCENARIO:
+                  description: The request did not match any available Sandbox data. Check that the supplied Gov-Test-Scenario is correct for this endpoint version. This error will only be returned in the Sandbox environment.
+                  value: *ref_7
+        '403':
+          description: Forbidden
+          headers:
+            X-CorrelationId:
+              in: header
+              type: string
+              description: |
+                Unique ID for operation tracking
+                String, 36 characters.
+              schema: *ref_0
+              required: true
+          content:
+            application/json:
+              schema:
+                description: Error Response
+                type: object
+                properties: *ref_1
+                required: *ref_2
+              examples:
+                CLIENT_OR_AGENT_NOT_AUTHORISED:
+                  description: |
+                    The client or agent is not authorised. This is because: the client is not subscribed to MTD, 
+                    the agent is not subscribed to Agent Services, or the client has not authorised the agent to act on their behalf.
+                  value: *ref_8
+        '422':
+          description: Unprocessable Entity
+          headers:
+            X-CorrelationId:
+              in: header
+              type: string
+              description: |
+                Unique ID for operation tracking
+                String, 36 characters.
+              schema: *ref_0
+              required: true
+          content:
+            application/json:
+              schema:
+                description: Error Response
+                type: object
+                properties: *ref_1
+                required: *ref_2
+              examples:
+                RULE_REQUEST_CANNOT_BE_FULFILLED:
+                  description: The request cannot be fulfilled. More specific information is provided in the error message.
+                  value: *ref_10
+    delete:
+      summary: Delete Savings Income
+      security:
+        - User-Restricted:
+            - write:self-assessment
+      description: |
+        This endpoint allows a developer to delete savings income for securities and foreign interest.
+        A National Insurance number and tax year must be provided.
+
+        **Warning : This deletes savings income for both securities and foreign interest.**
+
+        ### Test data
+        Scenario simulation using Gov-Test-Scenario headers is only available in the sandbox environment.
+
+        | Header Value (Gov-Test-Scenario) | Scenario                                                                                                                     |
+        |----------------------------------|------------------------------------------------------------------------------------------------------------------------------|
+        | N/A - DEFAULT                    | Simulates success response.                                                                                                  |
+        | NOT_FOUND                        | Simulates the scenario where no data is found.                                                                               |
+        | STATEFUL                         | Performs a stateful delete.                                                                                                  |
+        | REQUEST_CANNOT_BE_FULFILLED      | Simulates the scenario where the request cannot be fulfilled for various reasons other than the ones triggering other errors.|
+        | OUTSIDE_AMENDMENT_WINDOW         | Simulates the scenario where request cannot be completed as it is outside the amendment window.                              |
+      tags:
+        - Savings Income
+      parameters:
+        - name: nino
+          in: path
+          description: |
+            National Insurance number, in the format `AA999999A`
+          schema: *ref_11
+          required: true
+        - name: taxYear
+          in: path
+          description: |
+            The tax year the data applies to, for example, 2021-22. 
+            The start year and end year must not span two tax years. The minimum tax year is 2021-22. No gaps are allowed, for example, 2020-22 is not valid.
+            (The minimum tax year in Sandbox is 2019-20.)
+          schema: *ref_25
+          required: true
+        - name: Accept
+          in: header
+          description: |
+            Specifies the response format and the version of the API to be used.
+          schema: *ref_12
+          required: true
+        - name: Authorization
+          in: header
+          description: |
+            An OAuth 2.0 Bearer Token with the *write:self-assessment* scope.
+          schema: *ref_14
+          required: true
+        - name: Gov-Test-Scenario
+          in: header
+          description: |
+            Only in sandbox environment. See Test Data table for all header values.
+          schema: *ref_15
+          required: false
+      responses:
+        '204':
+          description: No Content
+          headers:
+            X-CorrelationId:
+              in: header
+              type: string
+              description: |
+                Unique ID for operation tracking
+                String, 36 characters.
+              schema: *ref_0
+              required: true
+            Deprecation:
+              name: Deprecation
+              in: header
+              description: |
+                The deprecation date/time for this endpoint.
+              schema: *ref_3
+              required: false
+            Sunset:
+              name: Sunset
+              in: header
+              description: |
+                The earliest date/time this endpoint will become unavailable after deprecation.
+              schema: *ref_4
+              required: false
+            Link:
+              name: Link
+              in: header
+              description: |
+                URL of the documentation for the API.
+              schema: *ref_5
+              required: false
+        '400':
+          description: Bad request
+          headers:
+            X-CorrelationId:
+              in: header
+              type: string
+              description: |
+                Unique ID for operation tracking
+                String, 36 characters.
+              schema: *ref_0
+              required: true
+          content:
+            application/json:
+              schema:
+                description: Error Response
+                type: object
+                properties: *ref_1
+                required: *ref_2
+              examples:
+                FORMAT_NINO:
+                  description: The format of the supplied NINO field is not valid.
+                  value: *ref_6
+                FORMAT_TAX_YEAR:
+                  description: The format of the supplied tax year field is not valid.
+                  value: *ref_21
+                RULE_TAX_YEAR_RANGE_INVALID:
+                  description: Tax year range invalid. A tax year range of one year is required.
+                  value: *ref_22
+                RULE_TAX_YEAR_NOT_SUPPORTED:
+                  description: |
+                    The specified tax year is not supported.
+                    Either the tax year specified is before the minimum tax year value, or it is after the maximum tax year value.
+                  value: *ref_23
+                RULE_OUTSIDE_AMENDMENT_WINDOW:
+                  description: The request cannot be completed as you are outside the amendment window.
+                  value: *ref_30
+                RULE_INCORRECT_GOV_TEST_SCENARIO:
+                  description: The request did not match any available Sandbox data. Check that the supplied Gov-Test-Scenario is correct for this endpoint version. This error will only be returned in the Sandbox environment.
+                  value: *ref_7
+        '403':
+          description: Forbidden
+          headers:
+            X-CorrelationId:
+              in: header
+              type: string
+              description: |
+                Unique ID for operation tracking
+                String, 36 characters.
+              schema: *ref_0
+              required: true
+          content:
+            application/json:
+              schema:
+                description: Error Response
+                type: object
+                properties: *ref_1
+                required: *ref_2
+              examples:
+                CLIENT_OR_AGENT_NOT_AUTHORISED:
+                  description: |
+                    The client or agent is not authorised. This is because: the client is not subscribed to MTD, 
+                    the agent is not subscribed to Agent Services, or the client has not authorised the agent to act on their behalf.
+                  value: *ref_8
+        '404':
+          description: Not Found
+          headers:
+            X-CorrelationId:
+              in: header
+              type: string
+              description: |
+                Unique ID for operation tracking
+                String, 36 characters.
+              schema: *ref_0
+              required: true
+          content:
+            application/json:
+              schema:
+                description: Error Response
+                type: object
+                properties: *ref_1
+                required: *ref_2
+              examples:
+                MATCHING_RESOURCE_NOT_FOUND:
+                  description: The supplied income source could not be found.
+                  value: *ref_9
+        '422':
+          description: Unprocessable Entity
+          headers:
+            X-CorrelationId:
+              in: header
+              type: string
+              description: |
+                Unique ID for operation tracking
+                String, 36 characters.
+              schema: *ref_0
+              required: true
+          content:
+            application/json:
+              schema:
+                description: Error Response
+                type: object
+                properties: *ref_1
+                required: *ref_2
+              examples:
+                RULE_REQUEST_CANNOT_BE_FULFILLED:
+                  description: The request cannot be fulfilled. More specific information is provided in the error message.
+                  value: *ref_10
+components:
+  securitySchemes:
+    User-Restricted:
+      type: oauth2
+      description: HMRC supports OAuth 2.0 for authenticating [User-restricted](https://developer.service.hmrc.gov.uk/api-documentation/docs/authorisation/user-restricted-endpoints) API requests
+      flows:
+        authorizationCode:
+          authorizationUrl: https://api.service.hmrc.gov.uk/oauth/authorize
+          tokenUrl: https://api.service.hmrc.gov.uk/oauth/token
+          refreshUrl: https://api.service.hmrc.gov.uk/oauth/refresh
+          scopes:
+            write:self-assessment: Grant write access
+            read:self-assessment: Grant read access
