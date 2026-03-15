@@ -36,7 +36,6 @@ tags:
 paths:
   /individuals/savings-income/uk-accounts/{nino}:
     get:
-      summary: List All UK Savings Accounts
       parameters:
       - name: savingsAccountId
         in: query
@@ -50,7 +49,6 @@ paths:
       - User-Restricted:
         - read:self-assessment
     post:
-      summary: Add a UK Savings Account
       security:
       - User-Restricted:
         - write:self-assessment
@@ -335,28 +333,23 @@ paths:
         - write:self-assessment
   /individuals/savings-income/uk-accounts/{nino}/{taxYear}/{savingsId}:
     get:
-      summary: Retrieve UK Savings Account Annual Summary
       security:
       - User-Restricted:
         - read:self-assessment
     put:
-      summary: Create and Amend a UK Savings Account Annual Summary
       security:
       - User-Restricted:
         - write:self-assessment
   /individuals/savings-income/other/{nino}/{taxYear}:
     get:
-      summary: Retrieve Savings Income
       security:
       - User-Restricted:
         - read:self-assessment
     put:
-      summary: Create and Amend Savings Income
       security:
       - User-Restricted:
         - write:self-assessment
     delete:
-      summary: Delete Savings Income
       security:
       - User-Restricted:
         - write:self-assessment
