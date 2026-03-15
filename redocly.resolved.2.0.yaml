@@ -42,12 +42,12 @@ tags:
 paths:
   /individuals/savings-income/uk-accounts/{nino}:
     get:
-      summary: List All UK Savings Accounts
       security:
         - User-Restricted:
             - read:self-assessment
       parameters:
         - $ref: ./common/queryParameters.yaml#/components/parameters/savingsAccountId
+      summary: List All UK Savings Accounts
       description: |
         This endpoint allows a developer to retrieve a list of all UK savings accounts that were previously added for an individual.
         A National Insurance number must be provided.
@@ -257,10 +257,10 @@ paths:
                     code: RULE_REQUEST_CANNOT_BE_FULFILLED
                     message: Custom (will vary in production depending on the actual error)
     post:
-      summary: Add a UK Savings Account
       security:
         - User-Restricted:
             - write:self-assessment
+      summary: Add a UK Savings Account
       description: |
         This endpoint allows a developer to add a UK savings account.
         Interest income data can then be recorded against that savings account using the Amend a UK savings account annual summary endpoint.
@@ -725,10 +725,10 @@ paths:
                   value: *ref_10
   /individuals/savings-income/uk-accounts/{nino}/{taxYear}/{savingsId}:
     get:
-      summary: Retrieve UK Savings Account Annual Summary
       security:
         - User-Restricted:
             - read:self-assessment
+      summary: Retrieve UK Savings Account Annual Summary
       description: |
         This endpoint enables you to retrieve a UK savings account annual summary for a tax year.
         Use it to get the annual savings interest for a previously added savings account.
@@ -964,10 +964,10 @@ paths:
                   description: The request cannot be fulfilled. More specific information is provided in the error message.
                   value: *ref_10
     put:
-      summary: Create and Amend a UK Savings Account Annual Summary
       security:
         - User-Restricted:
             - write:self-assessment
+      summary: Create and Amend a UK Savings Account Annual Summary
       description: |
         This endpoint enables you to create and amend a UK savings account annual summary for a tax year.
         This enables supplying savings interest for a previously added savings account.
@@ -1221,10 +1221,10 @@ paths:
                   value: *ref_10
   /individuals/savings-income/other/{nino}/{taxYear}:
     get:
-      summary: Retrieve Savings Income
       security:
         - User-Restricted:
             - read:self-assessment
+      summary: Retrieve Savings Income
       description: |
         This endpoint allows a developer to retrieve savings income for securities and foreign interest.
         A National Insurance number and tax year must be provided.
@@ -1515,10 +1515,10 @@ paths:
                   description: The request cannot be fulfilled. More specific information is provided in the error message.
                   value: *ref_10
     put:
-      summary: Create and Amend Savings Income
       security:
         - User-Restricted:
             - write:self-assessment
+      summary: Create and Amend Savings Income
       description: |
         This endpoint allows a developer to provide or amend savings income for securities and foreign interest.
         A National Insurance number and tax year must be provided.
@@ -1747,10 +1747,10 @@ paths:
                   description: The request cannot be fulfilled. More specific information is provided in the error message.
                   value: *ref_10
     delete:
-      summary: Delete Savings Income
       security:
         - User-Restricted:
             - write:self-assessment
+      summary: Delete Savings Income
       description: |
         This endpoint allows a developer to delete savings income for securities and foreign interest.
         A National Insurance number and tax year must be provided.
