@@ -1,6 +1,5 @@
 get:
   $ref: "./savings_uk_accounts_list.yaml"
-  summary: List All UK Savings Accounts
   security:
     - User-Restricted:
         - read:self-assessment
@@ -9,7 +8,6 @@ get:
 
 post:
   $ref: "./savings_uk_accounts_add.yaml"
-  summary: Add a UK Savings Account
   security:
     - User-Restricted:
         - write:self-assessment
