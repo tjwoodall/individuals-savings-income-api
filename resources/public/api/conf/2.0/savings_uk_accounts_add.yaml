@@ -37,8 +37,7 @@ requestBody:
       examples:
         example-1:
           description: Request Example
-          value:
-            $ref: './examples/ukSavingsAccount/add_request.json'
+          externalValue: './examples/ukSavingsAccount/add_request.json'
 
 responses:
   "200":
@@ -59,8 +58,7 @@ responses:
         examples:
           example-response:
             description: Example Response
-            value:
-              $ref: './examples/ukSavingsAccount/add_response.json'
+            externalValue: './examples/ukSavingsAccount/add_response.json'
 
   "400":
     description: Bad request
