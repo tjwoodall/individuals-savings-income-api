@@ -77,24 +77,14 @@ class AddUkSavingsAccountServiceSpec extends ServiceSpec {
             await(service.addSavings(addUkSavingsAccountRequest)) shouldBe Left(ErrorWrapper(correlationId, error))
           }
 
-        val desErrors = List(
-          ("INVALID_IDVALUE", NinoFormatError),
-          ("MAX_ACCOUNTS_REACHED", RuleMaximumSavingsAccountsLimitError),
-          ("ALREADY_EXISTS", RuleDuplicateAccountNameError),
-          ("INVALID_IDTYPE", InternalError),
-          ("INVALID_PAYLOAD", InternalError),
-          ("SERVER_ERROR", InternalError),
-          ("SERVICE_UNAVAILABLE", InternalError)
-        )
-
-        val hipErrors = List(
+        val errors = List(
           ("1215", NinoFormatError),
           ("1011", RuleMaximumSavingsAccountsLimitError),
           ("1214", RuleDuplicateAccountNameError),
           ("1000", InternalError)
         )
 
-        (desErrors ++ hipErrors).foreach(args => serviceError.tupled(args))
+        errors.foreach(serviceError.tupled)
       }
     }
   }

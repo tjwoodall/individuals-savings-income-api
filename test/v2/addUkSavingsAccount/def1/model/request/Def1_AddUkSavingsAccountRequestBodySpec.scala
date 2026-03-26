@@ -16,7 +16,6 @@
 
 package v2.addUkSavingsAccount.def1.model.request
 
-import play.api.Configuration
 import play.api.libs.json.{JsError, JsObject, JsValue, Json}
 import shared.config.MockSharedAppConfig
 import shared.utils.UnitSpec
@@ -31,10 +30,10 @@ class Def1_AddUkSavingsAccountRequestBodySpec extends UnitSpec with MockSharedAp
     """.stripMargin
   )
 
-  def downstreamJson(incomeSourceType: String): JsValue = Json.parse(
+  val downstreamJson: JsValue = Json.parse(
     s"""
       |{
-      |    "incomeSourceType": "$incomeSourceType",
+      |    "incomeSourceType": "09",
       |    "incomeSourceName": "Shares savings account"
       |}
     """.stripMargin
@@ -57,14 +56,8 @@ class Def1_AddUkSavingsAccountRequestBodySpec extends UnitSpec with MockSharedAp
     }
 
     "written to JSON" should {
-      "produce the expected JSON when feature switch is disabled" in {
-        MockedSharedAppConfig.featureSwitchConfig returns Configuration("des_hip_migration_1393.enabled" -> false)
-        Json.toJson(model) shouldBe downstreamJson("interest-from-uk-banks")
-      }
-
-      "produce the expected JSON when feature switch is enabled" in {
-        MockedSharedAppConfig.featureSwitchConfig returns Configuration("des_hip_migration_1393.enabled" -> true)
-        Json.toJson(model) shouldBe downstreamJson("09")
+      "produce the expected JSON" in {
+        Json.toJson(model) shouldBe downstreamJson
       }
     }
   }

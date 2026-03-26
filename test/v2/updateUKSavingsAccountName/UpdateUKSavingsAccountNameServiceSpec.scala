@@ -66,7 +66,7 @@ class UpdateUKSavingsAccountNameServiceSpec extends ServiceSpec {
           ("5010", NotFoundError)
         )
 
-        errors.foreach(args => serviceError.tupled(args))
+        errors.foreach(serviceError.tupled)
       }
     }
   }

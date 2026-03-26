@@ -16,7 +16,6 @@
 
 package v2.retrieveUkSavingsAccountAnnualSummary
 
-import config.MockSavingsConfig
 import models.domain.SavingsAccountId
 import shared.connectors.ConnectorSpec
 import shared.models.domain.{Nino, TaxYear}
@@ -28,7 +27,7 @@ import v2.retrieveUkSavingsAccountAnnualSummary.model.request.RetrieveUkSavingsA
 
 import scala.concurrent.Future
 
-class RetrieveUkSavingsAccountAnnualSummaryConnectorSpec extends ConnectorSpec with MockSavingsConfig {
+class RetrieveUkSavingsAccountAnnualSummaryConnectorSpec extends ConnectorSpec {
 
   val nino: String           = "AA111111A"
   val incomeSourceId: String = "SAVKB2UVwUTBQGJ"
@@ -56,31 +55,14 @@ class RetrieveUkSavingsAccountAnnualSummaryConnectorSpec extends ConnectorSpec w
 
     val connector: RetrieveUkSavingsAccountAnnualSummaryConnector = new RetrieveUkSavingsAccountAnnualSummaryConnector(
       http = mockHttpClient,
-      appConfig = mockSharedAppConfig,
-      savingsConfig = mockSavingsConfig
+      appConfig = mockSharedAppConfig
     )
 
   }
 
   "RetrieveUkSavingsAccountAnnualSummaryConnector" when {
     "retrieveUkSavingsAccountAnnualSummary called" must {
-      "return a 200 status for a success scenario" in new DesTest with Test {
-
-        MockedSavingsConfig.featureSwitches.returns(mockSavingsFeatureSwitches).anyNumberOfTimes()
-        MockedSavingsConfig.isDesIf_MigrationEnabled.returns(false)
-        def taxYear: TaxYear = TaxYear.fromMtd("2019-20")
-        private val outcome  = Right(ResponseWrapper(correlationId, response))
-        willGet(
-          url"$baseUrl/income-tax/nino/$nino/income-source/savings/annual/2020?incomeSourceId=$incomeSourceId"
-        ) returns Future.successful(outcome)
-
-        await(connector.retrieveUkSavingsAccountAnnualSummary(request)) shouldBe outcome
-      }
-
-      "return a 200 status for a success scenario when desIf_Migration is enabled" in new IfsTest with Test {
-
-        MockedSavingsConfig.featureSwitches.returns(mockSavingsFeatureSwitches).anyNumberOfTimes()
-        MockedSavingsConfig.isDesIf_MigrationEnabled.returns(true)
+      "return a 200 status for a success scenario" in new IfsTest with Test {
         def taxYear: TaxYear = TaxYear.fromMtd("2019-20")
         private val outcome  = Right(ResponseWrapper(correlationId, response))
         willGet(

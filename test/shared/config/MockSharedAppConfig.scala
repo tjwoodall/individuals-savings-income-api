@@ -37,7 +37,6 @@ trait MockSharedAppConfig extends TestSuite with MockFactory {
     def ukSavingsAccountAnnualSummaryMinimumTaxYear(year: Int): CallHandler0[Int] =
       (() => mockSharedAppConfig.ukSavingsAccountAnnualSummaryMinimumTaxYear: Int).expects().returning(year).anyNumberOfTimes()
 
-    def desDownstreamConfig: CallHandler0[DownstreamConfig] = (() => mockSharedAppConfig.desDownstreamConfig: DownstreamConfig).expects()
     def ifsDownstreamConfig: CallHandler0[DownstreamConfig] = (() => mockSharedAppConfig.ifsDownstreamConfig: DownstreamConfig).expects()
 
     def hipDownstreamConfig: CallHandler[BasicAuthDownstreamConfig] =

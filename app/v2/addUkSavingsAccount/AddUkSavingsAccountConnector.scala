@@ -16,8 +16,8 @@
 
 package v2.addUkSavingsAccount
 
-import shared.config.{ConfigFeatureSwitches, SharedAppConfig}
-import shared.connectors.DownstreamUri.{DesUri, HipUri}
+import shared.config.SharedAppConfig
+import shared.connectors.DownstreamUri.HipUri
 import shared.connectors.httpparsers.StandardDownstreamHttpParser.reads
 import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome}
 import uk.gov.hmrc.http.HeaderCarrier
@@ -36,16 +36,11 @@ class AddUkSavingsAccountConnector @Inject() (val http: HttpClientV2, val appCon
       ec: ExecutionContext,
       correlationId: String): Future[DownstreamOutcome[AddUkSavingsAccountResponse]] = {
 
-    import request._
-    import schema._
+    import request.*
+    import schema.*
 
-    if (ConfigFeatureSwitches().isEnabled("des_hip_migration_1393")) {
-      val downstreamUri = HipUri[DownstreamResp](s"itsd/income-sources/$nino")
-      post(body, downstreamUri)
-    } else {
-      val downstreamUri = DesUri[DownstreamResp](s"income-tax/income-sources/nino/$nino")
-      post(body, downstreamUri)
-    }
+    post(body, HipUri[DownstreamResp](s"itsd/income-sources/$nino"))
+
   }
 
 }

@@ -42,7 +42,6 @@ class SharedAppConfig @Inject() (val config: ServicesConfig, protected[config] v
   def minimumPermittedTaxYear: Int                     = config.getInt("minimumPermittedTaxYear")
   def ukSavingsAccountAnnualSummaryMinimumTaxYear: Int = config.getInt("ukSavingsAccountAnnualSummaryMinimumTaxYear")
 
-  def desDownstreamConfig: DownstreamConfig          = downstreamConfig("des")
   def ifsDownstreamConfig: DownstreamConfig          = downstreamConfig("ifs")
   def hipDownstreamConfig: BasicAuthDownstreamConfig = basicAuthDownstreamConfig("hip")
 

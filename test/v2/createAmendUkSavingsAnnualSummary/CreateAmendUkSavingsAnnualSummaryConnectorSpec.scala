@@ -16,7 +16,6 @@
 
 package v2.createAmendUkSavingsAnnualSummary
 
-import config.MockSavingsConfig
 import models.domain.SavingsAccountId
 import play.api.libs.json.{JsObject, Json}
 import shared.connectors.{ConnectorSpec, DownstreamOutcome}
@@ -28,7 +27,7 @@ import v2.createAmendUkSavingsAnnualSummary.def1.model.request.*
 import java.net.URL
 import scala.concurrent.Future
 
-class CreateAmendUkSavingsAnnualSummaryConnectorSpec extends ConnectorSpec with MockSavingsConfig {
+class CreateAmendUkSavingsAnnualSummaryConnectorSpec extends ConnectorSpec {
 
   val nino: String = "AA111111A"
 
@@ -48,39 +47,27 @@ class CreateAmendUkSavingsAnnualSummaryConnectorSpec extends ConnectorSpec with 
 
   "CreateAmendUkSavingsAccountAnnualSummaryConnector" when {
     "createAmendUkSavingsAccountAnnualSummary called for a non Tax Year Specific tax year" must {
-      "return a 200 status for a success scenario" in new DesTest with Test {
-
-        MockedSavingsConfig.featureSwitches.returns(mockSavingsFeatureSwitches).anyNumberOfTimes()
-        MockedSavingsConfig.isDesIf_MigrationEnabled.returns(false)
+      "return a 200 status for a success scenario" in new IfsTest with Test {
         def taxYear: TaxYear = TaxYear.fromMtd("2019-20")
-        val url: URL         = url"$baseUrl/income-tax/nino/$nino/income-source/savings/annual/${taxYear.asDownstream}"
+
+        val url: URL = url"$baseUrl/income-tax/nino/$nino/income-source/savings/annual/${taxYear.asDownstream}"
         willPost(url, downstreamRequestBody) returns Future.successful(outcome)
 
         val result: DownstreamOutcome[Unit] = await(connector.createOrAmendUKSavingsAccountSummary(requestData))
         result shouldBe outcome
-      }
-
-      "return a 200 status for a success scenario when desIf_Migration is enabled" in new IfsTest with Test {
-        MockedSavingsConfig.featureSwitches.returns(mockSavingsFeatureSwitches).anyNumberOfTimes()
-        MockedSavingsConfig.isDesIf_MigrationEnabled.returns(true)
-        def taxYear: TaxYear = TaxYear.fromMtd("2019-20")
-        val url: URL         = url"$baseUrl/income-tax/nino/$nino/income-source/savings/annual/${taxYear.asDownstream}"
-        willPost(url, downstreamRequestBody) returns Future.successful(outcome)
-
-        val result: DownstreamOutcome[Unit] = await(connector.createOrAmendUKSavingsAccountSummary(requestData))
-        result shouldBe outcome
-      }
-
-      "createAmendUkSavingsAccountAnnualSummary for a Tax Year Specific tax year" must {
-        "return a 200 status for a success scenario " in new IfsTest with Test {
-          def taxYear: TaxYear = TaxYear.fromMtd("2023-24")
-          val url: URL         = url"$baseUrl/income-tax/${taxYear.asTysDownstream}/$nino/income-source/savings/annual"
-          willPost(url, downstreamRequestBody) returns Future.successful(outcome)
-          val result: DownstreamOutcome[Unit] = await(connector.createOrAmendUKSavingsAccountSummary(requestData))
-          result shouldBe outcome
-        }
       }
     }
+
+    "createAmendUkSavingsAccountAnnualSummary called for a Tax Year Specific tax year" must {
+      "return a 200 status for a success scenario " in new IfsTest with Test {
+        def taxYear: TaxYear = TaxYear.fromMtd("2023-24")
+        val url: URL         = url"$baseUrl/income-tax/${taxYear.asTysDownstream}/$nino/income-source/savings/annual"
+        willPost(url, downstreamRequestBody) returns Future.successful(outcome)
+        val result: DownstreamOutcome[Unit] = await(connector.createOrAmendUKSavingsAccountSummary(requestData))
+        result shouldBe outcome
+      }
+    }
+
   }
 
   trait Test {
@@ -89,7 +76,7 @@ class CreateAmendUkSavingsAnnualSummaryConnectorSpec extends ConnectorSpec with 
     def taxYear: TaxYear
 
     protected val connector: CreateAmendUkSavingsAnnualSummaryConnector =
-      new CreateAmendUkSavingsAnnualSummaryConnector(http = mockHttpClient, appConfig = mockSharedAppConfig, savingsConfig = mockSavingsConfig)
+      new CreateAmendUkSavingsAnnualSummaryConnector(http = mockHttpClient, appConfig = mockSharedAppConfig)
 
     protected val requestData: Def1_CreateAmendUkSavingsAnnualSummaryRequestData =
       Def1_CreateAmendUkSavingsAnnualSummaryRequestData(

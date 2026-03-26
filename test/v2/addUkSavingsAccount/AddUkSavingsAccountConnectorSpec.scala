@@ -16,7 +16,6 @@
 
 package v2.addUkSavingsAccount
 
-import play.api.Configuration
 import shared.config.MockSharedAppConfig
 import shared.connectors.ConnectorSpec
 import shared.mocks.MockHttpClient
@@ -55,19 +54,9 @@ class AddUkSavingsAccountConnectorSpec extends ConnectorSpec {
 
   "AddUkSavingsAccountConnector" when {
     "addSavings" must {
-      val outcome = Right(ResponseWrapper(correlationId, addUkSavingsAccountResponse))
 
-      "return a 200 status for a success scenario when feature switch is disabled (DES enabled)" in new DesTest with Test {
-        MockedSharedAppConfig.featureSwitchConfig.anyNumberOfTimes().returns(Configuration("des_hip_migration_1393.enabled" -> false))
-
-        willPost(url"$baseUrl/income-tax/income-sources/nino/$nino", addUkSavingsAccountRequestBody)
-          .returns(Future.successful(outcome))
-
-        await(connector.addSavings(addUkSavingsAccountRequest)) shouldBe outcome
-      }
-
-      "return a 200 status for a success scenario when feature switch is enabled (HIP enabled)" in new HipTest with Test {
-        MockedSharedAppConfig.featureSwitchConfig.anyNumberOfTimes().returns(Configuration("des_hip_migration_1393.enabled" -> true))
+      "return a 200 status for a success scenario" in new HipTest with Test {
+        val outcome = Right(ResponseWrapper(correlationId, addUkSavingsAccountResponse))
 
         willPost(url"$baseUrl/itsd/income-sources/$nino", addUkSavingsAccountRequestBody)
           .returns(Future.successful(outcome))

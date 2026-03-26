@@ -67,7 +67,7 @@ class DeleteSavingsServiceSpec extends ServiceSpec {
           ("TAX_YEAR_NOT_SUPPORTED", RuleTaxYearNotSupportedError)
         )
 
-        (errors ++ extraTysErrors).foreach(args => serviceError.tupled(args))
+        (errors ++ extraTysErrors).foreach(serviceError.tupled)
       }
     }
   }

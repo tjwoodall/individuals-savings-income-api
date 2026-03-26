@@ -25,7 +25,7 @@ import shared.models.errors.*
 import shared.services.*
 import shared.support.IntegrationBaseSpec
 
-class ListUkSavingsAccountsControllerHipISpec extends IntegrationBaseSpec {
+class ListUkSavingsAccountsControllerISpec extends IntegrationBaseSpec {
 
   private trait Test {
 

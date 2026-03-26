@@ -16,9 +16,9 @@
 
 package v2.listUkSavingsAccounts
 
-import shared.config.{ConfigFeatureSwitches, SharedAppConfig}
+import shared.config.SharedAppConfig
 import shared.connectors.*
-import shared.connectors.DownstreamUri.{HipUri, IfsUri}
+import shared.connectors.DownstreamUri.HipUri
 import shared.connectors.httpparsers.StandardDownstreamHttpParser.reads
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.client.HttpClientV2
@@ -42,14 +42,8 @@ class ListUkSavingsAccountsConnector @Inject() (val http: HttpClientV2, val appC
     val nino: String                            = request.nino.nino
     val incomeSourceTypeParam: (String, String) = "incomeSourceType" -> "09"
 
-    val downstreamUri: DownstreamUri[DownstreamResp] = if (ConfigFeatureSwitches().isEnabled("ifs_hip_migration_2085")) {
-      HipUri[DownstreamResp](s"itsd/income-sources/v2/$nino")
-    } else {
-      IfsUri[DownstreamResp](s"income-tax/income-sources/$nino")
-    }
-
     get(
-      downstreamUri,
+      HipUri[DownstreamResp](s"itsd/income-sources/v2/$nino"),
       request.savingsAccountId
         .fold(Seq(incomeSourceTypeParam))(savingsId => Seq(incomeSourceTypeParam, "incomeSourceId" -> savingsId.toString))
     )

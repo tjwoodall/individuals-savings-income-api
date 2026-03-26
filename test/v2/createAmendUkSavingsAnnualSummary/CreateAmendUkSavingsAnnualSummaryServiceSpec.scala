@@ -78,7 +78,6 @@ class CreateAmendUkSavingsAnnualSummaryServiceSpec extends ServiceSpec {
 
         val errors = List(
           ("INVALID_NINO", NinoFormatError),
-          ("INVALID_TAXYEAR", TaxYearFormatError), // remove once DES to IFS migration complete
           ("INVALID_TYPE", InternalError),
           ("INVALID_PAYLOAD", InternalError),
           ("NOT_FOUND_INCOME_SOURCE", NotFoundError),
@@ -102,7 +101,7 @@ class CreateAmendUkSavingsAnnualSummaryServiceSpec extends ServiceSpec {
           "OUTSIDE_AMENDMENT_WINDOW"   -> RuleOutsideAmendmentWindowError
         )
 
-        (errors ++ tysErrors).foreach(args => serviceError.tupled(args))
+        (errors ++ tysErrors).foreach(serviceError.tupled)
       }
     }
   }

@@ -16,10 +16,9 @@
 
 package v2.createAmendUkSavingsAnnualSummary
 
-import config.SavingsConfig
 import play.api.http.Status
 import shared.config.SharedAppConfig
-import shared.connectors.DownstreamUri.{DesUri, IfsUri}
+import shared.connectors.DownstreamUri.IfsUri
 import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.client.HttpClientV2
@@ -29,28 +28,24 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class CreateAmendUkSavingsAnnualSummaryConnector @Inject() (val http: HttpClientV2, val appConfig: SharedAppConfig, savingsConfig: SavingsConfig)
-    extends BaseDownstreamConnector {
+class CreateAmendUkSavingsAnnualSummaryConnector @Inject() (val http: HttpClientV2, val appConfig: SharedAppConfig) extends BaseDownstreamConnector {
 
   def createOrAmendUKSavingsAccountSummary(requestData: CreateAmendUkSavingsAnnualSummaryRequestData)(implicit
       hc: HeaderCarrier,
       cc: ExecutionContext,
       correlationId: String): Future[DownstreamOutcome[Unit]] = {
-    import requestData._
-    import shared.connectors.httpparsers.StandardDownstreamHttpParser._
+    import requestData.*
+    import shared.connectors.httpparsers.StandardDownstreamHttpParser.*
 
     implicit val successCode: SuccessCode = SuccessCode(Status.OK)
-
-    val path = s"income-tax/nino/${nino.nino}/income-source/savings/annual/${taxYear.asDownstream}"
 
     val downstreamUri =
       if (taxYear.useTaxYearSpecificApi) {
         IfsUri[Unit](s"income-tax/${taxYear.asTysDownstream}/$nino/income-source/savings/annual")
-      } else if (savingsConfig.featureSwitches.isDesIf_MigrationEnabled) {
-        IfsUri[Unit](path)
       } else {
-        DesUri[Unit](path)
+        IfsUri[Unit](s"income-tax/nino/${nino.nino}/income-source/savings/annual/${taxYear.asDownstream}")
       }
+
     post(
       uri = downstreamUri,
       body = mtdBody.asDownstreamRequestBody(savingsAccountId)

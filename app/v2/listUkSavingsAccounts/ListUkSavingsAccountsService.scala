@@ -35,29 +35,13 @@ class ListUkSavingsAccountsService @Inject() (connector: ListUkSavingsAccountsCo
       ec: ExecutionContext): Future[ServiceOutcome[ListUkSavingsAccountsResponse]] =
     connector.listUkSavingsAccounts(request).map(_.leftMap(mapDownstreamErrors(downstreamErrorMap)))
 
-  private val downstreamErrorMap: Map[String, MtdError] = {
-    val ifsErrors = Map(
-      "INVALID_TAXABLE_ENTITY_ID"  -> NinoFormatError,
-      "INVALID_TAX_YEAR"           -> InternalError,
-      "INVALID_INCOME_SOURCE_TYPE" -> InternalError,
-      "INVALID_CORRELATION_ID"     -> InternalError,
-      "INVALID_INCOME_SOURCE_ID"   -> SavingsAccountIdFormatError,
-      "INVALID_ENDDATE"            -> InternalError,
-      "NOT_FOUND"                  -> NotFoundError,
-      "SERVER_ERROR"               -> InternalError,
-      "SERVICE_UNAVAILABLE"        -> InternalError
-    )
-
-    val hipErrors = Map(
-      "1215" -> NinoFormatError,
-      "1117" -> InternalError,
-      "1122" -> InternalError,
-      "1007" -> SavingsAccountIdFormatError,
-      "1229" -> InternalError,
-      "5010" -> NotFoundError
-    )
-
-    ifsErrors ++ hipErrors
-  }
+  private val downstreamErrorMap: Map[String, MtdError] = Map(
+    "1215" -> NinoFormatError,
+    "1117" -> InternalError,
+    "1122" -> InternalError,
+    "1007" -> SavingsAccountIdFormatError,
+    "1229" -> InternalError,
+    "5010" -> NotFoundError
+  )
 
 }
