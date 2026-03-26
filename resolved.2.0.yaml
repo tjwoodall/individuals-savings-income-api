@@ -36,15 +36,6 @@ tags:
 paths:
   /individuals/savings-income/uk-accounts/{nino}:
     get:
-      parameters:
-      - name: savingsAccountId
-        in: query
-        description: The unique identifier of a savings account.
-        required: false
-        schema:
-          pattern: "^[A-Za-z0-9]{15}$"
-          type: string
-          example: SAVKB2UVwUTBQGJ
       security:
       - User-Restricted:
         - read:self-assessment
@@ -80,9 +71,10 @@ paths:
           type: string
           example: TC663795B
       - name: savingsAccountId
-        in: query
-        description: The unique identifier of a savings account.
-        required: false
+        in: path
+        description: |
+          The unique identifier of the savings account.
+        required: true
         schema:
           pattern: "^[A-Za-z0-9]{15}$"
           type: string
@@ -380,15 +372,6 @@ components:
           description: The error message
       description: Error Response
   parameters:
-    savingsAccountId:
-      name: savingsAccountId
-      in: query
-      description: The unique identifier of a savings account.
-      required: false
-      schema:
-        pattern: "^[A-Za-z0-9]{15}$"
-        type: string
-        example: SAVKB2UVwUTBQGJ
     nino:
       name: nino
       in: path
@@ -398,6 +381,16 @@ components:
       schema:
         type: string
         example: TC663795B
+    savingsAccountId:
+      name: savingsAccountId
+      in: path
+      description: |
+        The unique identifier of the savings account.
+      required: true
+      schema:
+        pattern: "^[A-Za-z0-9]{15}$"
+        type: string
+        example: SAVKB2UVwUTBQGJ
     acceptHeader:
       name: Accept
       in: header
