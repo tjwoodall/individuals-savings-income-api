@@ -293,7 +293,7 @@ class Def1_CreateAmendSavingsControllerISpec extends IntegrationBaseSpec {
           |   "foreignInterest": [
           |       {
           |          "amountBeforeTax": -200.11,
-          |          "countryCode": "GBR",
+          |          "countryCode": "FRA",
           |          "taxTakenOff": 200.121,
           |          "specialWithholdingTax": 999999999991.13,
           |          "taxableAmount": -200.14,
@@ -301,7 +301,7 @@ class Def1_CreateAmendSavingsControllerISpec extends IntegrationBaseSpec {
           |       },
           |       {
           |          "amountBeforeTax": -300.11,
-          |          "countryCode": "GBR",
+          |          "countryCode": "FRA",
           |          "taxTakenOff": -300.100,
           |          "specialWithholdingTax": -300.134,
           |          "taxableAmount": -300.14,
