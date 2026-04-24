@@ -243,7 +243,7 @@ class Def1_CreateAmendSavingsValidatorSpec extends UnitSpec with MockSharedAppCo
         result shouldBe Left(
           ErrorWrapper(
             correlationId,
-            RuleIncorrectOrEmptyBodyError
+            RuleIncorrectOrEmptyBodyError.withPaths(Seq("/foreignInterest")),
           ))
       }
     }
