@@ -18,18 +18,17 @@ package v2.createAmendSavings.def1.model.request
 
 import play.api.libs.functional.syntax.toFunctionalBuilderOps
 import play.api.libs.json.*
-import utils.JsonUtils
 import v2.createAmendSavings.model.request.CreateAmendSavingsRequestBody
 
 case class Def1_CreateAmendSavingsRequestBody(securities: Option[AmendSecurities], foreignInterest: Option[Seq[AmendForeignInterestItem]])
     extends CreateAmendSavingsRequestBody
 
-object Def1_CreateAmendSavingsRequestBody extends JsonUtils {
+object Def1_CreateAmendSavingsRequestBody {
   val empty: Def1_CreateAmendSavingsRequestBody = Def1_CreateAmendSavingsRequestBody(None, None)
 
   implicit val reads: Reads[Def1_CreateAmendSavingsRequestBody] = (
     (JsPath \ "securities").readNullable[AmendSecurities] and
-      (JsPath \ "foreignInterest").readNullable[Seq[AmendForeignInterestItem]].mapEmptySeqToNone
+      (JsPath \ "foreignInterest").readNullable[Seq[AmendForeignInterestItem]]
   )(Def1_CreateAmendSavingsRequestBody.apply)
 
   implicit val writes: OWrites[Def1_CreateAmendSavingsRequestBody] = (

@@ -120,6 +120,23 @@ class Def1_CreateAmendSavingsRequestBodySpec extends UnitSpec {
       "produce the expected AmendSavingsRequestBody object" in {
         mtdJson.as[Def1_CreateAmendSavingsRequestBody] shouldBe requestBodyModel
       }
+
+      "preserve empty foreign interest arrays" in {
+        val mtdJsonEmptyForeignInterest: JsValue = Json.parse(
+          """
+            |{
+            |   "securities":
+            |      {
+            |         "taxTakenOff": 100.0,
+            |         "grossAmount": 1455.0,
+            |         "netAmount": 123.22
+            |      },
+            |   "foreignInterest": []
+            |}
+            |""".stripMargin
+        )
+        mtdJsonEmptyForeignInterest.as[Def1_CreateAmendSavingsRequestBody] shouldBe requestBodyModel.copy(foreignInterest = Some(Seq.empty))
+      }
     }
 
     "read from invalid JSON" should {
