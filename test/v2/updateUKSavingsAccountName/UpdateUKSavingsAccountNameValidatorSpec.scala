@@ -73,6 +73,22 @@ class UpdateUKSavingsAccountNameValidatorSpec extends UnitSpec with JsonErrorVal
 
         result shouldBe Left(ErrorWrapper(correlationId, AccountNameFormatError.withPath("/accountName")))
       }
+
+      "an empty account name is supplied in the request body" in {
+        val body = validRequestJson.update("/accountName", JsString(""))
+        val result: Either[ErrorWrapper, UpdateUKSavingsAccountNameRequest] =
+          validator(validNino, validSavingsAccountId, body).validateAndWrapResult()
+
+        result shouldBe Left(ErrorWrapper(correlationId, AccountNameFormatError.withPath("/accountName")))
+      }
+
+      "an account name containing only whitespace is supplied in the request body" in {
+        val body = validRequestJson.update("/accountName", JsString("    "))
+        val result: Either[ErrorWrapper, UpdateUKSavingsAccountNameRequest] =
+          validator(validNino, validSavingsAccountId, body).validateAndWrapResult()
+
+        result shouldBe Left(ErrorWrapper(correlationId, AccountNameFormatError.withPath("/accountName")))
+      }
     }
 
     "return RuleIncorrectOrEmptyBodyError error" when {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 
-package v2.updateUKSavingsAccountName
+package v2.addUkSavingsAccount.def1
 
 import cats.data.Validated
 import models.errors.AccountNameFormatError
 import shared.controllers.validators.RulesValidator
 import shared.controllers.validators.resolvers.ResolveStringPattern
-import shared.models.errors.*
-import v2.updateUKSavingsAccountName.model.request.UpdateUKSavingsAccountNameRequest
+import shared.models.errors.MtdError
+import v2.addUkSavingsAccount.def1.model.request.Def1_AddUkSavingsAccountRequestData
 
-object UpdateUKSavingsAccountNameRulesValidator extends RulesValidator[UpdateUKSavingsAccountNameRequest] {
+object Def1_AddUkSavingsAccountRulesValidator extends RulesValidator[Def1_AddUkSavingsAccountRequestData] {
 
   private val accountNameRegex = "^[A-Za-z0-9 &'\\(\\)\\*,\\-\\./@£]{1,32}$".r
-
-  def validateBusinessRules(parsed: UpdateUKSavingsAccountNameRequest): Validated[Seq[MtdError], UpdateUKSavingsAccountNameRequest] = {
+  
+  def validateBusinessRules(parsed: Def1_AddUkSavingsAccountRequestData): Validated[Seq[MtdError], Def1_AddUkSavingsAccountRequestData] = {
     import parsed.body.*
     ResolveStringPattern(accountName, accountNameRegex, AccountNameFormatError.withPath("/accountName")).onSuccess(parsed)
   }

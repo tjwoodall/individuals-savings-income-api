@@ -17,6 +17,7 @@
 package shared.controllers.validators.resolvers
 
 import cats.data.Validated.{Invalid, Valid}
+import models.errors.AccountNameFormatError
 import shared.models.errors.TaxYearFormatError
 import shared.utils.UnitSpec
 
@@ -26,6 +27,8 @@ class ResolveStringPatternSpec extends UnitSpec {
 
   private val taxYearRegex: Regex   = "20[1-9][0-9]-[1-9][0-9]".r
   private val resolveTaxYearPattern = ResolveStringPattern(taxYearRegex, TaxYearFormatError)
+  private val accountNameRegex: Regex = "^[A-Za-z0-9 &'\\(\\)\\*,\\-\\./@£]{1,32}$".r
+  private val resolveAccountNamePattern = ResolveStringPattern(accountNameRegex, AccountNameFormatError.withPath("/accountName"))
 
   "ResolveStringPattern" should {
     "return the input value" when {
@@ -44,6 +47,16 @@ class ResolveStringPatternSpec extends UnitSpec {
       "given a non-matching string and no override error" in {
         val result = resolveTaxYearPattern("does-not-match-regex")
         result shouldBe Invalid(List(TaxYearFormatError))
+      }
+
+      "given an empty string with a regex that allows whitespace and no override error" in {
+        val result = resolveAccountNamePattern("")
+        result shouldBe Invalid(List(AccountNameFormatError.withPath("/accountName")))
+      }
+
+      "given a string containing only whitespace with a regex that allows whitespace and no override error" in {
+        val result = resolveAccountNamePattern("    ")
+        result shouldBe Invalid(List(AccountNameFormatError.withPath("/accountName")))
       }
     }
 

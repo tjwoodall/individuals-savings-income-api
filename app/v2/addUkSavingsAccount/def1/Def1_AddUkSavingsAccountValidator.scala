@@ -19,7 +19,6 @@ package v2.addUkSavingsAccount.def1
 import cats.data.Validated
 import cats.implicits.*
 import play.api.libs.json.JsValue
-import resolvers.ResolveAccountName
 import shared.controllers.validators.Validator
 import shared.controllers.validators.resolvers.{ResolveNino, ResolveNonEmptyJsonObject}
 import shared.models.errors.MtdError
@@ -28,17 +27,12 @@ import v2.addUkSavingsAccount.model.request.AddUkSavingsAccountRequestData
 
 class Def1_AddUkSavingsAccountValidator(nino: String, body: JsValue) extends Validator[AddUkSavingsAccountRequestData] {
 
+  
   private val resolveJson = new ResolveNonEmptyJsonObject[Def1_AddUkSavingsAccountRequestBody]()
 
   def validate: Validated[Seq[MtdError], AddUkSavingsAccountRequestData] = (
     ResolveNino(nino),
     resolveJson(body)
-  ).mapN(Def1_AddUkSavingsAccountRequestData.apply) andThen validateBusinessRules
-
-  private def validateBusinessRules(parsed: Def1_AddUkSavingsAccountRequestData): Validated[Seq[MtdError], Def1_AddUkSavingsAccountRequestData] = {
-    import parsed.body.*
-    List((accountName, "/accountName")).traverse_ { case (value, path) => ResolveAccountName(value, path) }.map(_ => parsed)
-
-  }
-
+  ).mapN(Def1_AddUkSavingsAccountRequestData.apply) andThen Def1_AddUkSavingsAccountRulesValidator.validateBusinessRules
+  
 }

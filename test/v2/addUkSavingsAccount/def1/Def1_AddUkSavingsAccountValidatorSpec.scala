@@ -55,6 +55,22 @@ class Def1_AddUkSavingsAccountValidatorSpec extends UnitSpec {
     """.stripMargin
   )
 
+  private val emptyNameBodyJson = Json.parse(
+    """
+      |{
+      |  "accountName": ""
+      |}
+    """.stripMargin
+  )
+
+  private val onlyWhitespaceNameBodyJson = Json.parse(
+    """
+      |{
+      |  "accountName": "    "
+      |}
+    """.stripMargin
+  )
+
   private val parsedNino                             = Nino(validNino)
   private val parsedRequestBody                      = Def1_AddUkSavingsAccountRequestBody("Shares savings account")
   private def validator(nino: String, body: JsValue) = new Def1_AddUkSavingsAccountValidator(nino, body)
@@ -105,6 +121,22 @@ class Def1_AddUkSavingsAccountValidatorSpec extends UnitSpec {
         "an invalid account name is supplied" in {
           val result: Either[ErrorWrapper, AddUkSavingsAccountRequestData] =
             validator(validNino, invalidValueRequestBodyJson).validateAndWrapResult()
+
+          result shouldBe Left(ErrorWrapper(correlationId, AccountNameFormatError.withPath("/accountName")))
+
+        }
+
+        "an empty account name is supplied" in {
+          val result: Either[ErrorWrapper, AddUkSavingsAccountRequestData] =
+            validator(validNino, emptyNameBodyJson).validateAndWrapResult()
+
+          result shouldBe Left(ErrorWrapper(correlationId, AccountNameFormatError.withPath("/accountName")))
+
+        }
+
+        "an account name containing only whitespace is supplied" in {
+          val result: Either[ErrorWrapper, AddUkSavingsAccountRequestData] =
+            validator(validNino, onlyWhitespaceNameBodyJson).validateAndWrapResult()
 
           result shouldBe Left(ErrorWrapper(correlationId, AccountNameFormatError.withPath("/accountName")))
 
