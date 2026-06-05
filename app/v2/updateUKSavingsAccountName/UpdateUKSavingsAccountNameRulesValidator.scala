@@ -31,4 +31,5 @@ object UpdateUKSavingsAccountNameRulesValidator extends RulesValidator[UpdateUKS
     import parsed.body.*
     ResolveStringPattern(accountName, accountNameRegex, AccountNameFormatError.withPath("/accountName")).onSuccess(parsed)
   }
+
 }

@@ -27,12 +27,11 @@ import v2.addUkSavingsAccount.model.request.AddUkSavingsAccountRequestData
 
 class Def1_AddUkSavingsAccountValidator(nino: String, body: JsValue) extends Validator[AddUkSavingsAccountRequestData] {
 
-  
   private val resolveJson = new ResolveNonEmptyJsonObject[Def1_AddUkSavingsAccountRequestBody]()
 
   def validate: Validated[Seq[MtdError], AddUkSavingsAccountRequestData] = (
     ResolveNino(nino),
     resolveJson(body)
   ).mapN(Def1_AddUkSavingsAccountRequestData.apply) andThen Def1_AddUkSavingsAccountRulesValidator.validateBusinessRules
-  
+
 }

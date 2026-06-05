@@ -25,9 +25,9 @@ import scala.util.matching.Regex
 
 class ResolveStringPatternSpec extends UnitSpec {
 
-  private val taxYearRegex: Regex   = "20[1-9][0-9]-[1-9][0-9]".r
-  private val resolveTaxYearPattern = ResolveStringPattern(taxYearRegex, TaxYearFormatError)
-  private val accountNameRegex: Regex = "^[A-Za-z0-9 &'\\(\\)\\*,\\-\\./@£]{1,32}$".r
+  private val taxYearRegex: Regex       = "20[1-9][0-9]-[1-9][0-9]".r
+  private val resolveTaxYearPattern     = ResolveStringPattern(taxYearRegex, TaxYearFormatError)
+  private val accountNameRegex: Regex   = "^[A-Za-z0-9 &'\\(\\)\\*,\\-\\./@£]{1,32}$".r
   private val resolveAccountNamePattern = ResolveStringPattern(accountNameRegex, AccountNameFormatError.withPath("/accountName"))
 
   "ResolveStringPattern" should {

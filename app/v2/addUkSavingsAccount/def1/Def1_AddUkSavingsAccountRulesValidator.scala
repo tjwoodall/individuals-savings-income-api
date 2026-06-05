@@ -26,9 +26,10 @@ import v2.addUkSavingsAccount.def1.model.request.Def1_AddUkSavingsAccountRequest
 object Def1_AddUkSavingsAccountRulesValidator extends RulesValidator[Def1_AddUkSavingsAccountRequestData] {
 
   private val accountNameRegex = "^[A-Za-z0-9 &'\\(\\)\\*,\\-\\./@£]{1,32}$".r
-  
+
   def validateBusinessRules(parsed: Def1_AddUkSavingsAccountRequestData): Validated[Seq[MtdError], Def1_AddUkSavingsAccountRequestData] = {
     import parsed.body.*
     ResolveStringPattern(accountName, accountNameRegex, AccountNameFormatError.withPath("/accountName")).onSuccess(parsed)
   }
+
 }
