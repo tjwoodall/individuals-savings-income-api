@@ -163,7 +163,7 @@ paths:
                           example: SAVKB2UVwUTBQGJ
                         accountName:
                           type: string
-                          description: Friendly account name.
+                          description: Friendly account name. Must not be empty or contain only whitespace.
                           pattern: ^[A-Za-z0-9 &'\(\)\*,\-\./@£]{1,32}$
                           example: Shares savings account
                       required:
@@ -359,7 +359,7 @@ paths:
               properties:
                 accountName:
                   type: string
-                  description: Friendly account name.
+                  description: Friendly account name. Must not be empty or contain only whitespace.
                   pattern: ^[A-Za-z0-9 &'\(\)\*,\-\./@£]{1,32}$
                   example: Shares savings account
               required:
@@ -607,7 +607,7 @@ paths:
               properties:
                 accountName:
                   type: string
-                  description: Friendly account name.
+                  description: Friendly account name. Must not be empty or contain only whitespace.
                   pattern: ^[A-Za-z0-9 &'\(\)\*,\-\./@£]{1,32}$
                   example: Shares savings account
               required:
