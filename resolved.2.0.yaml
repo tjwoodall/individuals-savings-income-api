@@ -124,7 +124,8 @@ paths:
                 accountName:
                   pattern: "^[A-Za-z0-9 &'\\(\\)\\*,\\-\\./@£]{1,32}$"
                   type: string
-                  description: Friendly account name.
+                  description: Friendly account name. Must not be empty or contain
+                    only whitespace.
                   example: Shares savings account
               description: Update a UK Savings Account name Request
             examples:
@@ -356,7 +357,7 @@ components:
         accountName:
           pattern: "^[A-Za-z0-9 &'\\(\\)\\*,\\-\\./@£]{1,32}$"
           type: string
-          description: Friendly account name.
+          description: Friendly account name. Must not be empty or contain only whitespace.
           example: Shares savings account
       description: Update a UK Savings Account name Request
     error_response:
