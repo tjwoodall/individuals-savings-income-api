@@ -16,13 +16,13 @@
 
 package v2.updateUKSavingsAccountName
 
+import api.controllers.validators.Validator
+import api.controllers.validators.resolvers.{ResolveNino, ResolveNonEmptyJsonObject}
+import api.models.errors.MtdError
 import cats.data.Validated
 import cats.implicits.catsSyntaxTuple3Semigroupal
 import play.api.libs.json.JsValue
 import resolvers.ResolveSavingsAccountId
-import shared.controllers.validators.Validator
-import shared.controllers.validators.resolvers.{ResolveNino, ResolveNonEmptyJsonObject}
-import shared.models.errors.MtdError
 import v2.updateUKSavingsAccountName.model.request.{UpdateUKSavingsAccountNameRequest, UpdateUKSavingsAccountNameRequestBody}
 
 class UpdateUKSavingsAccountNameValidator(nino: String, savingsAccountId: String, body: JsValue)

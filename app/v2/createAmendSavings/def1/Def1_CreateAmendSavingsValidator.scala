@@ -16,19 +16,19 @@
 
 package v2.createAmendSavings.def1
 
+import api.config.AppConfig
+import api.controllers.validators.Validator
+import api.controllers.validators.resolvers.*
+import api.models.domain.TaxYear
+import api.models.errors.MtdError
 import cats.data.Validated
 import cats.implicits.catsSyntaxTuple3Semigroupal
 import play.api.libs.json.JsValue
-import shared.config.SharedAppConfig
-import shared.controllers.validators.Validator
-import shared.controllers.validators.resolvers.*
-import shared.models.domain.TaxYear
-import shared.models.errors.MtdError
 import v2.createAmendSavings.def1.Def1_CreateAmendSavingsRulesValidator.validateBusinessRules
 import v2.createAmendSavings.def1.model.request.{Def1_CreateAmendSavingsRequestBody, Def1_CreateAmendSavingsRequestData}
 import v2.createAmendSavings.model.request.CreateAmendSavingsRequestData
 
-class Def1_CreateAmendSavingsValidator(nino: String, taxYear: String, body: JsValue)(appConfig: SharedAppConfig)
+class Def1_CreateAmendSavingsValidator(nino: String, taxYear: String, body: JsValue)(appConfig: AppConfig)
     extends Validator[CreateAmendSavingsRequestData] {
 
   private lazy val minimumTaxYear = appConfig.minimumPermittedTaxYear

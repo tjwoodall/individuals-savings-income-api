@@ -16,14 +16,14 @@
 
 package v2.deleteSavings.def1
 
-import shared.config.{MockSharedAppConfig, SharedAppConfig}
-import shared.models.domain.{Nino, TaxYear}
-import shared.models.errors.*
-import shared.utils.UnitSpec
+import api.config.{AppConfig, MockAppConfig}
+import api.models.domain.{Nino, TaxYear}
+import api.models.errors.*
+import api.utils.UnitSpec
 import v2.deleteSavings.def1.model.request.Def1_DeleteSavingsRequestData
 import v2.deleteSavings.model.request.DeleteSavingsRequestData
 
-class Def1_DeleteSavingsValidatorSpec extends UnitSpec with MockSharedAppConfig {
+class Def1_DeleteSavingsValidatorSpec extends UnitSpec with MockAppConfig {
 
   private implicit val correlationId: String = "1234"
   private val validNino                      = "AA123456A"
@@ -32,8 +32,8 @@ class Def1_DeleteSavingsValidatorSpec extends UnitSpec with MockSharedAppConfig 
   private val parsedNino    = Nino(validNino)
   private val parsedTaxYear = TaxYear.fromMtd(validTaxYear)
 
-  implicit val appConfig: SharedAppConfig              = mockSharedAppConfig
-  private def validator(nino: String, taxYear: String) = new Def1_DeleteSavingsValidator(nino, taxYear)(mockSharedAppConfig)
+  implicit val appConfig: AppConfig                    = mockAppConfig
+  private def validator(nino: String, taxYear: String) = new Def1_DeleteSavingsValidator(nino, taxYear)(mockAppConfig)
 
   "running a validation" should {
     "return no errors" when {

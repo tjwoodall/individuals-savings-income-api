@@ -16,7 +16,7 @@
 
 package v2.createAmendSavings.def1.model.request
 
-import shared.models.domain.{Nino, TaxYear}
+import api.models.domain.{Nino, TaxYear}
 import v2.createAmendSavings.CreateAmendSavingsSchema
 import v2.createAmendSavings.CreateAmendSavingsSchema.Def1
 import v2.createAmendSavings.model.request.CreateAmendSavingsRequestData

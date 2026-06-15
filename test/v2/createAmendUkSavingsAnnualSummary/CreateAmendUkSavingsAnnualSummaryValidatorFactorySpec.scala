@@ -16,14 +16,14 @@
 
 package v2.createAmendUkSavingsAnnualSummary
 
+import api.config.MockAppConfig
+import api.controllers.validators.Validator
+import api.utils.UnitSpec
 import play.api.libs.json.{JsValue, Json}
-import shared.config.MockSharedAppConfig
-import shared.controllers.validators.Validator
-import shared.utils.UnitSpec
 import v2.createAmendUkSavingsAnnualSummary.def1.Def1_CreateAmendUkSavingsAnnualSummaryValidator
 import v2.createAmendUkSavingsAnnualSummary.model.request.CreateAmendUkSavingsAnnualSummaryRequestData
 
-class CreateAmendUkSavingsAnnualSummaryValidatorFactorySpec extends UnitSpec with MockSharedAppConfig {
+class CreateAmendUkSavingsAnnualSummaryValidatorFactorySpec extends UnitSpec with MockAppConfig {
   private val validNino             = "AA123456A"
   private val validTaxYear          = "2020-21"
   private val validSavingsAccountId = "Abcdefgh1234567"
@@ -38,7 +38,7 @@ class CreateAmendUkSavingsAnnualSummaryValidatorFactorySpec extends UnitSpec wit
         """.stripMargin
   )
 
-  val validatorFactory = new CreateAmendUkSavingsAnnualSummaryValidatorFactory(mockSharedAppConfig)
+  val validatorFactory = new CreateAmendUkSavingsAnnualSummaryValidatorFactory(mockAppConfig)
 
   "validator()" when {
     "given any tax year" should {

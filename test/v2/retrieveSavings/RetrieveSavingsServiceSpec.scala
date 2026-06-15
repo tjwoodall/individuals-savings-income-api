@@ -16,11 +16,11 @@
 
 package v2.retrieveSavings
 
-import shared.controllers.EndpointLogContext
-import shared.models.domain.*
-import shared.models.errors.*
-import shared.models.outcomes.ResponseWrapper
-import shared.services.ServiceSpec
+import api.controllers.EndpointLogContext
+import api.models.domain.*
+import api.models.errors.*
+import api.models.outcomes.ResponseWrapper
+import api.services.ServiceSpec
 import v2.retrieveSavings.def1.model.request.Def1_RetrieveSavingsRequestData
 import v2.retrieveSavings.def1.model.response.Def1_RetrieveSavingsResponse
 

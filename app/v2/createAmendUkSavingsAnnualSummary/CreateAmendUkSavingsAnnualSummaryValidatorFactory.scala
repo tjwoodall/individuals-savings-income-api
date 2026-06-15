@@ -16,16 +16,16 @@
 
 package v2.createAmendUkSavingsAnnualSummary
 
+import api.config.AppConfig
+import api.controllers.validators.Validator
 import play.api.libs.json.JsValue
-import shared.config.SharedAppConfig
-import shared.controllers.validators.Validator
 import v2.createAmendUkSavingsAnnualSummary.def1.Def1_CreateAmendUkSavingsAnnualSummaryValidator
 import v2.createAmendUkSavingsAnnualSummary.model.request.*
 
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class CreateAmendUkSavingsAnnualSummaryValidatorFactory @Inject() (appConfig: SharedAppConfig) {
+class CreateAmendUkSavingsAnnualSummaryValidatorFactory @Inject() (appConfig: AppConfig) {
 
   def validator(nino: String, taxYear: String, savingsAccountId: String, body: JsValue): Validator[CreateAmendUkSavingsAnnualSummaryRequestData] =
     new Def1_CreateAmendUkSavingsAnnualSummaryValidator(nino, taxYear, savingsAccountId, body)(appConfig)

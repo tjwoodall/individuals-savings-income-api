@@ -16,8 +16,8 @@
 
 package v2.retrieveUkSavingsAccountAnnualSummary
 
+import api.schema.DownstreamReadable
 import play.api.libs.json.Reads
-import shared.schema.DownstreamReadable
 import v2.retrieveUkSavingsAccountAnnualSummary.def1.model.response.Def1_RetrieveUkSavingsAccountAnnualSummaryResponse
 import v2.retrieveUkSavingsAccountAnnualSummary.model.response.RetrieveUkSavingsAccountAnnualSummaryResponse
 

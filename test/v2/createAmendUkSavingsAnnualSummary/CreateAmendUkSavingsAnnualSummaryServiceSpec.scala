@@ -16,13 +16,13 @@
 
 package v2.createAmendUkSavingsAnnualSummary
 
+import api.controllers.EndpointLogContext
+import api.models.domain.{Nino, TaxYear}
+import api.models.errors.*
+import api.models.outcomes.ResponseWrapper
+import api.services.ServiceSpec
 import models.domain.SavingsAccountId
 import models.errors.RuleOutsideAmendmentWindowError
-import shared.controllers.EndpointLogContext
-import shared.models.domain.{Nino, TaxYear}
-import shared.models.errors.*
-import shared.models.outcomes.ResponseWrapper
-import shared.services.ServiceSpec
 import v2.createAmendUkSavingsAnnualSummary.def1.model.request.{
   Def1_CreateAmendUkSavingsAnnualSummaryRequestBody,
   Def1_CreateAmendUkSavingsAnnualSummaryRequestData

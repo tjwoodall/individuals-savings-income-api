@@ -16,18 +16,18 @@
 
 package v2.retrieveUkSavingsAccountAnnualSummary
 
-import shared.config.MockSharedAppConfig
-import shared.controllers.validators.Validator
-import shared.utils.UnitSpec
+import api.config.MockAppConfig
+import api.controllers.validators.Validator
+import api.utils.UnitSpec
 import v2.retrieveUkSavingsAccountAnnualSummary.def1.Def1_RetrieveUkSavingsAccountAnnualSummaryValidator
 import v2.retrieveUkSavingsAccountAnnualSummary.model.request.RetrieveUkSavingsAccountAnnualSummaryRequestData
 
-class RetrieveUkSavingsAccountValidatorAnnualSummaryFactorySpec extends UnitSpec with MockSharedAppConfig {
+class RetrieveUkSavingsAccountValidatorAnnualSummaryFactorySpec extends UnitSpec with MockAppConfig {
   private val validNino             = "AA123456A"
   private val validTaxYear          = "2021-22"
   private val validSavingsAccountId = "SAVKB2UVwUTBQGJ"
 
-  val validator = new RetrieveUkSavingsAccountAnnualSummaryValidatorFactory(mockSharedAppConfig)
+  val validator = new RetrieveUkSavingsAccountAnnualSummaryValidatorFactory(mockAppConfig)
 
   "validator()" when {
 

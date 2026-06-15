@@ -16,7 +16,7 @@
 
 package v2.retrieveSavings.def1.model.request
 
-import shared.models.domain.{Nino, TaxYear}
+import api.models.domain.{Nino, TaxYear}
 import v2.retrieveSavings.RetrieveSavingsSchema
 import v2.retrieveSavings.RetrieveSavingsSchema.Def1
 import v2.retrieveSavings.model.request.RetrieveSavingsRequestData

@@ -16,8 +16,8 @@
 
 package v2.createAmendUkSavingsAnnualSummary.def1.model.request
 
+import api.utils.UnitSpec
 import play.api.libs.json.{JsObject, JsValue, Json}
-import shared.utils.UnitSpec
 
 class Def1_CreateAmendUkSavingsAnnualSummaryRequestBodySpec extends UnitSpec {
 

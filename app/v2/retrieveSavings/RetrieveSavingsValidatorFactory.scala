@@ -16,15 +16,15 @@
 
 package v2.retrieveSavings
 
-import shared.config.SharedAppConfig
-import shared.controllers.validators.Validator
+import api.config.AppConfig
+import api.controllers.validators.Validator
 import v2.retrieveSavings.def1.Def1_RetrieveSavingsValidator
 import v2.retrieveSavings.model.request.RetrieveSavingsRequestData
 
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class RetrieveSavingsValidatorFactory @Inject() (appConfig: SharedAppConfig) {
+class RetrieveSavingsValidatorFactory @Inject() (appConfig: AppConfig) {
 
   def validator(nino: String, taxYear: String): Validator[RetrieveSavingsRequestData] =
     new Def1_RetrieveSavingsValidator(nino, taxYear)(appConfig)

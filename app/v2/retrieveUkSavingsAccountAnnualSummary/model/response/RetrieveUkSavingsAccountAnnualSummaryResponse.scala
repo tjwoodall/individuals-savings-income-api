@@ -16,8 +16,8 @@
 
 package v2.retrieveUkSavingsAccountAnnualSummary.model.response
 
+import api.utils.JsonWritesUtil
 import play.api.libs.json.{JsObject, Json, OWrites}
-import shared.utils.JsonWritesUtil
 import v2.retrieveUkSavingsAccountAnnualSummary.def1.model.response.Def1_RetrieveUkSavingsAccountAnnualSummaryResponse
 
 trait RetrieveUkSavingsAccountAnnualSummaryResponse {

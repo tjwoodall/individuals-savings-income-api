@@ -16,9 +16,9 @@
 
 package routing
 
+import api.routing.*
 import com.google.inject.Singleton
 import play.api.routing.Router
-import shared.routing.*
 
 import javax.inject.Inject
 

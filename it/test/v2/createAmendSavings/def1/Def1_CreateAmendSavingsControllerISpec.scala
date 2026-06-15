@@ -16,6 +16,10 @@
 
 package v2.createAmendSavings.def1
 
+import api.models.errors
+import api.models.errors.*
+import api.services.*
+import api.support.IntegrationBaseSpec
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import models.errors.RuleOutsideAmendmentWindowError
 import play.api.http.HeaderNames.ACCEPT
@@ -24,10 +28,6 @@ import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.WSBodyWritables.writeableOf_JsValue
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
-import shared.models.errors
-import shared.models.errors.*
-import shared.services.*
-import shared.support.IntegrationBaseSpec
 
 class Def1_CreateAmendSavingsControllerISpec extends IntegrationBaseSpec {
 

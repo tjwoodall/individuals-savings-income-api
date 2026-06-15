@@ -16,10 +16,10 @@
 
 package v2.updateUKSavingsAccountName
 
-import shared.config.SharedAppConfig
-import shared.connectors.*
-import shared.connectors.DownstreamUri.HipUri
-import shared.connectors.httpparsers.StandardDownstreamHttpParser.readsEmpty
+import api.config.AppConfig
+import api.connectors.*
+import api.connectors.DownstreamUri.HipUri
+import api.connectors.httpparsers.StandardDownstreamHttpParser.readsEmpty
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.client.HttpClientV2
 import v2.updateUKSavingsAccountName.model.request.UpdateUKSavingsAccountNameRequest
@@ -28,7 +28,7 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class UpdateUKSavingsAccountNameConnector @Inject() (val http: HttpClientV2, val appConfig: SharedAppConfig) extends BaseDownstreamConnector {
+class UpdateUKSavingsAccountNameConnector @Inject() (val http: HttpClientV2, val appConfig: AppConfig) extends BaseDownstreamConnector {
 
   def update(request: UpdateUKSavingsAccountNameRequest)(implicit
       hc: HeaderCarrier,

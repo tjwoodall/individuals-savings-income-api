@@ -16,18 +16,18 @@
 
 package v2.createAmendSavings
 
+import api.config.MockAppConfig
+import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
+import api.models.audit.*
+import api.models.auth.UserDetails
+import api.models.domain.{Nino, TaxYear}
+import api.models.errors.*
+import api.models.outcomes.ResponseWrapper
+import api.routing.{Version, Version2}
+import api.services.MockMtdIdLookupService
 import play.api.Configuration
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
-import shared.config.MockSharedAppConfig
-import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
-import shared.models.audit.*
-import shared.models.auth.UserDetails
-import shared.models.domain.{Nino, TaxYear}
-import shared.models.errors.*
-import shared.models.outcomes.ResponseWrapper
-import shared.routing.{Version, Version2}
-import shared.services.MockMtdIdLookupService
 import v2.createAmendSavings.def1.model.request.*
 import v2.createAmendSavings.model.request.CreateAmendSavingsRequestData
 
@@ -40,7 +40,7 @@ class CreateAmendSavingsControllerSpec
     with MockCreateAmendSavingsService
     with MockMtdIdLookupService
     with MockCreateAmendSavingsValidatorFactory
-    with MockSharedAppConfig {
+    with MockAppConfig {
 
   override val apiVersion: Version = Version2
 
@@ -155,13 +155,13 @@ class CreateAmendSavingsControllerSpec
       auditService = mockAuditService,
       cc = cc,
       idGenerator = mockIdGenerator
-    )(appConfig = mockSharedAppConfig, ec = global)
+    )(appConfig = mockAppConfig, ec = global)
 
-    MockedSharedAppConfig.featureSwitchConfig.anyNumberOfTimes() returns Configuration(
+    MockedAppConfig.featureSwitchConfig.anyNumberOfTimes() returns Configuration(
       "supporting-agents-access-control.enabled" -> true
     )
 
-    MockedSharedAppConfig
+    MockedAppConfig
       .endpointAllowsSupportingAgents(controller.endpointName)
       .anyNumberOfTimes()
       .returns(true)

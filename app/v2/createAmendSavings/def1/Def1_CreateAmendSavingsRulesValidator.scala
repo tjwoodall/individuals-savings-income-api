@@ -16,12 +16,12 @@
 
 package v2.createAmendSavings.def1
 
+import api.controllers.validators.RulesValidator
+import api.controllers.validators.resolvers.{ResolveParsedCountryCode, ResolveParsedNumber}
+import api.models.errors.MtdError
 import cats.data.Validated
 import cats.data.Validated.Valid
 import cats.implicits.toFoldableOps
-import shared.controllers.validators.RulesValidator
-import shared.controllers.validators.resolvers.{ResolveParsedCountryCode, ResolveParsedNumber}
-import shared.models.errors.MtdError
 import v2.createAmendSavings.def1.model.request.{
   AmendForeignInterestItem,
   AmendSecurities,
@@ -33,7 +33,7 @@ object Def1_CreateAmendSavingsRulesValidator extends RulesValidator[Def1_CreateA
   private val resolveParsedNumber = ResolveParsedNumber()
 
   def validateBusinessRules(parsed: Def1_CreateAmendSavingsRequestData): Validated[Seq[MtdError], Def1_CreateAmendSavingsRequestData] = {
-    import parsed._
+    import parsed.*
 
     combine(
       validateSecuritiesSequence(body),
@@ -56,7 +56,7 @@ object Def1_CreateAmendSavingsRulesValidator extends RulesValidator[Def1_CreateA
   }
 
   private def validateSecurity(security: AmendSecurities): Validated[Seq[MtdError], Unit] = {
-    import security._
+    import security.*
 
     val validatedMandatoryDecimalNumbers = List(
       (grossAmount, s"/securities/grossAmount")
@@ -78,7 +78,7 @@ object Def1_CreateAmendSavingsRulesValidator extends RulesValidator[Def1_CreateA
   }
 
   private def validateForeignInterests(foreignInterest: AmendForeignInterestItem, index: Int): Validated[Seq[MtdError], Unit] = {
-    import foreignInterest._
+    import foreignInterest.*
 
     val validatedMandatoryDecimalNumbers = List(
       (taxableAmount, s"/foreignInterest/$index/taxableAmount")

@@ -16,6 +16,9 @@
 
 package v2.updateUKSavingsAccountName
 
+import api.models.errors.*
+import api.services.*
+import api.support.IntegrationBaseSpec
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import models.errors.{AccountNameFormatError, SavingsAccountIdFormatError}
 import play.api.libs.json.*
@@ -23,9 +26,6 @@ import play.api.libs.ws.DefaultBodyReadables.readableAsString
 import play.api.libs.ws.WSBodyWritables.writeableOf_JsValue
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.*
-import shared.models.errors.*
-import shared.services.*
-import shared.support.IntegrationBaseSpec
 import v2.updateUKSavingsAccountName.fixture.UpdateUKSavingsAccountNameFixtures.{nonValidRequestBodyJson, validRequestJson}
 
 class UpdateUKSavingsAccountNameControllerISpec extends IntegrationBaseSpec {

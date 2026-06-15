@@ -16,8 +16,8 @@
 
 package v2.retrieveSavings.def1.model.response
 
+import api.utils.UnitSpec
 import play.api.libs.json.{JsError, JsValue, Json}
-import shared.utils.UnitSpec
 
 class SecuritiesSpec extends UnitSpec {
 

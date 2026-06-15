@@ -16,9 +16,9 @@
 
 package v2.createAmendSavings
 
-import shared.connectors.ConnectorSpec
-import shared.models.domain.{Nino, TaxYear}
-import shared.models.outcomes.ResponseWrapper
+import api.connectors.ConnectorSpec
+import api.models.domain.{Nino, TaxYear}
+import api.models.outcomes.ResponseWrapper
 import uk.gov.hmrc.http.StringContextOps
 import v2.createAmendSavings.def1.model.request.{Def1_CreateAmendSavingsRequestBody, Def1_CreateAmendSavingsRequestData}
 import v2.createAmendSavings.model.request.CreateAmendSavingsRequestData
@@ -62,7 +62,7 @@ class CreateAmendSavingsConnectorSpec extends ConnectorSpec {
 
     val connector: CreateAmendSavingsConnector = new CreateAmendSavingsConnector(
       http = mockHttpClient,
-      appConfig = mockSharedAppConfig
+      appConfig = mockAppConfig
     )
 
     val outcome = Right(ResponseWrapper(correlationId, ()))

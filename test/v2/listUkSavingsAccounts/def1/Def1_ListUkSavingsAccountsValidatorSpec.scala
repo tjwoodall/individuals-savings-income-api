@@ -16,11 +16,11 @@
 
 package v2.listUkSavingsAccounts.def1
 
+import api.models.domain.Nino
+import api.models.errors.{BadRequestError, ErrorWrapper, NinoFormatError}
+import api.utils.UnitSpec
 import models.domain.SavingsAccountId
 import models.errors.SavingsAccountIdFormatError
-import shared.models.domain.Nino
-import shared.models.errors.{BadRequestError, ErrorWrapper, NinoFormatError}
-import shared.utils.UnitSpec
 import v2.listUkSavingsAccounts.def1.model.request.Def1_ListUkSavingsAccountsRequestData
 
 class Def1_ListUkSavingsAccountsValidatorSpec extends UnitSpec {

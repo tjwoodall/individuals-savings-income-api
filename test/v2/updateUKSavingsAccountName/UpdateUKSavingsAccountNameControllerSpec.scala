@@ -16,15 +16,15 @@
 
 package v2.updateUKSavingsAccountName
 
+import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
+import api.models.audit.*
+import api.models.errors.*
+import api.models.outcomes.ResponseWrapper
 import models.domain.SavingsAccountId
 import models.errors.SavingsAccountIdFormatError
 import play.api.Configuration
 import play.api.libs.json.JsValue
 import play.api.mvc.Result
-import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
-import shared.models.audit.*
-import shared.models.errors.*
-import shared.models.outcomes.ResponseWrapper
 import v2.updateUKSavingsAccountName.fixture.UpdateUKSavingsAccountNameFixtures.{requestBodyModel, validRequestJson}
 import v2.updateUKSavingsAccountName.model.request.UpdateUKSavingsAccountNameRequest
 
@@ -89,11 +89,11 @@ class UpdateUKSavingsAccountNameControllerSpec
       idGenerator = mockIdGenerator
     )
 
-    MockedSharedAppConfig.featureSwitchConfig.anyNumberOfTimes() returns Configuration(
+    MockedAppConfig.featureSwitchConfig.anyNumberOfTimes() returns Configuration(
       "supporting-agents-access-control.enabled" -> true
     )
 
-    MockedSharedAppConfig.endpointAllowsSupportingAgents(controller.endpointName).anyNumberOfTimes().returns(false)
+    MockedAppConfig.endpointAllowsSupportingAgents(controller.endpointName).anyNumberOfTimes().returns(false)
 
     protected def callController(): Future[Result] =
       controller.updateUKSavingsAccountName(validNino, savingsAccountId)(fakeRequest.withBody(validRequestJson))

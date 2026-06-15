@@ -16,9 +16,9 @@
 
 package v2.retrieveSavings.def1.model.response
 
+import api.models.domain.Timestamp
 import play.api.libs.functional.syntax.toFunctionalBuilderOps
 import play.api.libs.json.*
-import shared.models.domain.Timestamp
 import utils.JsonUtils
 import v2.retrieveSavings.model.response.RetrieveSavingsResponse
 

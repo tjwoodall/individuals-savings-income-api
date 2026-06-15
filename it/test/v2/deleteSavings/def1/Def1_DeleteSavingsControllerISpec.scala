@@ -16,15 +16,15 @@
 
 package v2.deleteSavings.def1
 
+import api.models.errors.*
+import api.services.*
+import api.support.IntegrationBaseSpec
 import models.errors.RuleOutsideAmendmentWindowError
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status.*
 import play.api.libs.json.Json
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
-import shared.models.errors.*
-import shared.services.*
-import shared.support.IntegrationBaseSpec
 
 class Def1_DeleteSavingsControllerISpec extends IntegrationBaseSpec {
 

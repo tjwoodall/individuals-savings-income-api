@@ -16,14 +16,14 @@
 
 package v2.createAmendSavings
 
+import api.config.MockAppConfig
+import api.controllers.validators.Validator
+import api.utils.UnitSpec
 import play.api.libs.json.{JsValue, Json}
-import shared.config.MockSharedAppConfig
-import shared.controllers.validators.Validator
-import shared.utils.UnitSpec
 import v2.createAmendSavings.def1.Def1_CreateAmendSavingsValidator
 import v2.createAmendSavings.model.request.CreateAmendSavingsRequestData
 
-class CreateAmendSavingsValidatorFactorySpec extends UnitSpec with MockSharedAppConfig {
+class CreateAmendSavingsValidatorFactorySpec extends UnitSpec with MockAppConfig {
   private val validNino    = "AA123456A"
   private val validTaxYear = "2020-21"
 
@@ -49,7 +49,7 @@ class CreateAmendSavingsValidatorFactorySpec extends UnitSpec with MockSharedApp
 """.stripMargin
   )
 
-  private val validatorFactory = new CreateAmendSavingsValidatorFactory(mockSharedAppConfig)
+  private val validatorFactory = new CreateAmendSavingsValidatorFactory(mockAppConfig)
 
   "validator()" when {
     "given any tax year" should {

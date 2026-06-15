@@ -16,11 +16,11 @@
 
 package v2.retrieveSavings
 
+import api.controllers.RequestContext
+import api.services.ServiceOutcome
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.TestSuite
-import shared.controllers.RequestContext
-import shared.services.ServiceOutcome
 import v2.retrieveSavings.model.request.RetrieveSavingsRequestData
 import v2.retrieveSavings.model.response.RetrieveSavingsResponse
 

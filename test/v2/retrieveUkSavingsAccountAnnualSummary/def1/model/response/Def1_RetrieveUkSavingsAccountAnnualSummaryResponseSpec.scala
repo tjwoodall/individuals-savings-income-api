@@ -16,8 +16,8 @@
 
 package v2.retrieveUkSavingsAccountAnnualSummary.def1.model.response
 
+import api.utils.UnitSpec
 import play.api.libs.json.Json
-import shared.utils.UnitSpec
 
 class Def1_RetrieveUkSavingsAccountAnnualSummaryResponseSpec extends UnitSpec {
 

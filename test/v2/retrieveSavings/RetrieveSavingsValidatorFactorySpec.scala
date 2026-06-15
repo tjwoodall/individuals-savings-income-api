@@ -16,16 +16,16 @@
 
 package v2.retrieveSavings
 
-import shared.config.MockSharedAppConfig
-import shared.controllers.validators.Validator
-import shared.utils.UnitSpec
+import api.config.MockAppConfig
+import api.controllers.validators.Validator
+import api.utils.UnitSpec
 import v2.retrieveSavings.def1.Def1_RetrieveSavingsValidator
 import v2.retrieveSavings.model.request.RetrieveSavingsRequestData
 
-class RetrieveSavingsValidatorFactorySpec extends UnitSpec with MockSharedAppConfig {
+class RetrieveSavingsValidatorFactorySpec extends UnitSpec with MockAppConfig {
   private val validNino    = "AA123456A"
   private val validTaxYear = "2020-21"
-  val validatorFactory     = new RetrieveSavingsValidatorFactory(mockSharedAppConfig)
+  val validatorFactory     = new RetrieveSavingsValidatorFactory(mockAppConfig)
 
   "validator()" when {
 

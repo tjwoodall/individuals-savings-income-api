@@ -16,12 +16,12 @@
 
 package v2.addUkSavingsAccount
 
+import api.controllers.EndpointLogContext
+import api.models.domain.Nino
+import api.models.errors.*
+import api.models.outcomes.ResponseWrapper
+import api.services.ServiceSpec
 import models.errors.{RuleDuplicateAccountNameError, RuleMaximumSavingsAccountsLimitError}
-import shared.controllers.EndpointLogContext
-import shared.models.domain.Nino
-import shared.models.errors.*
-import shared.models.outcomes.ResponseWrapper
-import shared.services.ServiceSpec
 import v2.addUkSavingsAccount.def1.model.request.{Def1_AddUkSavingsAccountRequestBody, Def1_AddUkSavingsAccountRequestData}
 import v2.addUkSavingsAccount.def1.model.response.Def1_AddUkSavingsAccountResponse
 

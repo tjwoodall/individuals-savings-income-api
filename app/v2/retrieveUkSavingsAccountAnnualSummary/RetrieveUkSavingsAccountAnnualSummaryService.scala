@@ -16,12 +16,12 @@
 
 package v2.retrieveUkSavingsAccountAnnualSummary
 
+import api.controllers.{EndpointLogContext, RequestContext}
+import api.models.errors.*
+import api.models.outcomes.ResponseWrapper
+import api.services.{BaseService, ServiceOutcome}
 import cats.data.EitherT
 import models.errors.SavingsAccountIdFormatError
-import shared.controllers.{EndpointLogContext, RequestContext}
-import shared.models.errors._
-import shared.models.outcomes.ResponseWrapper
-import shared.services.{BaseService, ServiceOutcome}
 import v2.retrieveUkSavingsAccountAnnualSummary.model.request.RetrieveUkSavingsAccountAnnualSummaryRequestData
 import v2.retrieveUkSavingsAccountAnnualSummary.model.response.RetrieveUkSavingsAccountAnnualSummaryResponse
 
@@ -46,7 +46,7 @@ class RetrieveUkSavingsAccountAnnualSummaryService @Inject() (connector: Retriev
   def validateDownstreamResponse(
       downstreamResponseWrapper: ResponseWrapper[RetrieveUkSavingsAccountAnnualSummaryResponse]
   )(implicit logContext: EndpointLogContext): ServiceOutcome[RetrieveUkSavingsAccountAnnualSummaryResponse] = {
-    import downstreamResponseWrapper._
+    import downstreamResponseWrapper.*
 
     responseData.savingsInterestAnnualIncome match {
       case Nil =>

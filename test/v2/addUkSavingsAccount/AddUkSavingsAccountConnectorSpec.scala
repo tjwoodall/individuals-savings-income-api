@@ -16,11 +16,11 @@
 
 package v2.addUkSavingsAccount
 
-import shared.config.MockSharedAppConfig
-import shared.connectors.ConnectorSpec
-import shared.mocks.MockHttpClient
-import shared.models.domain.Nino
-import shared.models.outcomes.ResponseWrapper
+import api.config.MockAppConfig
+import api.connectors.ConnectorSpec
+import api.mocks.MockHttpClient
+import api.models.domain.Nino
+import api.models.outcomes.ResponseWrapper
 import uk.gov.hmrc.http.StringContextOps
 import v2.addUkSavingsAccount.def1.model.request.{Def1_AddUkSavingsAccountRequestBody, Def1_AddUkSavingsAccountRequestData}
 import v2.addUkSavingsAccount.def1.model.response.Def1_AddUkSavingsAccountResponse
@@ -43,11 +43,11 @@ class AddUkSavingsAccountConnectorSpec extends ConnectorSpec {
     savingsAccountId = "SAVKB2UVwUTBQGJ"
   )
 
-  trait Test extends MockHttpClient with MockSharedAppConfig {
+  trait Test extends MockHttpClient with MockAppConfig {
 
     val connector: AddUkSavingsAccountConnector = new AddUkSavingsAccountConnector(
       http = mockHttpClient,
-      appConfig = mockSharedAppConfig
+      appConfig = mockAppConfig
     )
 
   }

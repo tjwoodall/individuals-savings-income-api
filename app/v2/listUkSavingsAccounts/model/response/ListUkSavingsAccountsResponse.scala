@@ -16,8 +16,8 @@
 
 package v2.listUkSavingsAccounts.model.response
 
+import api.utils.JsonWritesUtil.writesFrom
 import play.api.libs.json.*
-import shared.utils.JsonWritesUtil.writesFrom
 import v2.listUkSavingsAccounts.def1.model.response.Def1_ListUkSavingsAccountsResponse
 
 trait ListUkSavingsAccountsResponse

@@ -16,8 +16,8 @@
 
 package v2.createAmendSavings.def1.model.request
 
+import api.utils.UnitSpec
 import play.api.libs.json.{JsError, JsValue, Json}
-import shared.utils.UnitSpec
 
 class AmendForeignInterestItemSpec extends UnitSpec {
 

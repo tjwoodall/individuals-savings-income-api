@@ -16,9 +16,9 @@
 
 package v2.retrieveSavings
 
-import shared.connectors.{ConnectorSpec, DownstreamOutcome}
-import shared.models.domain.*
-import shared.models.outcomes.ResponseWrapper
+import api.connectors.{ConnectorSpec, DownstreamOutcome}
+import api.models.domain.*
+import api.models.outcomes.ResponseWrapper
 import uk.gov.hmrc.http.StringContextOps
 import v2.retrieveSavings.def1.model.request.Def1_RetrieveSavingsRequestData
 import v2.retrieveSavings.def1.model.response.Def1_RetrieveSavingsResponse
@@ -77,7 +77,7 @@ class RetrieveSavingsConnectorSpec extends ConnectorSpec {
     )
 
     val connector: RetrieveSavingsConnector =
-      new RetrieveSavingsConnector(http = mockHttpClient, appConfig = mockSharedAppConfig)
+      new RetrieveSavingsConnector(http = mockHttpClient, appConfig = mockAppConfig)
 
   }
 

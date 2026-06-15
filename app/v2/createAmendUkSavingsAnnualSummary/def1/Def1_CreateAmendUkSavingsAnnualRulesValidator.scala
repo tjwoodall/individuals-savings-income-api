@@ -16,11 +16,11 @@
 
 package v2.createAmendUkSavingsAnnualSummary.def1
 
+import api.controllers.validators.RulesValidator
+import api.controllers.validators.resolvers.ResolveParsedNumber
+import api.models.errors.MtdError
 import cats.data.Validated
 import cats.implicits.toFoldableOps
-import shared.controllers.validators.RulesValidator
-import shared.controllers.validators.resolvers.ResolveParsedNumber
-import shared.models.errors.MtdError
 import v2.createAmendUkSavingsAnnualSummary.def1.model.request.Def1_CreateAmendUkSavingsAnnualSummaryRequestData
 
 object Def1_CreateAmendUkSavingsAnnualRulesValidator extends RulesValidator[Def1_CreateAmendUkSavingsAnnualSummaryRequestData] {
@@ -28,7 +28,7 @@ object Def1_CreateAmendUkSavingsAnnualRulesValidator extends RulesValidator[Def1
 
   def validateBusinessRules(
       parsed: Def1_CreateAmendUkSavingsAnnualSummaryRequestData): Validated[Seq[MtdError], Def1_CreateAmendUkSavingsAnnualSummaryRequestData] = {
-    import parsed._
+    import parsed.*
 
     val validatedMandatoryDecimalNumbers = List(
       (mtdBody.taxedUkInterest, s"/taxedUkInterest"),

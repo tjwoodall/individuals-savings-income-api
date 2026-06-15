@@ -16,11 +16,11 @@
 
 package v2.createAmendUkSavingsAnnualSummary
 
+import api.connectors.{ConnectorSpec, DownstreamOutcome}
+import api.models.domain.{Nino, TaxYear}
+import api.models.outcomes.ResponseWrapper
 import models.domain.SavingsAccountId
 import play.api.libs.json.{JsObject, Json}
-import shared.connectors.{ConnectorSpec, DownstreamOutcome}
-import shared.models.domain.{Nino, TaxYear}
-import shared.models.outcomes.ResponseWrapper
 import uk.gov.hmrc.http.StringContextOps
 import v2.createAmendUkSavingsAnnualSummary.def1.model.request.*
 
@@ -76,7 +76,7 @@ class CreateAmendUkSavingsAnnualSummaryConnectorSpec extends ConnectorSpec {
     def taxYear: TaxYear
 
     protected val connector: CreateAmendUkSavingsAnnualSummaryConnector =
-      new CreateAmendUkSavingsAnnualSummaryConnector(http = mockHttpClient, appConfig = mockSharedAppConfig)
+      new CreateAmendUkSavingsAnnualSummaryConnector(http = mockHttpClient, appConfig = mockAppConfig)
 
     protected val requestData: Def1_CreateAmendUkSavingsAnnualSummaryRequestData =
       Def1_CreateAmendUkSavingsAnnualSummaryRequestData(

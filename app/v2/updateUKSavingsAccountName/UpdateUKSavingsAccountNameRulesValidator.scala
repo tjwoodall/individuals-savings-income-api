@@ -16,11 +16,11 @@
 
 package v2.updateUKSavingsAccountName
 
+import api.controllers.validators.RulesValidator
+import api.controllers.validators.resolvers.ResolveStringPattern
+import api.models.errors.*
 import cats.data.Validated
 import models.errors.AccountNameFormatError
-import shared.controllers.validators.RulesValidator
-import shared.controllers.validators.resolvers.ResolveStringPattern
-import shared.models.errors.*
 import v2.updateUKSavingsAccountName.model.request.UpdateUKSavingsAccountNameRequest
 
 object UpdateUKSavingsAccountNameRulesValidator extends RulesValidator[UpdateUKSavingsAccountNameRequest] {

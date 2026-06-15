@@ -16,11 +16,11 @@
 
 package v2.updateUKSavingsAccountName
 
+import api.connectors.{ConnectorSpec, DownstreamOutcome}
+import api.models.domain.Nino
+import api.models.errors.{DownstreamErrorCode, DownstreamErrors}
+import api.models.outcomes.ResponseWrapper
 import models.domain.SavingsAccountId
-import shared.connectors.{ConnectorSpec, DownstreamOutcome}
-import shared.models.domain.Nino
-import shared.models.errors.{DownstreamErrorCode, DownstreamErrors}
-import shared.models.outcomes.ResponseWrapper
 import uk.gov.hmrc.http.StringContextOps
 import v2.updateUKSavingsAccountName.fixture.UpdateUKSavingsAccountNameFixtures.requestBodyModel
 import v2.updateUKSavingsAccountName.model.request.UpdateUKSavingsAccountNameRequest
@@ -69,7 +69,7 @@ class UpdateUKSavingsAccountNameConnectorSpec extends ConnectorSpec {
   private trait Test { self: ConnectorTest =>
 
     protected val connector: UpdateUKSavingsAccountNameConnector =
-      new UpdateUKSavingsAccountNameConnector(http = mockHttpClient, appConfig = mockSharedAppConfig)
+      new UpdateUKSavingsAccountNameConnector(http = mockHttpClient, appConfig = mockAppConfig)
 
     protected val request: UpdateUKSavingsAccountNameRequest = UpdateUKSavingsAccountNameRequest(
       nino = nino,

@@ -16,14 +16,14 @@
 
 package v2.deleteSavings
 
-import shared.config.SharedAppConfig
-import shared.controllers.validators.Validator
+import api.config.AppConfig
+import api.controllers.validators.Validator
 import v2.deleteSavings.def1.Def1_DeleteSavingsValidator
 import v2.deleteSavings.model.request.DeleteSavingsRequestData
 
 import javax.inject.*
 
-class DeleteSavingsValidatorFactory @Inject() (appConfig: SharedAppConfig) {
+class DeleteSavingsValidatorFactory @Inject() (appConfig: AppConfig) {
 
   def validator(nino: String, taxYear: String): Validator[DeleteSavingsRequestData] =
     new Def1_DeleteSavingsValidator(nino, taxYear)(appConfig)

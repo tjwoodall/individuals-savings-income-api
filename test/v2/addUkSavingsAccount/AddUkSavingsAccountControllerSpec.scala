@@ -16,16 +16,16 @@
 
 package v2.addUkSavingsAccount
 
+import api.config.MockAppConfig
+import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
+import api.models.audit.*
+import api.models.domain.Nino
+import api.models.errors.*
+import api.models.outcomes.ResponseWrapper
 import models.errors.RuleMaximumSavingsAccountsLimitError
 import play.api.Configuration
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
-import shared.config.MockSharedAppConfig
-import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
-import shared.models.audit.*
-import shared.models.domain.Nino
-import shared.models.errors.*
-import shared.models.outcomes.ResponseWrapper
 import v2.addUkSavingsAccount.def1.model.request.{Def1_AddUkSavingsAccountRequestBody, Def1_AddUkSavingsAccountRequestData}
 import v2.addUkSavingsAccount.def1.model.response.Def1_AddUkSavingsAccountResponse
 
@@ -35,7 +35,7 @@ import scala.concurrent.Future
 class AddUkSavingsAccountControllerSpec
     extends ControllerBaseSpec
     with ControllerTestRunner
-    with MockSharedAppConfig
+    with MockAppConfig
     with MockAddUkSavingsAccountService
     with MockAddUkSavingsAccountValidatorFactory {
 
@@ -45,7 +45,7 @@ class AddUkSavingsAccountControllerSpec
   "AddUkSavingsAccountController" should {
     "return OK" when {
       "happy path" in new Test {
-        MockedSharedAppConfig.apiGatewayContext.returns("individuals/savings-income").anyNumberOfTimes()
+        MockedAppConfig.apiGatewayContext.returns("individuals/savings-income").anyNumberOfTimes()
         willUseValidator(returningSuccess(requestData))
 
         MockAddUkSavingsAccountService
@@ -62,7 +62,7 @@ class AddUkSavingsAccountControllerSpec
       }
 
       "the service returns an error" in new Test {
-        MockedSharedAppConfig.apiGatewayContext.returns("individuals/savings-income").anyNumberOfTimes()
+        MockedAppConfig.apiGatewayContext.returns("individuals/savings-income").anyNumberOfTimes()
         willUseValidator(returningSuccess(requestData))
 
         MockAddUkSavingsAccountService
@@ -86,11 +86,11 @@ class AddUkSavingsAccountControllerSpec
       idGenerator = mockIdGenerator
     )
 
-    MockedSharedAppConfig.featureSwitchConfig.anyNumberOfTimes() returns Configuration(
+    MockedAppConfig.featureSwitchConfig.anyNumberOfTimes() returns Configuration(
       "supporting-agents-access-control.enabled" -> true
     )
 
-    MockedSharedAppConfig
+    MockedAppConfig
       .endpointAllowsSupportingAgents(controller.endpointName)
       .anyNumberOfTimes()
       .returns(true)

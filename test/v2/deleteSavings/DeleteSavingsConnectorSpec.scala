@@ -16,9 +16,9 @@
 
 package v2.deleteSavings
 
-import shared.connectors.ConnectorSpec
-import shared.models.domain.{Nino, TaxYear}
-import shared.models.outcomes.ResponseWrapper
+import api.connectors.ConnectorSpec
+import api.models.domain.{Nino, TaxYear}
+import api.models.outcomes.ResponseWrapper
 import uk.gov.hmrc.http.StringContextOps
 import v2.deleteSavings.def1.model.request.Def1_DeleteSavingsRequestData
 import v2.deleteSavings.model.request.DeleteSavingsRequestData
@@ -60,7 +60,7 @@ class DeleteSavingsConnectorSpec extends ConnectorSpec {
 
     val connector: DeleteSavingsConnector = new DeleteSavingsConnector(
       http = mockHttpClient,
-      appConfig = mockSharedAppConfig
+      appConfig = mockAppConfig
     )
 
     lazy val request: DeleteSavingsRequestData = Def1_DeleteSavingsRequestData(Nino("AA111111A"), TaxYear.fromMtd(taxYear))

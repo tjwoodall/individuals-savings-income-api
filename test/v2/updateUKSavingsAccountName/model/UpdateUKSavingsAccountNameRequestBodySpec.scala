@@ -16,8 +16,8 @@
 
 package v2.updateUKSavingsAccountName.model
 
+import api.utils.UnitSpec
 import play.api.libs.json.{JsError, JsObject, JsValue, Json}
-import shared.utils.UnitSpec
 import v2.updateUKSavingsAccountName.fixture.UpdateUKSavingsAccountNameFixtures.{requestBodyModel, validRequestJson}
 import v2.updateUKSavingsAccountName.model.request.UpdateUKSavingsAccountNameRequestBody
 

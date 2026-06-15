@@ -16,15 +16,15 @@
 
 package v2.createAmendUkSavingsAnnualSummary.def1
 
+import api.config.AppConfig
+import api.controllers.validators.Validator
+import api.controllers.validators.resolvers.*
+import api.models.domain.TaxYear
+import api.models.errors.MtdError
 import cats.data.Validated
 import cats.implicits.catsSyntaxTuple4Semigroupal
 import play.api.libs.json.JsValue
 import resolvers.ResolveSavingsAccountId
-import shared.config.SharedAppConfig
-import shared.controllers.validators.Validator
-import shared.controllers.validators.resolvers.*
-import shared.models.domain.TaxYear
-import shared.models.errors.MtdError
 import v2.createAmendUkSavingsAnnualSummary.def1.Def1_CreateAmendUkSavingsAnnualRulesValidator.validateBusinessRules
 import v2.createAmendUkSavingsAnnualSummary.def1.model.request.{
   Def1_CreateAmendUkSavingsAnnualSummaryRequestBody,
@@ -32,8 +32,7 @@ import v2.createAmendUkSavingsAnnualSummary.def1.model.request.{
 }
 import v2.createAmendUkSavingsAnnualSummary.model.request.*
 
-class Def1_CreateAmendUkSavingsAnnualSummaryValidator(nino: String, taxYear: String, savingsAccountId: String, body: JsValue)(
-    appConfig: SharedAppConfig)
+class Def1_CreateAmendUkSavingsAnnualSummaryValidator(nino: String, taxYear: String, savingsAccountId: String, body: JsValue)(appConfig: AppConfig)
     extends Validator[CreateAmendUkSavingsAnnualSummaryRequestData] {
   private lazy val minimumTaxYear = appConfig.ukSavingsAccountAnnualSummaryMinimumTaxYear
   private lazy val resolveTaxYear = ResolveTaxYearMinimum(TaxYear.ending(minimumTaxYear))

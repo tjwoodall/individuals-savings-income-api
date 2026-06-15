@@ -16,8 +16,8 @@
 
 package v2.listUkSavingsAccounts.def1.model.request
 
+import api.models.domain.Nino
 import models.domain.SavingsAccountId
-import shared.models.domain.Nino
 import v2.listUkSavingsAccounts.ListUkSavingsAccountsSchema
 import v2.listUkSavingsAccounts.ListUkSavingsAccountsSchema.Def1
 import v2.listUkSavingsAccounts.model.request.ListUkSavingsAccountsRequestData

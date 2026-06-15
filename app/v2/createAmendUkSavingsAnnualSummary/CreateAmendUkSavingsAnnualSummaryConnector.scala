@@ -16,10 +16,10 @@
 
 package v2.createAmendUkSavingsAnnualSummary
 
+import api.config.AppConfig
+import api.connectors.DownstreamUri.IfsUri
+import api.connectors.{BaseDownstreamConnector, DownstreamOutcome}
 import play.api.http.Status
-import shared.config.SharedAppConfig
-import shared.connectors.DownstreamUri.IfsUri
-import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.client.HttpClientV2
 import v2.createAmendUkSavingsAnnualSummary.model.request.CreateAmendUkSavingsAnnualSummaryRequestData
@@ -28,14 +28,14 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class CreateAmendUkSavingsAnnualSummaryConnector @Inject() (val http: HttpClientV2, val appConfig: SharedAppConfig) extends BaseDownstreamConnector {
+class CreateAmendUkSavingsAnnualSummaryConnector @Inject() (val http: HttpClientV2, val appConfig: AppConfig) extends BaseDownstreamConnector {
 
   def createOrAmendUKSavingsAccountSummary(requestData: CreateAmendUkSavingsAnnualSummaryRequestData)(implicit
       hc: HeaderCarrier,
       cc: ExecutionContext,
       correlationId: String): Future[DownstreamOutcome[Unit]] = {
+    import api.connectors.httpparsers.StandardDownstreamHttpParser.*
     import requestData.*
-    import shared.connectors.httpparsers.StandardDownstreamHttpParser.*
 
     implicit val successCode: SuccessCode = SuccessCode(Status.OK)
 

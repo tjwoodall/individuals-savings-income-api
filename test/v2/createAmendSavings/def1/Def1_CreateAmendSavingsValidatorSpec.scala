@@ -16,15 +16,15 @@
 
 package v2.createAmendSavings.def1
 
+import api.config.MockAppConfig
+import api.models.domain.{Nino, TaxYear}
+import api.models.errors.*
+import api.utils.UnitSpec
 import play.api.libs.json.{JsValue, Json}
-import shared.config.MockSharedAppConfig
-import shared.models.domain.{Nino, TaxYear}
-import shared.models.errors.*
-import shared.utils.UnitSpec
 import v2.createAmendSavings.def1.model.request.{Def1_CreateAmendSavingsRequestBody, Def1_CreateAmendSavingsRequestData}
 import v2.createAmendSavings.model.request.CreateAmendSavingsRequestData
 
-class Def1_CreateAmendSavingsValidatorSpec extends UnitSpec with MockSharedAppConfig {
+class Def1_CreateAmendSavingsValidatorSpec extends UnitSpec with MockAppConfig {
 
   private implicit val correlationId: String = "1234"
 
@@ -135,7 +135,7 @@ class Def1_CreateAmendSavingsValidatorSpec extends UnitSpec with MockSharedAppCo
   private val parsedBody    = validRequestBodyJson.as[Def1_CreateAmendSavingsRequestBody]
 
   private def validator(nino: String, taxYear: String, body: JsValue) =
-    new Def1_CreateAmendSavingsValidator(nino, taxYear, body)(mockSharedAppConfig)
+    new Def1_CreateAmendSavingsValidator(nino, taxYear, body)(mockAppConfig)
 
   "validator" should {
     "return the parsed domain object" when {

@@ -16,15 +16,15 @@
 
 package v2.retrieveUkSavingsAccountAnnualSummary.def1
 
+import api.config.MockAppConfig
+import api.models.domain.{Nino, TaxYear}
+import api.models.errors.*
+import api.utils.UnitSpec
 import models.domain.SavingsAccountId
 import models.errors.SavingsAccountIdFormatError
-import shared.config.MockSharedAppConfig
-import shared.models.domain.{Nino, TaxYear}
-import shared.models.errors.*
-import shared.utils.UnitSpec
 import v2.retrieveUkSavingsAccountAnnualSummary.def1.model.request.Def1_RetrieveUkSavingsAccountAnnualSummaryRequestData
 
-class Def1_RetrieveUkSavingsAccountAnnualSummaryValidatorSpec extends UnitSpec with MockSharedAppConfig {
+class Def1_RetrieveUkSavingsAccountAnnualSummaryValidatorSpec extends UnitSpec with MockAppConfig {
 
   private implicit val correlationId: String = "1234"
   private val validNino                      = "AA123456A"
@@ -34,7 +34,7 @@ class Def1_RetrieveUkSavingsAccountAnnualSummaryValidatorSpec extends UnitSpec w
   private val parsedTaxYear                  = TaxYear.fromMtd(validTaxYear)
 
   private def validator(nino: String, taxYear: String, savingsAccountId: String) =
-    new Def1_RetrieveUkSavingsAccountAnnualSummaryValidator(nino, taxYear, savingsAccountId)(mockSharedAppConfig)
+    new Def1_RetrieveUkSavingsAccountAnnualSummaryValidator(nino, taxYear, savingsAccountId)(mockAppConfig)
 
   "running a validation" should {
     "return no errors" when {

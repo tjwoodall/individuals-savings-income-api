@@ -16,17 +16,17 @@
 
 package v2.retrieveSavings.def1
 
+import api.config.AppConfig
+import api.controllers.validators.Validator
+import api.controllers.validators.resolvers.{ResolveNino, ResolveTaxYearMinimum}
+import api.models.domain.TaxYear
+import api.models.errors.MtdError
 import cats.data.Validated
 import cats.implicits.catsSyntaxTuple2Semigroupal
-import shared.config.SharedAppConfig
-import shared.controllers.validators.Validator
-import shared.controllers.validators.resolvers.{ResolveNino, ResolveTaxYearMinimum}
-import shared.models.domain.TaxYear
-import shared.models.errors.MtdError
 import v2.retrieveSavings.def1.model.request.Def1_RetrieveSavingsRequestData
 import v2.retrieveSavings.model.request.RetrieveSavingsRequestData
 
-class Def1_RetrieveSavingsValidator(nino: String, taxYear: String)(appConfig: SharedAppConfig) extends Validator[RetrieveSavingsRequestData] {
+class Def1_RetrieveSavingsValidator(nino: String, taxYear: String)(appConfig: AppConfig) extends Validator[RetrieveSavingsRequestData] {
 
   private lazy val minimumTaxYear = appConfig.minimumPermittedTaxYear
   private lazy val resolveTaxYear = ResolveTaxYearMinimum(TaxYear.ending(minimumTaxYear))

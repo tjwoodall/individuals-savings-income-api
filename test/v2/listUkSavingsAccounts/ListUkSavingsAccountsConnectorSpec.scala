@@ -16,11 +16,11 @@
 
 package v2.listUkSavingsAccounts
 
+import api.config.MockAppConfig
+import api.connectors.{ConnectorSpec, DownstreamOutcome}
+import api.models.domain.Nino
+import api.models.outcomes.ResponseWrapper
 import models.domain.SavingsAccountId
-import shared.config.MockSharedAppConfig
-import shared.connectors.{ConnectorSpec, DownstreamOutcome}
-import shared.models.domain.Nino
-import shared.models.outcomes.ResponseWrapper
 import uk.gov.hmrc.http.StringContextOps
 import v2.listUkSavingsAccounts.def1.model.request.Def1_ListUkSavingsAccountsRequestData
 import v2.listUkSavingsAccounts.def1.model.response.{Def1_ListUkSavingsAccountsResponse, Def1_UkSavingsAccount}
@@ -28,7 +28,7 @@ import v2.listUkSavingsAccounts.model.response.ListUkSavingsAccountsResponse
 
 import scala.concurrent.Future
 
-class ListUkSavingsAccountsConnectorSpec extends ConnectorSpec with MockSharedAppConfig {
+class ListUkSavingsAccountsConnectorSpec extends ConnectorSpec with MockAppConfig {
 
   val nino: String                       = "AA111111A"
   val savingsAccountId: SavingsAccountId = SavingsAccountId("SAVKB2UVwUTBQGJ")
@@ -50,7 +50,7 @@ class ListUkSavingsAccountsConnectorSpec extends ConnectorSpec with MockSharedAp
     self: ConnectorTest =>
 
     val connector: ListUkSavingsAccountsConnector =
-      new ListUkSavingsAccountsConnector(http = mockHttpClient, appConfig = mockSharedAppConfig)
+      new ListUkSavingsAccountsConnector(http = mockHttpClient, appConfig = mockAppConfig)
 
   }
 

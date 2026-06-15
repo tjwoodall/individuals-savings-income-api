@@ -16,15 +16,15 @@
 
 package v2.listUkSavingsAccounts
 
+import api.config.MockAppConfig
+import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
+import api.models.domain.Nino
+import api.models.errors.*
+import api.models.outcomes.ResponseWrapper
 import models.domain.SavingsAccountId
 import play.api.Configuration
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
-import shared.config.MockSharedAppConfig
-import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
-import shared.models.domain.Nino
-import shared.models.errors.*
-import shared.models.outcomes.ResponseWrapper
 import v2.listUkSavingsAccounts.def1.model.request.Def1_ListUkSavingsAccountsRequestData
 import v2.listUkSavingsAccounts.def1.model.response.{Def1_ListUkSavingsAccountsResponse, Def1_UkSavingsAccount}
 
@@ -36,7 +36,7 @@ class ListUkSavingsAccountsControllerSpec
     with ControllerTestRunner
     with MockListUkSavingsAccountsService
     with MockListUkSavingsAccountsValidatorFactory
-    with MockSharedAppConfig {
+    with MockAppConfig {
 
   val nino: String                       = "AA123456A"
   val savingsAccountId: SavingsAccountId = SavingsAccountId("SAVKB2UVwUTBQGJ")
@@ -120,11 +120,11 @@ class ListUkSavingsAccountsControllerSpec
       idGenerator = mockIdGenerator
     )
 
-    MockedSharedAppConfig.featureSwitchConfig.anyNumberOfTimes() returns Configuration(
+    MockedAppConfig.featureSwitchConfig.anyNumberOfTimes() returns Configuration(
       "supporting-agents-access-control.enabled" -> true
     )
 
-    MockedSharedAppConfig
+    MockedAppConfig
       .endpointAllowsSupportingAgents(controller.endpointName)
       .anyNumberOfTimes()
       .returns(true)

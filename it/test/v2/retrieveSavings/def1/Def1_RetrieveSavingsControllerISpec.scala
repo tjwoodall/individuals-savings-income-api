@@ -16,14 +16,14 @@
 
 package v2.retrieveSavings.def1
 
+import api.models.errors.*
+import api.services.*
+import api.support.IntegrationBaseSpec
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status.*
 import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
-import shared.models.errors.*
-import shared.services.*
-import shared.support.IntegrationBaseSpec
 import v2.retrieveSavings.def1.model.RetrieveSavingsControllerFixture
 
 class Def1_RetrieveSavingsControllerISpec extends IntegrationBaseSpec {

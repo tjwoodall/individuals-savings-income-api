@@ -16,13 +16,13 @@
 
 package v2.retrieveSavings
 
+import api.config.MockAppConfig
+import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
+import api.models.domain.*
+import api.models.errors.*
+import api.models.outcomes.ResponseWrapper
 import play.api.Configuration
 import play.api.mvc.Result
-import shared.config.MockSharedAppConfig
-import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
-import shared.models.domain.*
-import shared.models.errors.*
-import shared.models.outcomes.ResponseWrapper
 import v2.retrieveSavings.def1.model.RetrieveSavingsControllerFixture
 import v2.retrieveSavings.def1.model.request.Def1_RetrieveSavingsRequestData
 import v2.retrieveSavings.def1.model.response.*
@@ -35,7 +35,7 @@ class RetrieveSavingsControllerSpec
     with ControllerTestRunner
     with MockRetrieveSavingsService
     with MockRetrieveSavingsValidatorFactory
-    with MockSharedAppConfig {
+    with MockAppConfig {
 
   val nino: String    = "AA123456A"
   private val taxYear = "2019-20"
@@ -116,11 +116,11 @@ class RetrieveSavingsControllerSpec
       idGenerator = mockIdGenerator
     )
 
-    MockedSharedAppConfig.featureSwitchConfig.anyNumberOfTimes() returns Configuration(
+    MockedAppConfig.featureSwitchConfig.anyNumberOfTimes() returns Configuration(
       "supporting-agents-access-control.enabled" -> true
     )
 
-    MockedSharedAppConfig
+    MockedAppConfig
       .endpointAllowsSupportingAgents(controller.endpointName)
       .anyNumberOfTimes()
       .returns(true)

@@ -16,8 +16,8 @@
 
 package v2.createAmendSavings.model.request
 
-import play.api.libs.json._
-import shared.utils.JsonWritesUtil
+import api.utils.JsonWritesUtil
+import play.api.libs.json.*
 import v2.createAmendSavings.def1.model.request.Def1_CreateAmendSavingsRequestBody
 
 trait CreateAmendSavingsRequestBody

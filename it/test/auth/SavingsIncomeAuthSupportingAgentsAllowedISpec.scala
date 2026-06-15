@@ -16,11 +16,11 @@
 
 package auth
 
+import api.auth.AuthSupportingAgentsAllowedISpec
+import api.services.DownstreamStub.{DELETE, HTTPMethod}
 import play.api.http.Status.NO_CONTENT
 import play.api.libs.json.JsValue
 import play.api.libs.ws.{WSRequest, WSResponse}
-import shared.auth.AuthSupportingAgentsAllowedISpec
-import shared.services.DownstreamStub.{DELETE, HTTPMethod}
 
 class SavingsIncomeAuthSupportingAgentsAllowedISpec extends AuthSupportingAgentsAllowedISpec {
 

@@ -16,11 +16,11 @@
 
 package v2.addUkSavingsAccount.def1
 
+import api.controllers.validators.RulesValidator
+import api.controllers.validators.resolvers.ResolveStringPattern
+import api.models.errors.MtdError
 import cats.data.Validated
 import models.errors.AccountNameFormatError
-import shared.controllers.validators.RulesValidator
-import shared.controllers.validators.resolvers.ResolveStringPattern
-import shared.models.errors.MtdError
 import v2.addUkSavingsAccount.def1.model.request.Def1_AddUkSavingsAccountRequestData
 
 object Def1_AddUkSavingsAccountRulesValidator extends RulesValidator[Def1_AddUkSavingsAccountRequestData] {

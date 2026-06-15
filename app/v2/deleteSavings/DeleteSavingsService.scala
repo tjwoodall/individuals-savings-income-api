@@ -16,11 +16,11 @@
 
 package v2.deleteSavings
 
-import cats.implicits._
+import api.controllers.RequestContext
+import api.models.errors.*
+import api.services.{BaseService, ServiceOutcome}
+import cats.implicits.*
 import models.errors.RuleOutsideAmendmentWindowError
-import shared.controllers.RequestContext
-import shared.models.errors._
-import shared.services.{BaseService, ServiceOutcome}
 import v2.deleteSavings.model.request.DeleteSavingsRequestData
 
 import javax.inject.{Inject, Singleton}

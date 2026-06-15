@@ -16,15 +16,15 @@
 
 package v2.retrieveUkSavingsAccountAnnualSummary
 
-import shared.config.SharedAppConfig
-import shared.controllers.validators.Validator
+import api.config.AppConfig
+import api.controllers.validators.Validator
 import v2.retrieveUkSavingsAccountAnnualSummary.def1.Def1_RetrieveUkSavingsAccountAnnualSummaryValidator
 import v2.retrieveUkSavingsAccountAnnualSummary.model.request.RetrieveUkSavingsAccountAnnualSummaryRequestData
 
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class RetrieveUkSavingsAccountAnnualSummaryValidatorFactory @Inject() (appConfig: SharedAppConfig) {
+class RetrieveUkSavingsAccountAnnualSummaryValidatorFactory @Inject() (appConfig: AppConfig) {
 
   def validator(nino: String, taxYear: String, savingsAccountId: String): Validator[RetrieveUkSavingsAccountAnnualSummaryRequestData] =
     new Def1_RetrieveUkSavingsAccountAnnualSummaryValidator(nino, taxYear, savingsAccountId)(appConfig)

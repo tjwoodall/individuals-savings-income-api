@@ -16,13 +16,13 @@
 
 package v2.updateUKSavingsAccountName
 
+import api.models.domain.Nino
+import api.models.errors.*
+import api.models.utils.JsonErrorValidators
+import api.utils.UnitSpec
 import models.domain.SavingsAccountId
 import models.errors.{AccountNameFormatError, SavingsAccountIdFormatError}
-import play.api.libs.json._
-import shared.models.domain.Nino
-import shared.models.errors._
-import shared.models.utils.JsonErrorValidators
-import shared.utils.UnitSpec
+import play.api.libs.json.*
 import v2.updateUKSavingsAccountName.fixture.UpdateUKSavingsAccountNameFixtures.{nonValidRequestBodyJson, requestBodyModel, validRequestJson}
 import v2.updateUKSavingsAccountName.model.request.UpdateUKSavingsAccountNameRequest
 
