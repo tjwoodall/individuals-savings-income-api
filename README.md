@@ -9,7 +9,7 @@ The Individuals Savings Income API allows a developer to create, amend, retrieve
 ## Requirements
 
 - Scala 3.5.x
-- Java 11
+- Java 21
 - sbt 1.10.x
 - [Service Manager V2](https://github.com/hmrc/sm2)
 
