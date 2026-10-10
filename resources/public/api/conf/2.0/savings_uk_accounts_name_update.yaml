@@ -37,8 +37,7 @@ put:
         examples:
           example-1:
             description: Request Example
-            value:
-              $ref: './examples/ukSavingsAccount/name_update_request.json'
+            externalValue: './examples/ukSavingsAccount/name_update_request.json'
 
   responses:
     "204":
